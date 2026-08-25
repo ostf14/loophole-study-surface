@@ -31,7 +31,7 @@ export function PlanHeader({
 }: PlanHeaderProps) {
   return (
     <header className="border-b-[2px] border-soft-black bg-turquoise-lc px-10 pt-8 pb-6">
-      <div className="mx-auto flex w-full max-w-[var(--max-width-component)] flex-col gap-6">
+      <div className="mx-auto flex w-full max-w-[var(--study-surface-width)] flex-col gap-6">
         <div className="flex items-center justify-between gap-6">
           <h1 className="text-display-m">{PLAN.studentFirstName}&apos;s Plan</h1>
           <Button variant="secondary" onClick={onAdjustPlan} className="shrink-0">

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -13,7 +13,8 @@ import { allTasks, formatLong } from "@/lib/plan";
 /**
  * Строка дня: слева идентичность — пилюля даты с дропдауном и донат рядом,
  * как требует PRD («paired with a progress donut»); справа Hide completed со
- * счётчиком скрытого и пейджинг ‹ Today ›.
+ * счётчиком скрытого. Пейджинг ‹ Today › живёт в переключателе видов, где его
+ * и описывает PRD.
  *
  * Дата — единственная идентичность дня. Номеров дней нет нигде, PRD запрещает
  * их прямо, и это главное отличие от текущей страницы с её «DAY 3».
@@ -24,7 +25,6 @@ import { allTasks, formatLong } from "@/lib/plan";
 
 type DateRowProps = {
   date: string;
-  today: string;
   done: ReadonlySet<string>;
   progress: { done: number; total: number };
   hideCompleted: boolean;
@@ -34,87 +34,31 @@ type DateRowProps = {
 
 export function DateRow({
   date,
-  today,
   done,
   progress,
   hideCompleted,
   onHideCompletedChange,
   onJumpToDate,
 }: DateRowProps) {
-  const day = DAYS[date];
-  const isToday = date === today;
-
   return (
-    <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
+    <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-4">
       <div className="flex items-center gap-4">
         <DayPicker date={date} done={done} onJumpToDate={onJumpToDate} />
         <ProgressDonut done={progress.done} total={progress.total} />
       </div>
 
-      <span className="flex-1" />
-
-      <div className="flex items-center gap-5">
-        <Checkbox
-          size="small"
-          checked={hideCompleted}
-          onChange={(e) => onHideCompletedChange(e.target.checked)}
-          className="gap-3"
-          label={
-            <span className="text-body-s whitespace-nowrap text-pewter-hc">
-              Hide completed ({progress.done})
-            </span>
-          }
-        />
-        <div className="flex items-center gap-2">
-          <PageButton
-            label="Previous day"
-            disabled={!day?.prev}
-            onClick={() => day?.prev && onJumpToDate(day.prev)}
-          >
-            <ChevronLeft className="size-[18px]" strokeWidth={2.5} />
-          </PageButton>
-          <Button
-            variant="secondary"
-            disabled={isToday}
-            onClick={() => onJumpToDate(today)}
-            className="px-4"
-          >
-            Today
-          </Button>
-          <PageButton
-            label="Next day"
-            disabled={!day?.next}
-            onClick={() => day?.next && onJumpToDate(day.next)}
-          >
-            <ChevronRight className="size-[18px]" strokeWidth={2.5} />
-          </PageButton>
-        </div>
-      </div>
+      <Checkbox
+        size="small"
+        checked={hideCompleted}
+        onChange={(e) => onHideCompletedChange(e.target.checked)}
+        className="gap-3"
+        label={
+          <span className="text-body-s whitespace-nowrap text-pewter-hc">
+            Hide completed ({progress.done})
+          </span>
+        }
+      />
     </div>
-  );
-}
-
-function PageButton({
-  children,
-  label,
-  disabled,
-  onClick,
-}: {
-  children: React.ReactNode;
-  label: string;
-  disabled: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      aria-label={label}
-      disabled={disabled}
-      onClick={onClick}
-      className="lh-card-hover-xs inline-flex size-[38px] cursor-pointer items-center justify-center rounded-full border-[2px] border-soft-black bg-transparent disabled:cursor-not-allowed disabled:opacity-40"
-    >
-      {children}
-    </button>
   );
 }
 

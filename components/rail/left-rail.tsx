@@ -23,7 +23,7 @@ type LeftRailProps = {
 
 export function LeftRail({ currentPhase, bookmarks, onSelectPlan }: LeftRailProps) {
   return (
-    <aside className="flex w-[var(--sidebar-width)] shrink-0 flex-col gap-8">
+    <aside className="flex w-[var(--study-rail-width)] shrink-0 flex-col gap-8">
       <PlanSelector currentPhase={currentPhase} onSelectPlan={onSelectPlan} />
       <PrepMap />
       <Section title="My Workouts">

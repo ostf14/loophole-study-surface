@@ -116,7 +116,7 @@ export default function StudySurface() {
         onStart={() => say("Start запускает focus mode — вне скоупа")}
       />
 
-      <div className="mx-auto flex w-full max-w-[var(--max-width-component)] flex-1 gap-10 px-10 py-8">
+      <div className="mx-auto flex w-full max-w-[var(--study-surface-width)] flex-1 gap-10 px-10 py-8">
         <LeftRail
           currentPhase={phaseAt(date)}
           bookmarks={bookmarks.map((id) => ({ id, name: WORKOUT_NAMES[id] }))}
@@ -124,12 +124,17 @@ export default function StudySurface() {
         />
 
         <main className="flex min-w-0 flex-1 flex-col gap-6">
-          <ViewTabs />
+          <ViewTabs
+            today={TODAY}
+            isToday={date === TODAY}
+            prev={day?.prev}
+            next={day?.next}
+            onJumpToDate={setDate}
+          />
           <NextGoal />
 
           <DateRow
             date={date}
-            today={TODAY}
             done={done}
             progress={progress}
             hideCompleted={hideCompleted}
