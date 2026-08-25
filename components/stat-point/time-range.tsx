@@ -14,6 +14,10 @@ import { cn } from "@/lib/cn";
  * Current рисуются рамками соседей: у самого Current ни рамки, ни скругления,
  * пока он зажат между дельтами. Оставшись один, он становится пилюлей.
  *
+ * Дети капсулы тянутся по её внутренней высоте через self-stretch, а не задают
+ * свою: с фиксированной высотой 32 они вылезали бы за padding-box на 2px и
+ * заливка Current закрашивала бы рамку капсулы сверху и снизу.
+ *
  * Дельты в макете заданы текстовыми свойствами, компонент их не считает.
  * Здесь так же: значения приходят готовыми строками, потому что формат
  * зависит от метрики — минуты, mm:ss, баллы.
@@ -49,7 +53,7 @@ function Delta({
   return (
     <span
       className={cn(
-        "flex h-8 items-center gap-[2px] border-soft-black pl-[6px] pr-2",
+        "flex items-center gap-[2px] self-stretch border-soft-black pl-[6px] pr-2",
         side === "start" ? "rounded-l-full border-r-[2px]" : "rounded-r-full border-l-[2px]",
       )}
     >
@@ -84,13 +88,13 @@ export function TimeRange({
       <div className="flex h-6 items-center justify-between rounded-full border-[2px] border-soft-black px-px py-1">
         <span className="px-2 py-1 text-caption-medium font-semibold text-soft-black">{start}</span>
 
-        <span className="flex h-8 items-center rounded-full border-[2px] border-soft-black bg-soft-white">
+        <span className="flex h-8 items-stretch overflow-hidden rounded-full border-[2px] border-soft-black bg-soft-white">
           {withDeltas ? (
             <Delta value={deltaToStart!} side="start" sign={regressed ? "plus" : "minus"} />
           ) : null}
           <span
             className={cn(
-              "flex h-8 items-center bg-seafoam-lc px-2 text-caption-medium font-extrabold text-soft-black",
+              "flex items-center self-stretch bg-seafoam-lc px-2 text-caption-medium font-extrabold text-soft-black",
               !withDeltas && "rounded-full",
             )}
           >
