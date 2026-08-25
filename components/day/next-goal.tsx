@@ -1,4 +1,5 @@
 import { Check } from "lucide-react";
+import { TimeRange } from "@/components/stat-point/time-range";
 import { Card } from "@/components/ui/card";
 import { Tag } from "@/components/ui/tag";
 import { cn } from "@/lib/cn";
@@ -10,9 +11,13 @@ import { GOALS, type Goal } from "@/lib/plan-data";
  *
  * Форма индикатора следует типу критерия. Накопление «x из y» показывается
  * баром, бинарные ворота — рядом квадратов из словаря Prep Map, бегущее число
- * против фиксированной цели — списком попыток с дельтой. Универсального бара
- * здесь нет намеренно: ко времени не накапливаются снизу, к нему подходят
+ * против фиксированной цели — компонентом stat-point/time-range. Универсального
+ * бара здесь нет намеренно: ко времени не накапливаются снизу, к нему подходят
  * сверху, и результат хуже прошлого ломает любую шкалу с краями.
+ *
+ * time-range эту ловушку обходит: ширины в нём фиксированные, это диаграмма
+ * трёх значений, а не пропорциональная шкала. Регрессия просто меняет числа
+ * и переворачивает знак дельты до старта.
  *
  * PRD ставит модуль наверх day timeline и требует по строке на секцию, когда
  * LR и RC стоят на разных ступенях.
@@ -41,7 +46,11 @@ function GoalRow({ goal }: { goal: Goal }) {
         {goal.kind === "gate" ? (
           <GatePips attempts={goal.attempts} needed={goal.needed} />
         ) : (
-          <ClockBoard target={goal.targetSeconds} attempts={goal.attemptsSeconds} />
+          <Clock
+            start={goal.startSeconds}
+            current={goal.currentSeconds}
+            target={goal.targetSeconds}
+          />
         )}
       </div>
     </div>
@@ -80,40 +89,21 @@ function GatePips({ attempts, needed }: { attempts: boolean[]; needed: number })
 const mmss = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 
 /**
- * Бегущее число против цели. Попытки отсортированы, лучшая сверху, цель —
- * приколоченная строка над пунктиром. Сверху лучше, как в любом лидерборде;
- * регрессия просто становится строкой ниже, и никакая шкала не ломается.
+ * Бегущее число против цели на их собственном компоненте. Дельты считаются
+ * здесь: в макете это текстовые слоты, компонент их не выводит сам.
  */
-function ClockBoard({ target, attempts }: { target: number; attempts: number[] }) {
-  const sorted = [...attempts].sort((a, b) => a - b);
-  const best = sorted[0];
+function Clock({ start, current, target }: { start: number; current: number; target: number }) {
+  const regressed = current > start;
 
   return (
-    <div className="mt-2 flex max-w-[420px] flex-col">
-      <div className="flex items-baseline gap-3 border-b-[2px] border-dashed border-soft-black pb-2">
-        <span className="w-[18px] shrink-0" />
-        <span className="text-body-m font-extrabold tabular-nums">{mmss(target)}</span>
-        <span className="text-body-xs uppercase text-pewter-hc">goal</span>
-      </div>
-
-      {sorted.map((value, i) => (
-        <div key={value} className="flex items-baseline gap-3 pt-2">
-          <span className="w-[18px] shrink-0 text-body-xs tabular-nums text-pewter-hc">{i + 1}</span>
-          <span
-            className={cn(
-              "text-body-m tabular-nums",
-              value === best ? "font-bold text-soft-black" : "text-pewter-hc",
-            )}
-          >
-            {mmss(value)}
-          </span>
-          {value === best ? (
-            <span className="text-body-xs font-bold text-turquoise-hc">
-              {mmss(value - target)} to go
-            </span>
-          ) : null}
-        </div>
-      ))}
-    </div>
+    <TimeRange
+      className="mt-3 max-w-[420px]"
+      start={mmss(start)}
+      current={mmss(current)}
+      goal={mmss(target)}
+      deltaToStart={mmss(Math.abs(current - start))}
+      deltaToGoal={mmss(Math.abs(current - target))}
+      regressed={regressed}
+    />
   );
 }

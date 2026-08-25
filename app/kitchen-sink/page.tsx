@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { ArrowRight, ChevronDown, Play } from "lucide-react";
+import { StatPoint } from "@/components/stat-point/stat-point";
+import { TimeRange } from "@/components/stat-point/time-range";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { CHECKBOX_ROTATIONS, Checkbox } from "@/components/ui/checkbox";
@@ -93,6 +95,39 @@ export default function KitchenSink() {
         <Card hover="lg" className="px-5 py-3 text-body-m font-bold">
           hover lg
         </Card>
+      </Row>
+
+      <Row title="stat-point/time-range — Default с дельтами, No Deltas, регрессия">
+        <div className="flex w-full max-w-[420px] flex-col gap-6">
+          <TimeRange
+            start="38:10"
+            current="31:40"
+            goal="25:00"
+            deltaToStart="6:30"
+            deltaToGoal="6:40"
+          />
+          <TimeRange start="38:10" current="31:40" goal="25:00" />
+          <TimeRange
+            start="31:40"
+            current="34:20"
+            goal="25:00"
+            deltaToStart="2:40"
+            deltaToGoal="9:20"
+            regressed
+          />
+        </div>
+      </Row>
+
+      <Row title="Stat point — карточка 300×156, рамка 1.5px, hover 6px">
+        <StatPoint label="Translation + CLIR, RC" hover>
+          <TimeRange
+            start="38:10"
+            current="31:40"
+            goal="25:00"
+            deltaToStart="6:30"
+            deltaToGoal="6:40"
+          />
+        </StatPoint>
       </Row>
 
       <Row title="Типографика — шкала v2.0, трекинг отрицательный везде">

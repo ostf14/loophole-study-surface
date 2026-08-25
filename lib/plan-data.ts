@@ -119,10 +119,14 @@ export type Goal =
       section: "LR" | "RC";
       name: string;
       criterion: string;
-      /** Бегущее число против фиксированной цели */
+      /**
+       * Бегущее число против фиксированной цели. Три точки, которые требует
+       * stat-point/time-range: с чего начали, где сейчас, куда идём.
+       */
       kind: "clock";
+      startSeconds: number;
+      currentSeconds: number;
       targetSeconds: number;
-      attemptsSeconds: number[];
     };
 
 export const GOALS: Goal[] = [
@@ -139,8 +143,9 @@ export const GOALS: Goal[] = [
     name: "Translation + CLIR under 25:00",
     criterion: "Translate a full RC passage with CLIR in under 25:00",
     kind: "clock",
+    startSeconds: 2290,
+    currentSeconds: 1900,
     targetSeconds: 1500,
-    attemptsSeconds: [1900, 2180, 2290],
   },
 ];
 
