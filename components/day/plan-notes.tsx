@@ -1,0 +1,84 @@
+import type { NoteBlock, Run, Task } from "@/lib/plan-data";
+
+/**
+ * Инлайновые заметки под строкой задачи. PRD требует рендерить их богатым
+ * текстом прямо в списке, без поповера: «Plan Notes render inline beneath its
+ * row as rich text (bold, links, personality intact)».
+ *
+ * Поля Prep Map Point Intro (Overview, What This Looks Like, Goals, How to
+ * Move On) идут тем же блоком. Overview ведёт абзацем без метки, остальные
+ * поля — вторичными строками с короткими лид-инами: четыре равновесных
+ * подписи капсом читались как каша.
+ */
+
+export function PlanNotes({ task }: { task: Task }) {
+  if (!task.notes && !task.intro) return null;
+
+  return (
+    <div className="flex flex-col gap-2 border-l-[2px] border-pewter pl-4">
+      {task.notes?.map((block, i) => (
+        <Block key={i} block={block} />
+      ))}
+
+      {task.intro ? (
+        <>
+          <p className="text-body-s">{task.intro.overview}</p>
+          <Field label="Looks like" value={task.intro.looksLike} />
+          <Field label="Goal" value={task.intro.goals} />
+          <Field label="Move on" value={task.intro.moveOn} />
+        </>
+      ) : null}
+    </div>
+  );
+}
+
+function Block({ block }: { block: NoteBlock }) {
+  if (block.kind === "list") {
+    return (
+      <ul className="flex list-disc flex-col gap-1 pl-4 text-body-s">
+        {block.items.map((runs, i) => (
+          <li key={i}>
+            <Runs runs={runs} />
+          </li>
+        ))}
+      </ul>
+    );
+  }
+  return (
+    <p className="text-body-s">
+      <Runs runs={block.runs} />
+    </p>
+  );
+}
+
+function Runs({ runs }: { runs: Run[] }) {
+  return (
+    <>
+      {runs.map((run, i) => {
+        if ("href" in run) {
+          return (
+            <a key={i} href={run.href} className="lh-link font-bold">
+              {run.t}
+            </a>
+          );
+        }
+        if ("bold" in run) {
+          return (
+            <b key={i} className="font-bold">
+              {run.t}
+            </b>
+          );
+        }
+        return <span key={i}>{run.t}</span>;
+      })}
+    </>
+  );
+}
+
+function Field({ label, value }: { label: string; value: string }) {
+  return (
+    <p className="text-body-xs text-pewter-hc">
+      <span className="font-bold uppercase">{label}:</span> {value}
+    </p>
+  );
+}

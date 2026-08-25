@@ -1,0 +1,51 @@
+"use client";
+
+import { SlidersHorizontal } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { PlanStrip } from "./plan-strip";
+import { ResumeBanner } from "./resume-banner";
+import { PLAN, type Phase, type Task } from "@/lib/plan-data";
+
+/**
+ * Шапка плана. PRD рендерит её над всеми видами, поэтому она живёт выше
+ * переключателя видов и не зависит от выбранного дня.
+ *
+ * Фон turquoise-lc с нижней рамкой 2px повторяет полосу шапки на текущей
+ * странице My Plan.
+ */
+
+type PlanHeaderProps = {
+  today: string;
+  resume: { task: Task; date: string } | null;
+  onJumpToPhase: (phase: Phase) => void;
+  onAdjustPlan: () => void;
+  onStart: () => void;
+};
+
+export function PlanHeader({
+  today,
+  resume,
+  onJumpToPhase,
+  onAdjustPlan,
+  onStart,
+}: PlanHeaderProps) {
+  return (
+    <header className="border-b-[2px] border-soft-black bg-turquoise-lc px-10 pt-8 pb-6">
+      <div className="mx-auto flex w-full max-w-[var(--max-width-component)] flex-col gap-6">
+        <div className="flex items-center justify-between gap-6">
+          <h1 className="text-display-m">{PLAN.studentFirstName}&apos;s Plan</h1>
+          <Button variant="secondary" onClick={onAdjustPlan} className="shrink-0">
+            Adjust Plan
+            <SlidersHorizontal className="size-[16px]" strokeWidth={2.5} />
+          </Button>
+        </div>
+
+        <PlanStrip today={today} onJumpToPhase={onJumpToPhase} />
+
+        {resume ? (
+          <ResumeBanner task={resume.task} date={resume.date} today={today} onStart={onStart} />
+        ) : null}
+      </div>
+    </header>
+  );
+}

@@ -280,7 +280,7 @@ export const DAYS: Record<string, Day> = {
       },
       {
         id: "d15-apex",
-        name: "Apex LSAT Tutoring",
+        name: "Tutor's business name",
         tutor: { initials: "AL" },
         tasks: [
           { id: "d15-t7", type: "tutor", title: "Problem set: Weaken questions (12)", time: "6:00 PM", duration: "40m", done: false, launchable: true },
@@ -331,7 +331,7 @@ export const DAYS: Record<string, Day> = {
       },
       {
         id: "d16-apex",
-        name: "Apex LSAT Tutoring",
+        name: "Tutor's business name",
         tutor: { initials: "AL" },
         tasks: [
           { id: "d16-t4", type: "tutor", title: "Review the set from Tuesday's session", time: "6:00 PM", duration: "30m", done: false, launchable: true },
