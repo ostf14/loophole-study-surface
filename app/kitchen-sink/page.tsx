@@ -4,7 +4,7 @@ import { useState } from "react";
 import { ArrowRight, ChevronDown, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
+import { CHECKBOX_ROTATIONS, Checkbox } from "@/components/ui/checkbox";
 import { IconButton } from "@/components/ui/icon-button";
 import { PositionIcon } from "@/components/ui/position-icon";
 import { ProgressBar } from "@/components/ui/progress-bar";
@@ -14,16 +14,41 @@ import { ProgressBar } from "@/components/ui/progress-bar";
 export default function KitchenSink() {
   const [a, setA] = useState(false);
   const [b, setB] = useState(true);
+  const [rot, setRot] = useState<Record<string, boolean>>({});
 
   return (
     <main className="mx-auto flex w-full max-w-[900px] flex-col gap-10 p-14">
       <h1 className="text-display-m">Примитивы</h1>
 
-      <Row title="Checkbox — поворот 8°, масштаб 0.786 → 1, рамка 2 → 3px">
-        <Checkbox checked={a} onCheckedChange={setA} label="Первая задача" />
-        <Checkbox checked={b} onCheckedChange={setB} label="Вторая задача" />
-        <Checkbox checked={false} onCheckedChange={() => {}} label="Выключен" disabled />
-        <Checkbox checked={false} onCheckedChange={() => {}} label="Частично" indeterminate />
+      <Row title="Checkbox — дефолт без наклона, размеры default и small">
+        <Checkbox checked={a} onChange={(e) => setA(e.target.checked)} aria-label="Первая" />
+        <Checkbox checked={b} onChange={(e) => setB(e.target.checked)} aria-label="Вторая" />
+        <Checkbox checked={false} onChange={() => {}} disabled aria-label="Выключен" />
+        <Checkbox checked={false} onChange={() => {}} indeterminate aria-label="Частично" />
+        <Checkbox size="small" checked={b} onChange={(e) => setB(e.target.checked)} aria-label="Маленький" />
+        <Checkbox color="seafoam" checked={b} onChange={(e) => setB(e.target.checked)} aria-label="Seafoam" />
+      </Row>
+
+      <Row title="Checkbox — пять вариантов наклона из CHECKBOX_ROTATIONS">
+        {CHECKBOX_ROTATIONS.map((r) => (
+          <span key={r} className="flex flex-col items-center gap-2">
+            <Checkbox
+              rotation={r}
+              checked={rot[r] ?? true}
+              onChange={(e) => setRot((s) => ({ ...s, [r]: e.target.checked }))}
+              aria-label={r}
+            />
+            <span className="text-tag-s text-pewter-hc">{r}</span>
+          </span>
+        ))}
+      </Row>
+
+      <Row title="Checkbox со слотом лейбла, gap-5">
+        <Checkbox
+          checked={a}
+          onChange={(e) => setA(e.target.checked)}
+          label={<span className="text-body-m font-bold">Basic Translation Drill</span>}
+        />
       </Row>
 
       <Row title="PositionIcon — Default / During / Complete, 30 и 24">
