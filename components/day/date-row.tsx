@@ -129,7 +129,7 @@ function DayPicker({
                   active ? "bg-turquoise-lc" : "hover:bg-seafoam-lc",
                 )}
               >
-                <ProgressDonut done={dn} total={tasks.length} size={24} />
+                <ProgressDonut done={dn} total={tasks.length} size={22} />
                 <span className={cn("text-body-s", active && "font-bold")}>{formatLong(d)}</span>
               </button>
             );
