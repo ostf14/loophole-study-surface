@@ -4,6 +4,25 @@ import { cn } from "@/lib/cn";
 /**
  * Кнопка. Три варианта, значения сняты из продакшн-CSS.
  *
+ * В файле у компонента `Button` пять типов и два размера:
+ *
+ *   Preferred    #eaf84f chartreuse, обводка soft-black
+ *   Default      #fbfbfb soft-white, обводка soft-black
+ *   Outlined     прозрачная, обводка soft-black
+ *   Destructive  #fbfbfb, обводка #ff5a5a
+ *   Clear        прозрачная, без обводки, радиус 0
+ *
+ *   Size=Default  48 в высоту, обводка 3
+ *   Size=Small    38 в высоту, обводка 2
+ *
+ * Наши `primary` и `secondary` — это `Preferred / Size=Default` и
+ * `Default / Size=Small`. Остальные три типа на этом экране не нужны.
+ *
+ * `secondary` раньше была прозрачной, то есть `Outlined`. Оба типа законны,
+ * но разница видна только на подкрашенном фоне — и там прод выбирает
+ * заливку: на живом экране My Plan кнопка в мятной полосе шапки белая.
+ * У нас сквозь Adjust Plan просвечивала мята.
+ *
  * Движение есть у primary и secondary: сдвиг на 3px вверх-влево с тенью той же
  * величины, при нажатии 1px. У ghost движения нет, только смена фона.
  *
@@ -35,7 +54,7 @@ const motion = `
 const variants = {
   primary: `h-12 border-[3px] border-soft-black bg-chartreuse hover:not-disabled:bg-chartreuse-lc
             text-caption-large text-soft-black px-6 gap-3 ${motion}`,
-  secondary: `h-[38px] border-[2px] border-soft-black bg-transparent hover:not-disabled:bg-soft-white
+  secondary: `h-[38px] border-[2px] border-soft-black bg-soft-white hover:not-disabled:bg-seafoam-lc
               text-caption-medium text-soft-black pl-4 pr-3 gap-2 ${motion}`,
   ghost: `h-[38px] border-none bg-transparent hover:not-disabled:bg-seafoam-lc
           text-caption-medium text-soft-black px-4 gap-2`,
