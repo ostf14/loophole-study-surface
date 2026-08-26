@@ -41,7 +41,10 @@ export function Tag({ children, tone = "white", size = "default", className }: T
   return (
     <span
       className={cn(
-        "inline-flex shrink-0 items-center border-[2px] border-soft-black uppercase text-soft-black",
+        /* w-fit обязателен: в колоночном флексе align-items по умолчанию
+           stretch, и тег растягивался бы на всю ширину родителя. shrink-0
+           держит только главную ось. */
+        "inline-flex w-fit shrink-0 items-center border-[2px] border-soft-black uppercase text-soft-black",
         sizes[size],
         tones[tone],
         className,
