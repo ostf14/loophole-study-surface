@@ -144,6 +144,36 @@ Area Extended Trial, Display (Alt) — Area Normal Trial.
 
 ---
 
+## Цвет стадии Prep Map
+
+Снято из панели Color Assignments вручную. Каждая стадия несёт собственную
+пару семейств — `main` и `accent`, — а не красится общим цветом.
+
+| Стадия | main | accent | Overlay | сходится с токеном |
+|---|---|---|---|---|
+| Learn | Teal | Mango | `0E7C75` | `--color-turquoise-hc` |
+| Translation | Mango | Sangria | `B26410` | `--color-mango-hc` |
+| Accuracy | Chartreuse | Tuna | `8A9800` | `--color-chartreuse-hc` |
+| Speed | Cornflower | Chartreuse | `3B6497` | `--color-cornflower-hc` |
+| Perform | Tuna | Teal | `824831` | `--color-tuna-hc` |
+
+**Правило: `Overlay` — это `-hc` того же семейства, заданный хексом и
+поставленный на 50% прозрачности.** Сошлось на всех пяти стадиях, то есть
+палитровый слой снят верно и целиком.
+
+**Расхождение имён.** Семейство, которое в присвоениях зовётся **Teal**, в
+токенах называется `turquoise`. Один и тот же `#09b2a8`. Имя в присвоениях
+новее.
+
+**Не перенесено.** У каждой стадии есть ещё блок `video-course` из десяти
+слотов: `playlist-header`, `playlist-content`, `active-video`,
+`next-video-cta`, `next-video-cta-arrow`, `see-all-cta`,
+`video-watched-overlay`, `notes-background`, `notes-shadow`,
+`player-background`. Это плеер видеокурса — другая поверхность, вне скоупа.
+Пятьдесят присвоений, ни одно не касается Study Surface.
+
+---
+
 ## Расхождения внутри самой системы
 
 Найдены при сверке, вынесены в вопросы к их команде.
