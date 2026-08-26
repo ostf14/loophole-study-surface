@@ -46,9 +46,9 @@ const base = `
 
 const motion = `
   hover:not-disabled:-translate-x-[3px] hover:not-disabled:-translate-y-[3px]
-  hover:not-disabled:shadow-[3px_3px_0_0_#171712]
+  hover:not-disabled:shadow-[3px_3px_0_0_var(--color-soft-black)]
   active:not-disabled:-translate-x-[1px] active:not-disabled:-translate-y-[1px]
-  active:not-disabled:shadow-[1px_1px_0_0_#171712]
+  active:not-disabled:shadow-[1px_1px_0_0_var(--color-soft-black)]
 `;
 
 const variants = {
