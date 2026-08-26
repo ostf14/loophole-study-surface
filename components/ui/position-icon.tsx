@@ -1,3 +1,4 @@
+import { Check } from "lucide-react";
 import { cn } from "@/lib/cn";
 
 /**
@@ -55,22 +56,19 @@ export function PositionIcon({
   );
 }
 
+/**
+ * Галочка состояния Complete. В макете это заливка 12.93 × 9.70 под 9.72°
+ * цветом background-alternate; спецификация отмечает, что на таком размере
+ * stroked-иконка из lucide читается идентично, а правило системы — брать
+ * иконки только из lucide-react.
+ */
 function PositionCheck({ small }: { small: boolean }) {
   return (
-    <svg
-      width={small ? 10.34 : 12.93}
-      height={small ? 7.76 : 9.7}
-      viewBox="0 0 13 10"
-      fill="none"
-      className="shrink-0 rotate-[9.72deg]"
-    >
-      <path
-        d="M1 5.1 4.6 8.7 12 1.3"
-        stroke="var(--color-turquoise-lc)"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
+    <Check
+      aria-hidden
+      strokeWidth={3.2}
+      className="shrink-0 rotate-[9.72deg] text-turquoise-lc"
+      style={{ width: small ? 10.34 : 12.93, height: small ? 7.76 : 9.7 }}
+    />
   );
 }

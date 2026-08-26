@@ -11,7 +11,7 @@ import { TaskRow } from "@/components/day/task-row";
 import { ViewTabs } from "@/components/day/view-tabs";
 import { PlanHeader } from "@/components/plan/plan-header";
 import { LeftRail } from "@/components/rail/left-rail";
-import { DAYS, DAY_ORDER, TODAY, type Phase } from "@/lib/plan-data";
+import { DAYS, DAY_ORDER, TODAY, type Embed, type Phase } from "@/lib/plan-data";
 import {
   allTasks,
   dayProgress,
@@ -26,7 +26,7 @@ import {
 export default function StudySurface() {
   const [date, setDate] = useState(TODAY);
   const [hideCompleted, setHideCompleted] = useState(false);
-  const [bookmarks, setBookmarks] = useState<string[]>([]);
+  const [bookmarks, setBookmarks] = useState<Embed[]>([]);
   const [toast, setToast] = useState<string | null>(null);
   const toastTimer = useRef<number | undefined>(undefined);
 
@@ -46,15 +46,6 @@ export default function StudySurface() {
     }
     return s;
   });
-
-  /** Имена воркаутов для рельса берутся из задач, отдельного справочника нет. */
-  const workoutNames = useMemo(() => {
-    const map = new Map<string, string>();
-    for (const d of DAY_ORDER) {
-      for (const t of allTasks(DAYS[d])) if (t.workout) map.set(t.workout.id, t.workout.name);
-    }
-    return map;
-  }, []);
 
   const day = DAYS[date];
   const progress = useMemo(() => (day ? dayProgress(day, done) : { done: 0, total: 0 }), [day, done]);
@@ -102,11 +93,16 @@ export default function StudySurface() {
     });
   };
 
-  const toggleBookmark = (workoutId: string) => {
+  /** Букмарка кладёт карточку целиком: вид решает, в какой список рельса она уйдёт. */
+  const toggleBookmark = (embed: Embed) => {
     setBookmarks((prev) =>
-      prev.includes(workoutId) ? prev.filter((x) => x !== workoutId) : [...prev, workoutId],
+      prev.some((b) => b.id === embed.id)
+        ? prev.filter((b) => b.id !== embed.id)
+        : [...prev, embed],
     );
   };
+
+  const isBookmarked = (id: string) => bookmarks.some((b) => b.id === id);
 
   /** Стрип: PRD — «jumps the current view to that plan's first day». */
   const jumpToPhaseStart = (phase: Phase) => setDate(firstDayOfPhase(phase));
@@ -128,7 +124,8 @@ export default function StudySurface() {
       <div className="mx-auto flex w-full max-w-[var(--study-surface-width)] flex-1 gap-10 px-10 py-8">
         <LeftRail
           currentPhase={phaseAt(date)}
-          bookmarks={bookmarks.map((id) => ({ id, name: workoutNames.get(id) ?? id }))}
+          workouts={bookmarks.filter((b) => b.kind === "workout")}
+          routines={bookmarks.filter((b) => b.kind === "routine")}
           onSelectPlan={jumpToFirstIncompleteDay}
         />
 
@@ -169,7 +166,6 @@ export default function StudySurface() {
                       {group.tasks.map((task) => {
                         const isDone = done.has(task.id);
                         if (hideCompleted && isDone) return null;
-                        const workoutId = task.workout?.id;
                         return (
                           <TaskRow
                             key={task.id}
@@ -180,8 +176,8 @@ export default function StudySurface() {
                             onLaunch={() =>
                               say(`“${task.title}” opens in focus mode — out of scope for this build`)
                             }
-                            bookmarked={workoutId ? bookmarks.includes(workoutId) : false}
-                            onToggleBookmark={() => workoutId && toggleBookmark(workoutId)}
+                            isBookmarked={isBookmarked}
+                            onToggleBookmark={toggleBookmark}
                           />
                         );
                       })}

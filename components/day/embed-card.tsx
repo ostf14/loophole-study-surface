@@ -2,21 +2,25 @@
 
 import { Bookmark, BookmarkCheck } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import type { Embed } from "@/lib/plan-data";
 
 /**
- * Карточка воркаута внутри заметок. PRD: «Workout and Routine cards embed
- * inline inside notes and Workout Menu tasks, each with a bookmark control
- * that adds it to My Workouts or My Routines».
+ * Карточка воркаута или рутины внутри заметок. PRD: «Workout and Routine cards
+ * embed inline inside notes and Workout Menu tasks, each with a bookmark
+ * control that adds it to My Workouts or My Routines».
+ *
+ * Оба вида устроены одинаково и различаются только тем, в какой список рельса
+ * уходит букмарк, поэтому это один компонент, а не два.
  */
 
-type WorkoutCardProps = {
-  name: string;
-  meta: string;
+type EmbedCardProps = {
+  embed: Embed;
   bookmarked: boolean;
   onToggle: () => void;
 };
 
-export function WorkoutCard({ name, meta, bookmarked, onToggle }: WorkoutCardProps) {
+export function EmbedCard({ embed, bookmarked, onToggle }: EmbedCardProps) {
+  const { name, meta } = embed;
   return (
     <Card className="flex items-center gap-4 px-4 py-3">
       <span className="flex min-w-0 flex-col">

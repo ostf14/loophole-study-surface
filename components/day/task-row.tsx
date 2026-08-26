@@ -7,10 +7,10 @@ import { IconButton } from "@/components/ui/icon-button";
 import { PositionIcon } from "@/components/ui/position-icon";
 import { Tag } from "@/components/ui/tag";
 import { cn } from "@/lib/cn";
-import type { Task } from "@/lib/plan-data";
+import type { Embed, Task } from "@/lib/plan-data";
 import { PlanNotes } from "./plan-notes";
 import { TaskIcon } from "./task-icon";
-import { WorkoutCard } from "./workout-card";
+import { EmbedCard } from "./embed-card";
 
 /**
  * Строка задачи. Собрана по Tandem_Plan_Item: чекбокс, иконка типа, заголовок,
@@ -35,8 +35,8 @@ type TaskRowProps = {
   done: boolean;
   onToggle: () => void;
   onLaunch: () => void;
-  bookmarked: boolean;
-  onToggleBookmark: () => void;
+  isBookmarked: (id: string) => boolean;
+  onToggleBookmark: (embed: Embed) => void;
 };
 
 export function TaskRow({
@@ -45,11 +45,11 @@ export function TaskRow({
   done,
   onToggle,
   onLaunch,
-  bookmarked,
+  isBookmarked,
   onToggleBookmark,
 }: TaskRowProps) {
   const state = done ? "complete" : task.started ? "during" : "default";
-  const hasNotes = Boolean(task.notes || task.intro || task.workout);
+  const hasNotes = Boolean(task.notes || task.intro || task.embeds?.length);
 
   return (
     <div className="flex items-start gap-5">
@@ -95,14 +95,14 @@ export function TaskRow({
         {hasNotes ? (
           <div className="flex flex-col gap-3 px-5 pt-1 pb-3">
             <PlanNotes task={task} />
-            {task.workout ? (
-              <WorkoutCard
-                name={task.workout.name}
-                meta={task.workout.meta}
-                bookmarked={bookmarked}
-                onToggle={onToggleBookmark}
+            {task.embeds?.map((embed) => (
+              <EmbedCard
+                key={embed.id}
+                embed={embed}
+                bookmarked={isBookmarked(embed.id)}
+                onToggle={() => onToggleBookmark(embed)}
               />
-            ) : null}
+            ))}
           </div>
         ) : null}
       </Card>

@@ -49,6 +49,7 @@ export function DateRow({
 
       <Checkbox
         size="small"
+        rotation="gentleRight"
         checked={hideCompleted}
         onChange={(e) => onHideCompletedChange(e.target.checked)}
         className="gap-3"
@@ -124,7 +125,7 @@ function DayPicker({
                   setOpen(false);
                 }}
                 className={cn(
-                  "flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors duration-150",
+                  "lh-card-hover-xs flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors duration-150",
                   active ? "bg-turquoise-lc" : "hover:bg-seafoam-lc",
                 )}
               >

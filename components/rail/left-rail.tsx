@@ -4,7 +4,7 @@ import { Lock, Search } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { SegmentMeter } from "@/components/ui/segment-meter";
 import { cn } from "@/lib/cn";
-import { PHASES, PREP_MAP, type Phase } from "@/lib/plan-data";
+import { PHASES, PREP_MAP, type Embed, type Phase } from "@/lib/plan-data";
 import { formatShort } from "@/lib/plan";
 
 /**
@@ -17,30 +17,27 @@ import { formatShort } from "@/lib/plan";
 
 type LeftRailProps = {
   currentPhase: Phase;
-  bookmarks: { id: string; name: string }[];
+  workouts: Embed[];
+  routines: Embed[];
   onSelectPlan: (phase: Phase) => void;
 };
 
-export function LeftRail({ currentPhase, bookmarks, onSelectPlan }: LeftRailProps) {
+export function LeftRail({ currentPhase, workouts, routines, onSelectPlan }: LeftRailProps) {
   return (
     <aside className="flex w-[var(--study-rail-width)] shrink-0 flex-col gap-8">
       <PlanSelector currentPhase={currentPhase} onSelectPlan={onSelectPlan} />
       <PrepMap />
       <Section title="My Workouts">
-        {bookmarks.length ? (
-          <div className="flex flex-col gap-2">
-            {bookmarks.map((b) => (
-              <Card key={b.id} hover="xs" className="px-4 py-2 text-body-s font-bold">
-                {b.name}
-              </Card>
-            ))}
-          </div>
-        ) : (
-          <Empty>Bookmark workouts from any Workout Menu to add them to My Workouts.</Empty>
-        )}
+        <Bookmarked
+          items={workouts}
+          empty="Bookmark workouts from any Workout Menu to add them to My Workouts."
+        />
       </Section>
       <Section title="My Routines">
-        <Empty>Bookmark routines from your plan to add them to My Routines.</Empty>
+        <Bookmarked
+          items={routines}
+          empty="Bookmark routines from your plan to add them to My Routines."
+        />
       </Section>
       <Section title="Video Course Review">
         <ul className="flex flex-col gap-2 text-body-s">
@@ -65,6 +62,21 @@ export function LeftRail({ currentPhase, bookmarks, onSelectPlan }: LeftRailProp
   );
 }
 
+/** Букмарки одного вида. Пустое состояние — дословная строка из PRD. */
+function Bookmarked({ items, empty }: { items: Embed[]; empty: string }) {
+  if (!items.length) return <Empty>{empty}</Empty>;
+  return (
+    <div className="flex flex-col gap-2">
+      {items.map((item) => (
+        <Card key={item.id} hover="xs" className="flex flex-col px-4 py-2">
+          <span className="text-body-s font-bold">{item.name}</span>
+          <span className="text-body-xs text-pewter-hc">{item.meta}</span>
+        </Card>
+      ))}
+    </div>
+  );
+}
+
 function PlanSelector({
   currentPhase,
   onSelectPlan,
@@ -84,7 +96,7 @@ function PlanSelector({
               onClick={() => onSelectPlan(phase)}
               aria-current={active ? "true" : undefined}
               className={cn(
-                "flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors duration-150",
+                "lh-card-hover-xs flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors duration-150",
                 active ? "bg-chartreuse-lc" : "hover:bg-seafoam-lc",
               )}
             >
@@ -167,5 +179,5 @@ function Section({
 }
 
 function Empty({ children }: { children: React.ReactNode }) {
-  return <p className="text-body-xs leading-relaxed text-pewter-hc">{children}</p>;
+  return <p className="text-body-xs text-pewter-hc">{children}</p>;
 }

@@ -37,8 +37,19 @@ export type Task = {
     goals: string;
     moveOn: string;
   };
-  /** Карточка воркаута внутри заметок с букмаркой */
-  workout?: { id: string; name: string; meta: string };
+  /** Карточки воркаутов и рутин внутри заметок, у каждой своя букмарка */
+  embeds?: Embed[];
+};
+
+/**
+ * Встроенная карточка. Воркаут уходит букмаркой в My Workouts, рутина —
+ * в My Routines; больше они ничем не отличаются.
+ */
+export type Embed = {
+  kind: "workout" | "routine";
+  id: string;
+  name: string;
+  meta: string;
 };
 
 export type NoteBlock =
@@ -261,6 +272,14 @@ export const DAYS: Record<string, Day> = {
               goals: "Under 2:30 per stimulus, zero re-reads.",
               moveOn: "Two clean sessions in a row moves you to the next rung.",
             },
+            embeds: [
+              {
+                kind: "routine",
+                id: "r-translation",
+                name: "Translation Routine: read, look away, say it back",
+                meta: "4 steps · run before every set",
+              },
+            ],
           },
         ],
       },
@@ -328,7 +347,14 @@ export const DAYS: Record<string, Day> = {
                 ],
               },
             ],
-            workout: { id: "w-rc-3", name: "Translation Workout: RC vol. 3", meta: "6 passages · 45m" },
+            embeds: [
+              {
+                kind: "workout",
+                id: "w-rc-3",
+                name: "Translation Workout: RC vol. 3",
+                meta: "6 passages · 45m",
+              },
+            ],
           },
         ],
       },
