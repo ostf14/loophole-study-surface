@@ -28,8 +28,13 @@ import { cn } from "@/lib/cn";
 type ProgressBarLongProps = {
   /** Доля заполнения от нуля до единицы. */
   value: number;
-  /** Сколько слотов делят дорожку. В компоненте восемь. */
+  /** Сколько слотов делят дорожку. В компоненте восемь, шаг равный. */
   slots?: number;
+  /**
+   * Доли от нуля до единицы, где стоят разделители. Задаются вместо `slots`,
+   * когда деления неравные — например, фазы плана по диапазону дат.
+   */
+  separators?: number[];
   /** Число в кружке у правого края заполнения. Без него кружка нет. */
   counter?: number | string;
   /** Высота дорожки. В компоненте 36, всё остальное считается от неё. */
@@ -41,6 +46,7 @@ type ProgressBarLongProps = {
 export function ProgressBarLong({
   value,
   slots = 8,
+  separators,
   counter,
   height = 36,
   className,
@@ -77,7 +83,7 @@ export function ProgressBarLong({
 
       {/* разделители слотов */}
       <div className="pointer-events-none absolute inset-x-0 top-0 flex items-center" style={{ height }}>
-        {Array.from({ length: slots - 1 }, (_, i) => (
+        {(separators ?? Array.from({ length: slots - 1 }, (_, i) => (i + 1) / slots)).map((at, i) => (
           <span
             key={i}
             className="absolute"
@@ -85,7 +91,7 @@ export function ProgressBarLong({
               /* #d9d9d9 стоит в компоненте напрямую, мимо токенов — та же
                  непривязанная конвенция, что у #aaaaaa и #1a1a1a */
               backgroundColor: "#d9d9d9",
-              left: `${((i + 1) / slots) * 100}%`,
+              left: `${at * 100}%`,
               width: 2 * k,
               height: separatorH,
               borderRadius: 48 * k,
