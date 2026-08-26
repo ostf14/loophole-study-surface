@@ -39,8 +39,8 @@
   /* шкала v1: живёт в половине продукта параллельно с v2.0. Развёрнутые имена
      против сокращённых — body-small это Body 3, 16/24, а не body-s, 14/20.
      Подпись в карточке Stat point размечена именно ею. */
-  --text-body-large: 1.25rem;  --text-body-large--line-height: 1.875rem; --text-body-large--font-weight: 600; --text-body-large--letter-spacing: -.0225rem;
-  --text-body-medium: 1.125rem; --text-body-medium--line-height: 1.75rem; --text-body-medium--font-weight: 500; --text-body-medium--letter-spacing: -.02025rem;
+  --text-body-large: 1.25rem;  --text-body-large--line-height: 1.875rem; --text-body-large--font-weight: 600; --text-body-large--letter-spacing: -.0125rem;
+  --text-body-medium: 1.125rem; --text-body-medium--line-height: 1.75rem; --text-body-medium--font-weight: 500; --text-body-medium--letter-spacing: -.01125rem;
   --text-body-small: 1rem;     --text-body-small--line-height: 1.5rem;   --text-body-small--font-weight: 500; --text-body-small--letter-spacing: -.018rem;
   /* Display 3 из v1: этим кеглем набрана дробь в stat-point Compare */
   --text-display-small: 3rem;  --text-display-small--line-height: 3.875rem; --text-display-small--font-weight: 700; --text-display-small--letter-spacing: -.042rem;

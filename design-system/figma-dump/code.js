@@ -175,7 +175,10 @@ async function run() {
         const val = v.valuesByMode[m.modeId];
         byMode[m.name] = val && val.r !== undefined ? rgba(val) : val;
       }
-      return { name: v.name, collection: col ? col.name : "?", type: v.resolvedType, values: byMode };
+      /* id нужен, чтобы разрешать алиасы: значение переменной из Color
+         Assignments и TESTING — ссылка вида { type: "VARIABLE_ALIAS", id },
+         и без карты id → имя она читается как мусор. */
+      return { id: v.id, name: v.name, collection: col ? col.name : "?", type: v.resolvedType, values: byMode };
     });
   } catch (e) {
     dump.variables = { error: String(e && e.message ? e.message : e) };
