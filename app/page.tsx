@@ -49,18 +49,6 @@ export default function StudySurface() {
 
   const day = DAYS[date];
 
-  /**
-   * Активная группа — та, где лежит ближайшая невыполненная задача дня. Ровно
-   * одна, и она же стоит в resume-баннере: на странице одна точка «ты здесь».
-   * Раскрытость этим не маркируется, открытых групп может быть сколько угодно.
-   */
-  const activeGroupId = useMemo(() => {
-    if (!day) return null;
-    for (const g of day.groups) {
-      if (g.tasks.some((t) => !done.has(t.id))) return g.id;
-    }
-    return null;
-  }, [day, done]);
   const progress = useMemo(() => (day ? dayProgress(day, done) : { done: 0, total: 0 }), [day, done]);
   const resume = useMemo(() => earliestIncomplete(TODAY, done), [done]);
 
@@ -174,7 +162,6 @@ export default function StudySurface() {
                       group={group}
                       done={gp.done}
                       open={!collapsed.has(key)}
-                      active={group.id === activeGroupId}
                       onToggle={() => toggleGroup(key)}
                     >
                       {group.tasks.map((task) => {

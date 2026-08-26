@@ -16,10 +16,10 @@ import type { Group } from "@/lib/plan-data";
  * строка задачи 52px были двумя одинаковыми по весу объектами подряд, и список
  * читался как россыпь коробок.
  *
- * Приподнятое состояние — рамка 3px и жёсткая тень 4px — маркирует активную
- * группу, а не раскрытую. Раскрытость и так видна по содержимому и повёрнутому
- * шеврону, тратить на неё второй сигнал незачем. Открытых при этом сколько
- * угодно: PRD разводит «активную» и «развёрнутую» с самого начала.
+ * Подъёма у активной группы нет. Такое правило я вводил сам — ни PRD, ни их
+ * макет о нём не просят, — а платой была постоянно тяжёлая карточка: активной
+ * всегда оказывалась одна и та же группа, пока день не закрыт. С чего начать,
+ * и так говорит resume-баннер.
  *
  * Статус словами вместо счётчика — как на живом экране: Completed, Not Started.
  */
@@ -28,23 +28,17 @@ type TaskGroupProps = {
   group: Group;
   done: number;
   open: boolean;
-  active: boolean;
   onToggle: () => void;
   children: React.ReactNode;
 };
 
-export function TaskGroup({ group, done, open, active, onToggle, children }: TaskGroupProps) {
+export function TaskGroup({ group, done, open, onToggle, children }: TaskGroupProps) {
   const total = group.tasks.length;
   const complete = done === total;
   const status = complete ? "Completed" : done > 0 ? `${done} of ${total} done` : "Not started";
 
   return (
-    <Card
-      className={cn(
-        "flex flex-col",
-        active && "border-[3px] shadow-[4px_4px_0_0_var(--color-soft-black)]",
-      )}
-    >
+    <Card className="flex flex-col">
       <div className="flex h-10 shrink-0 items-center gap-3 pr-1 pl-5">
         {group.tutor ? (
           <span

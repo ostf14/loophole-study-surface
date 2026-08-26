@@ -1,8 +1,7 @@
 "use client";
 
-import { ArrowRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { IconButton } from "@/components/ui/icon-button";
 import { Tag } from "@/components/ui/tag";
 import { cn } from "@/lib/cn";
 import type { Embed, Task } from "@/lib/plan-data";
@@ -31,6 +30,12 @@ import { EmbedCard } from "./embed-card";
  * Две вещи добавлены сверх компонента, обе по требованию PRD: номер позиции
  * и зачёркивание выполненного заголовка. Номер сделан простым текстом, как на
  * текущей странице My Plan, а не кружком PositionIcon.
+ *
+ * Одно расхождение с компонентом: запуск нарисован голым глифом ↗, а не
+ * обведённой кнопкой. В Figma там `Icon Button`, но на живом экране My Plan
+ * стрелка стоит глифом, и PRD называет её «a launch arrow (↗)» — символом.
+ * Пять обведённых кружков у задач спорили с единственным кружком шеврона
+ * группы; глиф этот спор снимает.
  */
 
 type TaskRowProps = {
@@ -88,12 +93,14 @@ export function TaskRow({
           {task.optional ? <Tag>(optional)</Tag> : null}
 
           {task.launchable ? (
-            <IconButton
-              size="small"
-              icon={<ArrowRight strokeWidth={2.5} />}
-              label={`Start ${task.title}`}
+            <button
+              type="button"
+              aria-label={`Start ${task.title}`}
               onClick={onLaunch}
-            />
+              className="inline-flex size-[24px] cursor-pointer items-center justify-center text-soft-black transition-transform duration-150 hover:-translate-x-[1px] hover:-translate-y-[1px]"
+            >
+              <ArrowUpRight aria-hidden className="size-[18px]" strokeWidth={2.5} />
+            </button>
           ) : (
             <span className="size-[24px]" />
           )}
