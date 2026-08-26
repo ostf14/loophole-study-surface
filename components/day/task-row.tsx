@@ -82,27 +82,34 @@ export function TaskRow({
           />
 
           <span className="flex min-w-0 items-center gap-5">
+            {/* Колонка расписания: номер и время. Гэп 20 из компонента остался
+                на месте, но теперь отделяет расписание от содержания. */}
+            <span className="flex shrink-0 items-center gap-2">
+              <span className="w-5 text-right text-body-xs tabular-nums text-pewter-hc">
+                {n}.
+              </span>
+
+              {/* Время: цвет #aaaaaa задан в компоненте напрямую, мимо токенов —
+                  та же непривязанная конвенция, что у семейства Label. Через
+                  style, а не классом: tailwind-merge считает произвольный
+                  text-[...] той же группой, что размерный токен, и выбрасывает
+                  один из двух. */}
+              <span
+                className="w-[var(--task-time-width)] shrink-0 text-right text-body-xs whitespace-nowrap tabular-nums"
+                style={{ color: "#aaaaaa" }}
+              >
+                {task.time}
+              </span>
+            </span>
+
             {/* гэп 8 между иконкой типа и заголовком */}
             <span className="flex min-w-0 items-center gap-2">
-              <span className="shrink-0 text-body-xs tabular-nums text-pewter-hc">{n}.</span>
               <TaskIcon type={task.type} className="size-[16px] shrink-0 text-soft-black" />
               <span
                 className={cn("truncate text-body-s", done && "line-through decoration-[2px]")}
               >
                 {task.title}
               </span>
-            </span>
-
-            {/* Время: цвет #aaaaaa задан в компоненте напрямую, мимо токенов —
-                та же непривязанная конвенция, что у семейства Label. Через
-                style, а не классом: tailwind-merge считает произвольный
-                text-[...] той же группой, что размерный токен, и выбрасывает
-                один из двух. */}
-            <span
-              className="shrink-0 text-body-xs tabular-nums"
-              style={{ color: "#aaaaaa" }}
-            >
-              {task.time}
             </span>
           </span>
         </span>
@@ -126,7 +133,7 @@ export function TaskRow({
       </div>
 
       {hasNotes ? (
-        <div className="flex flex-col gap-3 px-5 pt-2 pb-4">
+        <div className="flex flex-col gap-3 pt-2 pr-5 pb-4 pl-[var(--task-text-indent)]">
           <PlanNotes task={task} />
           {task.embeds?.map((embed) => (
             <EmbedCard

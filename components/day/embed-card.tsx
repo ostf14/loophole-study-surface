@@ -25,7 +25,10 @@ export function EmbedCard({ embed, bookmarked, onToggle }: EmbedCardProps) {
   return (
     <Card className="flex items-center gap-4 px-4 py-3">
       <span className="flex min-w-0 flex-col">
-        <span className="truncate text-body-s">{name}</span>
+        {/* Без truncate: карточка живёт в текстовой колонке под заголовком
+            задачи, а она у́же полной ширины группы. Обрезать название рутины
+            дороже, чем добавить строку. */}
+        <span className="text-body-s">{name}</span>
         <span className="text-body-xs text-pewter-hc">{meta}</span>
       </span>
       <span className="flex-1" />
