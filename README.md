@@ -167,9 +167,11 @@ plausibly be shaped:
 `lib/plan.ts` derives everything else, so no computed value is stored twice:
 date formatting, `planFraction` / `phaseWidth` / `phaseAt` for the strip,
 `dayProgress` / `groupProgress` for the counters, `earliestIncomplete` for the
-resume banner, and `firstDayOfPhase` / `firstIncompleteDayOfPhase` — two separate
-functions because the PRD gives the strip and the rail different jump targets
-("that plan's first day" against "that plan's first incomplete day").
+resume banner, and `firstDayOfPhase` / `firstIncompleteDayOfPhase`. The PRD gives
+the strip and the rail selector different jump targets ("that plan's first day"
+against "that plan's first incomplete day"); with the selector gone the strip
+uses the second, and the first stays as its fallback for a plan whose days are
+not in the fixture.
 
 Date math uses noon timestamps so that time zones cannot shift a day.
 
@@ -179,14 +181,13 @@ Live:
 
 - Checking tasks off, including group auto-collapse when a group completes and
   auto-expand when it is reopened.
-- Hide completed, with a count of what is hidden.
-- Day paging: chevrons and Today in the view switcher, the bottom pager, and the
-  date dropdown with a per-day donut.
+- Day paging: chevrons and Today beside the date, the bottom pager, and the date
+  dropdown with a per-day donut.
 - The plan strip: hover tooltips on segments and mile markers, clicking a segment
-  jumps to that plan's first day, Today sits at its proportional position.
-- The rail plan selector jumps to that plan's first incomplete day.
+  jumps to that plan's first incomplete day, Today sits at its proportional
+  position.
 - Bookmarking a card inside a task's notes adds it to My Workouts or My Routines,
-  by card kind.
+  by card kind. The current stage's routine starts on the shelf.
 - The resume banner recomputes from current state and disappears when today is
   finished.
 
@@ -204,6 +205,27 @@ Stubbed, and labeled as such in the UI:
   order of markers do not change.
 
 ## Open questions for your team
+
+**My Routines looks derived, not curated.** The PRD asks the student to bookmark
+Routines and Workouts to fill the rail's shelves. But a Routine card says "run
+before every set" — the plan schedules those sets, so it already puts the card in
+front of the student every time it is relevant. What is left for the bookmark to
+solve is the one case where the shelf earns its place: the routine the current
+Prep Stage is built around, which a student drills for weeks. And the platform
+knows which routine that is — the stage defines it. Asking the student to file it
+by hand is the same shape as deriving mile markers from a literal array instead
+of from the schedule: a value the system holds, entered manually.
+
+There is also a tension with the surface's own thesis. The screen exists to
+remove doors — the beta complaint was "I feel overwhelmed, I don't know where to
+go" — and a shelf of self-selected shortcuts is a door. Empty, which is its
+default state, it spends the bottom half of the rail explaining a mechanic
+instead of showing content.
+
+In this build the current stage's routine starts on the shelf, so the section
+shows the state in which it makes sense rather than an empty box with
+instructions. Worth deciding whether the manual control should exist at all.
+
 
 These are discrepancies inside the source system that had to be resolved one way
 or another to build the screen. Each is reproduced as found and flagged in the

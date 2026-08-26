@@ -12,7 +12,14 @@ import { ViewTabs } from "@/components/day/view-tabs";
 import { PlanHeader } from "@/components/plan/plan-header";
 import { PlanStrip } from "@/components/plan/plan-strip";
 import { LeftRail } from "@/components/rail/left-rail";
-import { DAYS, DAY_ORDER, TODAY, type Embed, type Phase } from "@/lib/plan-data";
+import {
+  DAYS,
+  DAY_ORDER,
+  INITIAL_BOOKMARKS,
+  TODAY,
+  type Embed,
+  type Phase,
+} from "@/lib/plan-data";
 import {
   allTasks,
   dayProgress,
@@ -24,7 +31,13 @@ import {
 
 export default function StudySurface() {
   const [date, setDate] = useState(TODAY);
-  const [bookmarks, setBookmarks] = useState<Embed[]>([]);
+  /* Закладки разрешаются из самих данных плана, а не дублируются: так карточка
+     на полке и карточка в заметках не разъедутся при правке текста. */
+  const [bookmarks, setBookmarks] = useState<Embed[]>(() =>
+    DAY_ORDER.flatMap((d) => allTasks(DAYS[d]).flatMap((t) => t.embeds ?? [])).filter((e) =>
+      INITIAL_BOOKMARKS.includes(e.id),
+    ),
+  );
   const [toast, setToast] = useState<string | null>(null);
   const toastTimer = useRef<number | undefined>(undefined);
 
