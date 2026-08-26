@@ -35,6 +35,17 @@ Two things the PRD asks for are deliberately not here, both for the same reason
   strip, which the PRD would have jump to the plan's *first* day. First
   incomplete is the more useful target: the first day of a plan you have already
   worked through is an archive.
+- **Day paging (‹ / Today / ›).** The PRD makes it part of the view switcher.
+  It changes the day, not the view, so it sits in the date row next to the date
+  it changes. Full Plan has nothing to page through either — it is the whole
+  range in one scroll. A side effect: the switcher stopped sharing its row and
+  now spans the column, so its buttons divide the frame the way the component
+  does instead of hugging their labels.
+- **Next Goal above the view switcher.** The PRD puts the module at the top of
+  the day timeline view. It does not change with the selected day or the
+  selected view — it is the next rung of the plan's goal ladder — so it sits
+  above the switcher. Anything that survives switching tabs belongs outside the
+  tabs, or the tab bar promises something it does not do.
 - **Hide completed.** The PRD puts it in the view switcher row with the paging
   controls. Completed groups already collapse themselves by the PRD's own rule
   ("the active group renders expanded; completed groups collapse"), so the

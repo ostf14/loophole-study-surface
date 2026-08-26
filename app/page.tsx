@@ -139,19 +139,23 @@ export default function StudySurface() {
           отходит на 24, как `ob` отделяет шапку секции от списка.
         */}
         <main className="flex min-w-0 flex-1 flex-col gap-8">
-          <ViewTabs
-            today={TODAY}
-            isToday={date === TODAY}
-            prev={day?.prev}
-            next={day?.next}
-            onJumpToDate={setDate}
-          />
+          {/*
+            Next Goal стоит выше переключателя видов, хотя PRD кладёт его
+            внутрь day timeline. Он не меняется ни от выбранного дня, ни от
+            выбранного вида: это цель из лестницы плана. Всё, что переживает
+            переключение вкладок, должно жить над вкладками, иначе таб-бар
+            обещает то, чего не делает.
+          */}
           <NextGoal />
+          <ViewTabs />
 
           {/* день: шапка, тело, конец — одна группа */}
           <div className="flex flex-col gap-4">
             <DateRow
               date={date}
+              today={TODAY}
+              prev={day?.prev}
+              next={day?.next}
               done={done}
               progress={progress}
               onJumpToDate={setDate}

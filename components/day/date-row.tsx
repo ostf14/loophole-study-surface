@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Chip } from "@/components/ui/chip";
 import { Card } from "@/components/ui/card";
 import { ProgressDonut } from "@/components/ui/progress-donut";
@@ -10,10 +11,13 @@ import { DAYS, DAY_ORDER } from "@/lib/plan-data";
 import { allTasks, formatLong } from "@/lib/plan";
 
 /**
- * Строка дня: слева идентичность — пилюля даты с дропдауном, справа донат
- * прогресса. PRD требует их парой («paired with a progress donut»), и парой
- * они остаются: это два конца одной строки, а не два разных блока. Пейджинг
- * ‹ Today › живёт в переключателе видов, где его и описывает PRD.
+ * Строка дня: слева идентичность — пилюля даты с дропдауном и пейджинг
+ * ‹ Today › сразу за ней, справа донат прогресса. PRD требует дату и донат
+ * парой («paired with a progress donut»), и парой они остаются: это два конца
+ * одной строки.
+ *
+ * Пейджинг PRD описывает частью переключателя видов. Он здесь потому, что
+ * меняет день, а не вид, и стоять должен вплотную к тому, что меняет.
  *
  * Hide completed отсюда убран. Он не из PRD, его роль дублировало
  * авто-сворачивание выполненной группы, а стоял он ровно там, где по проду
@@ -39,6 +43,9 @@ import { allTasks, formatLong } from "@/lib/plan";
 
 type DateRowProps = {
   date: string;
+  today: string;
+  prev?: string | null;
+  next?: string | null;
   done: ReadonlySet<string>;
   progress: { done: number; total: number };
   onJumpToDate: (date: string) => void;
@@ -46,15 +53,60 @@ type DateRowProps = {
 
 export function DateRow({
   date,
+  today,
+  prev,
+  next,
   done,
   progress,
   onJumpToDate,
 }: DateRowProps) {
   return (
     <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-4">
-      <DayPicker date={date} done={done} onJumpToDate={onJumpToDate} />
+      <div className="flex items-center gap-3">
+        <DayPicker date={date} done={done} onJumpToDate={onJumpToDate} />
+
+        <PageButton label="Previous day" disabled={!prev} onClick={() => prev && onJumpToDate(prev)}>
+          <ChevronLeft className="size-[18px]" strokeWidth={2.5} />
+        </PageButton>
+        <Button
+          variant="secondary"
+          disabled={date === today}
+          onClick={() => onJumpToDate(today)}
+          className="px-4"
+        >
+          Today
+        </Button>
+        <PageButton label="Next day" disabled={!next} onClick={() => next && onJumpToDate(next)}>
+          <ChevronRight className="size-[18px]" strokeWidth={2.5} />
+        </PageButton>
+      </div>
+
       <ProgressDonut done={progress.done} total={progress.total} />
     </div>
+  );
+}
+
+function PageButton({
+  children,
+  label,
+  disabled,
+  onClick,
+}: {
+  children: React.ReactNode;
+  label: string;
+  disabled: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      disabled={disabled}
+      onClick={onClick}
+      className="lh-card-hover-xs inline-flex size-[38px] cursor-pointer items-center justify-center rounded-full border-[2px] border-soft-black bg-transparent disabled:cursor-not-allowed disabled:opacity-40"
+    >
+      {children}
+    </button>
   );
 }
 
