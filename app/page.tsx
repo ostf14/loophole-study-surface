@@ -10,6 +10,7 @@ import { TaskGroup } from "@/components/day/task-group";
 import { TaskRow } from "@/components/day/task-row";
 import { ViewTabs } from "@/components/day/view-tabs";
 import { PlanHeader } from "@/components/plan/plan-header";
+import { PlanStrip } from "@/components/plan/plan-strip";
 import { LeftRail } from "@/components/rail/left-rail";
 import { DAYS, DAY_ORDER, TODAY, type Embed, type Phase } from "@/lib/plan-data";
 import {
@@ -116,7 +117,6 @@ export default function StudySurface() {
       <PlanHeader
         today={TODAY}
         resume={resume}
-        onJumpToPhase={jumpToPhase}
         onAdjustPlan={() => say("Adjust Plan opens Study Plan Settings — out of scope for this build")}
         onStart={() => say("Start launches focus mode — out of scope for this build")}
       />
@@ -139,6 +139,14 @@ export default function StudySurface() {
           отходит на 24, как `ob` отделяет шапку секции от списка.
         */}
         <main className="flex min-w-0 flex-1 flex-col gap-8">
+          {/*
+            Спуск по масштабу: где я в программе, что доказываю следующим,
+            какой вид, какой день, какие задачи. Стрип открывает колонку —
+            он самый крупный масштаб из всех и переехал сюда из шапки, где
+            спорил с баннером за первый взгляд.
+          */}
+          <PlanStrip today={TODAY} onJumpToPhase={jumpToPhase} />
+
           {/*
             Next Goal стоит выше переключателя видов, хотя PRD кладёт его
             внутрь day timeline. Он не меняется ни от выбранного дня, ни от

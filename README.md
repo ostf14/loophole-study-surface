@@ -35,6 +35,16 @@ Two things the PRD asks for are deliberately not here, both for the same reason
   strip, which the PRD would have jump to the plan's *first* day. First
   incomplete is the more useful target: the first day of a plan you have already
   worked through is an archive.
+- **The plan strip sits in the content column, not the plan header.** The PRD
+  lists it inside "The plan header". It is not an action, it is an instrument:
+  it answers "where am I in the programme", not "what do I do now". Next to the
+  resume banner the two competed for the first read, and the header stood at
+  407px — 51% of a 1440×800 window, so the first task needed a scroll. Moving
+  it takes the header to 274px (34%) and leaves it one job. The strip now opens
+  the column above Next Goal, so the column descends by scale: programme →
+  goal → view → day → tasks. The functional requirement is intact — the PRD
+  needs the strip rendered above every view, not inside the header band, and it
+  still sits above the view switcher.
 - **Day paging (‹ / Today / ›).** The PRD makes it part of the view switcher.
   It changes the day, not the view, so it sits in the date row next to the date
   it changes. Full Plan has nothing to page through either — it is the whole
