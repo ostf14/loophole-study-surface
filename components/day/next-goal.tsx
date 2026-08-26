@@ -1,113 +1,85 @@
-import { Check } from "lucide-react";
+import { Compare } from "@/components/stat-point/compare";
+import { StatPoint } from "@/components/stat-point/stat-point";
 import { TimeRange } from "@/components/stat-point/time-range";
-import { Card } from "@/components/ui/card";
-import { Tag } from "@/components/ui/tag";
-import { cn } from "@/lib/cn";
 import { GOALS, type Goal } from "@/lib/plan-data";
 
 /**
- * Next Goal. Структура взята у карточки Prep Map: название, критерий словами,
- * индикатор.
+ * Next Goal. Обе цели собраны карточками `Stat point` со страницы Stats —
+ * это их контейнер ровно под такое: стата сверху, подпись «что измеряем»
+ * снизу.
  *
- * ВАЖНО: в файле есть компонент `Goal` на странице Bars, 792×128, внутри
- * `Expressive / List Item`. Здесь он не использован — на момент сборки я его
- * не нашёл. Это кандидат на замену, внутреннюю геометрию нужно снять.
+ * Раньше здесь была каша: слева свободный ряд квадратиков, справа обведённый
+ * `time-range` со своей шапкой, четыре разные отбивки по левому краю и вдвое
+ * разный вес у двух строк. Причём `time-range` мы вынули как раз из `Stat
+ * point` и поставили голым — компонент нарисован жить внутри карточки.
  *
- * Форма индикатора следует типу критерия. Накопление «x из y» показывается
- * баром, бинарные ворота — рядом квадратов из словаря Prep Map, бегущее число
- * против фиксированной цели — компонентом stat-point/time-range. Универсального
- * бара здесь нет намеренно: ко времени не накапливаются снизу, к нему подходят
- * сверху, и результат хуже прошлого ломает любую шкалу с краями.
+ * Типы статы взяты из свойства `Type` того же компонента:
  *
- * time-range эту ловушку обходит: ширины в нём фиксированные, это диаграмма
- * трёх значений, а не пропорциональная шкала. Регрессия просто меняет числа
- * и переворачивает знак дельты до старта.
+ *   RC — `Visual Gauge`, то есть `stat-point/time-range`: бегущее число
+ *        против фиксированной цели.
+ *   LR — `Compare`, дробь «сделано из всего». Критерий звучит «get every
+ *        conditional question right», а сколько условных вопросов в секции —
+ *        заранее неизвестно, оно плавает. Значит честная форма именно дробь.
+ *
+ * `Heatmap` для LR не взят сознательно: он кодирует величину, оттенки в нём
+ * шкала интенсивности, а у нас состояние бинарное — вопрос либо чистый, либо
+ * сорванный. Два значения из градиента выглядели бы похоже и читались бы
+ * неверно.
+ *
+ * Подпись карточки расширена до двух строк: PRD требует и название цели,
+ * и критерий словами, а в компоненте слот один.
  *
  * PRD ставит модуль наверх day timeline и требует по строке на секцию, когда
  * LR и RC стоят на разных ступенях.
  */
 
-export function NextGoal() {
-  return (
-    <Card className="flex flex-col gap-5 px-6 py-5">
-      <h2 className="text-caption-medium uppercase text-pewter-hc">Next Goal</h2>
-      {GOALS.map((goal) => (
-        <GoalRow key={goal.section} goal={goal} />
-      ))}
-    </Card>
-  );
-}
-
-function GoalRow({ goal }: { goal: Goal }) {
-  return (
-    <div className="flex items-start gap-4">
-      <Tag tone="brand" size="lg" className="mt-[3px]">
-        {goal.section}
-      </Tag>
-      <div className="flex min-w-0 flex-col gap-1">
-        <span className="text-body-l font-bold">{goal.name}</span>
-        <span className="text-body-s text-pewter-hc">{goal.criterion}</span>
-        {goal.kind === "gate" ? (
-          <GatePips attempts={goal.attempts} needed={goal.needed} />
-        ) : (
-          <Clock
-            start={goal.startSeconds}
-            current={goal.currentSeconds}
-            target={goal.targetSeconds}
-          />
-        )}
-      </div>
-    </div>
-  );
-}
-
-/** Бинарные ворота: чистый вопрос залит, ошибка остаётся пустой. */
-function GatePips({ attempts, needed }: { attempts: boolean[]; needed: number }) {
-  const clean = attempts.filter(Boolean).length;
-
-  return (
-    <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2">
-      <span className="inline-flex gap-[3px]">
-        {attempts.map((ok, i) => (
-          <span
-            key={i}
-            className={cn(
-              "inline-flex size-[18px] items-center justify-center rounded-sm border-[2px] border-soft-black",
-              ok ? "bg-turquoise" : "bg-transparent",
-            )}
-          >
-            {ok ? (
-              <Check aria-hidden size={10} strokeWidth={4} className="rotate-[9.72deg] text-turquoise-lc" />
-            ) : null}
-          </span>
-        ))}
-      </span>
-      <span className="text-body-xs text-pewter-hc">
-        Last section <span className="font-bold text-soft-black">{clean}/{attempts.length}</span> clean
-        {" · "}goal <span className="font-bold text-soft-black">{needed}/{attempts.length}</span>
-      </span>
-    </div>
-  );
-}
-
 const mmss = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 
-/**
- * Бегущее число против цели на их собственном компоненте. Дельты считаются
- * здесь: в макете это текстовые слоты, компонент их не выводит сам.
- */
-function Clock({ start, current, target }: { start: number; current: number; target: number }) {
-  const regressed = current > start;
+export function NextGoal() {
+  return (
+    <section className="flex flex-col gap-4">
+      <h2 className="text-caption-medium uppercase text-pewter-hc">Next Goal</h2>
 
+      <div className="grid grid-cols-2 gap-4">
+        {GOALS.map((goal) => (
+          <StatPoint
+            key={goal.section}
+            className="w-full"
+            gap={goal.kind === "gate" ? 6 : 13}
+            label={
+              <>
+                <span className="block font-bold text-soft-black">
+                  {goal.section} · {goal.name}
+                </span>
+                <span className="block">{goal.criterion}</span>
+              </>
+            }
+          >
+            <Stat goal={goal} />
+          </StatPoint>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function Stat({ goal }: { goal: Goal }) {
+  if (goal.kind === "gate") {
+    return <Compare amount={goal.attempts.filter(Boolean).length} of={goal.attempts.length} />;
+  }
+
+  /*
+   * Вариант No Deltas. Default требует около 280 на собственное содержимое,
+   * то есть карточку от 336; в колонке 600 на две карточки приходится по 292,
+   * и дельты сжимались бы — flex ужимает их молча, без переполнения, ломая
+   * снятую из файла геометрию. Три точки сообщают то же самое, а расстояние
+   * до цели читается из самих чисел.
+   */
   return (
     <TimeRange
-      className="mt-3 max-w-[420px]"
-      start={mmss(start)}
-      current={mmss(current)}
-      goal={mmss(target)}
-      deltaToStart={mmss(Math.abs(current - start))}
-      deltaToGoal={mmss(Math.abs(current - target))}
-      regressed={regressed}
+      start={mmss(goal.startSeconds)}
+      current={mmss(goal.currentSeconds)}
+      goal={mmss(goal.targetSeconds)}
     />
   );
 }

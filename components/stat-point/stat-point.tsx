@@ -14,27 +14,37 @@ import { cn } from "@/lib/cn";
  *
  * Внутри лежит скрытый слой Line 3: три бирюзовых росчерка от руки поверх
  * подписи. Декоративный акцент, в снятом варианте выключен.
+ *
+ * Внутренний гэп между статой и подписью зависит от типа: 13 у Visual Gauge,
+ * 6 у Compare. Задаётся на месте использования.
  */
 
 type StatPointProps = {
-  /** Метрика словами — слот Metric label. */
-  label: string;
+  /**
+   * Метрика словами — слот Metric label. В компоненте это одна строка;
+   * здесь принимает узлы, потому что PRD для Next Goal требует и название
+   * цели, и критерий.
+   */
+  label: ReactNode;
   /** Стата: time-range, trend, personal-best и остальные виды семейства. */
   children: ReactNode;
   hover?: boolean;
+  /** Гэп между статой и подписью. 13 у Visual Gauge, 6 у Compare. */
+  gap?: number;
   className?: string;
 };
 
-export function StatPoint({ label, children, hover = false, className }: StatPointProps) {
+export function StatPoint({ label, children, hover = false, gap = 13, className }: StatPointProps) {
   return (
     <div
       className={cn(
-        "w-[300px] rounded-xl border-[1.5px] border-soft-black bg-soft-white pb-7 pl-6 pr-8 pt-7",
+        "rounded-xl border-[1.5px] border-soft-black bg-soft-white pb-7 pl-6 pr-8 pt-7",
+        !className?.includes("w-") && "w-[300px]",
         hover && "lh-card-hover-lg cursor-pointer",
         className,
       )}
     >
-      <div className="flex flex-col gap-[13px] pt-[2px]">
+      <div className="flex flex-col pt-[2px]" style={{ gap }}>
         {children}
         <p className="text-body-small text-pewter-hc">{label}</p>
       </div>
