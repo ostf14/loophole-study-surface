@@ -84,10 +84,20 @@ function Runs({ runs }: { runs: Run[] }) {
   );
 }
 
+/*
+ * Поле Prep Map Point Intro. Тело заметки — одна роль, поэтому и свободный
+ * текст, и эти поля идут одним кеглем: раньше абзац шёл четырнадцатым, а поля
+ * двенадцатым, и одно и то же — описание задачи — читалось двумя размерами
+ * просто потому, что данные разной формы.
+ *
+ * Различает их вес, а не размер: на четырнадцати `caption-large` (w600) —
+ * подпись, `body-s` (w500) — текст. Та же пара работает в карточке цели, где
+ * критерий набран caption-large.
+ */
 function Field({ label, value }: { label: string; value: string }) {
   return (
-    <p className="text-body-xs text-pewter-hc">
-      <span className="text-caption-medium uppercase">{label}:</span> {value}
+    <p className="text-body-s text-pewter-hc">
+      <span className="text-caption-large uppercase">{label}:</span> {value}
     </p>
   );
 }

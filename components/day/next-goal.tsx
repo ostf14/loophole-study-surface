@@ -58,7 +58,7 @@ export function NextGoal() {
             eyebrow={<Tag tone="green">{goal.section}</Tag>}
             label={
               <>
-                <span className="block text-body-small font-bold text-soft-black">
+                <span className="block text-body-m font-bold text-soft-black">
                   {goal.name}
                 </span>
                 <span className="mt-1 block text-caption-large text-pewter-hc">

@@ -21,7 +21,12 @@ import { cn } from "@/lib/cn";
 
 type StatPointProps = {
   /**
-   * Метрика словами — слот Metric label. В компоненте это одна строка;
+   * Метрика словами — слот Metric label. В компоненте она размечена `Body 3`
+   * из шкалы v1 (16/24) — задокументированное расхождение их системы: весь
+   * остальной экран на v2.0. Взят `body-m` (16/22), иначе на экране живут два
+   * разных шестнадцатых кегля с разным интерлиньяжем.
+   *
+   * В компоненте это одна строка;
    * здесь принимает узлы, потому что PRD для Next Goal требует и название
    * цели, и критерий.
    */
@@ -53,7 +58,7 @@ export function StatPoint({ label, children, eyebrow, hover = false, gap = 13, c
       <div className="flex flex-col pt-[2px]" style={{ gap }}>
         {eyebrow}
         {children}
-        <p className="text-body-small text-pewter-hc">{label}</p>
+        <p className="text-body-m text-pewter-hc">{label}</p>
       </div>
     </div>
   );
