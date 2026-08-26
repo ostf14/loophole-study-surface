@@ -47,7 +47,7 @@ const mmss = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, 
 export function NextGoal() {
   return (
     <section className="flex flex-col gap-4">
-      <h2 className="text-body-m font-bold text-soft-black">Next Goal</h2>
+      <h2 className="text-body-m font-extrabold text-soft-black">Next Goal</h2>
 
       <div className="grid grid-cols-2 gap-4">
         {GOALS.map((goal) => (
@@ -58,7 +58,7 @@ export function NextGoal() {
             eyebrow={<Tag tone="green">{goal.section}</Tag>}
             label={
               <>
-                <span className="block text-body-m font-bold text-soft-black">
+                <span className="block text-body-m font-extrabold text-soft-black">
                   {goal.name}
                 </span>
                 <span className="mt-1 block text-caption-large text-pewter-hc">

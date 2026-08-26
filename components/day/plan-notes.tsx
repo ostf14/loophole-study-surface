@@ -73,7 +73,7 @@ function Runs({ runs }: { runs: Run[] }) {
         }
         if ("bold" in run) {
           return (
-            <b key={i} className="font-bold text-soft-black">
+            <b key={i} className="font-semibold text-soft-black">
               {run.t}
             </b>
           );

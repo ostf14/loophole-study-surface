@@ -126,7 +126,7 @@ function DayPicker({
                 )}
               >
                 <ProgressDonut done={dn} total={tasks.length} size={22} />
-                <span className={cn("text-body-s", active && "font-bold")}>{formatLong(d)}</span>
+                <span className={cn("text-body-s", active && "font-semibold")}>{formatLong(d)}</span>
               </button>
             );
           })}

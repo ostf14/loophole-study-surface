@@ -23,7 +23,7 @@ export function DayPager({ prev, next, onJumpToDate, className }: DayPagerProps)
         <button
           type="button"
           onClick={() => onJumpToDate(prev)}
-          className="lh-link inline-flex cursor-pointer items-center gap-2 text-body-m font-bold"
+          className="lh-link inline-flex cursor-pointer items-center gap-2 text-body-m font-semibold"
         >
           <ArrowLeft className="size-[18px]" strokeWidth={2.5} />
           {formatShort(prev)}
@@ -36,7 +36,7 @@ export function DayPager({ prev, next, onJumpToDate, className }: DayPagerProps)
         <button
           type="button"
           onClick={() => onJumpToDate(next)}
-          className="lh-link inline-flex cursor-pointer items-center gap-2 text-body-m font-bold"
+          className="lh-link inline-flex cursor-pointer items-center gap-2 text-body-m font-semibold"
         >
           {formatShort(next)}
           <ArrowRight className="size-[18px]" strokeWidth={2.5} />

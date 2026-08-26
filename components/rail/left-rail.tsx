@@ -51,12 +51,12 @@ export function LeftRail({ workouts, routines }: LeftRailProps) {
       <Section title="Video Course Review">
         <ul className="flex flex-col gap-2 text-body-s">
           <li>
-            <a href="#" className="lh-link font-bold">
+            <a href="#" className="lh-link font-semibold">
               My Saved Videos
             </a>
           </li>
           <li>
-            <a href="#" className="lh-link font-bold">
+            <a href="#" className="lh-link font-semibold">
               My History
             </a>
           </li>
@@ -66,7 +66,7 @@ export function LeftRail({ workouts, routines }: LeftRailProps) {
           <li className="flex flex-col gap-1 text-pewter-hc">
             <span className="flex items-center gap-2">
               <Lock className="size-[14px] shrink-0" strokeWidth={2.5} />
-              <span className="lh-link-lock font-bold whitespace-nowrap">Concept Review</span>
+              <span className="lh-link-lock font-semibold whitespace-nowrap">Concept Review</span>
             </span>
             <span className="text-body-xs">unlocks with the video course</span>
           </li>
@@ -83,7 +83,7 @@ function Bookmarked({ items, empty }: { items: Embed[]; empty: string }) {
     <div className="flex flex-col gap-2">
       {items.map((item) => (
         <Card key={item.id} hover="xs" className="flex flex-col px-4 py-2">
-          <span className="text-body-s font-bold">{item.name}</span>
+          <span className="text-body-s font-semibold">{item.name}</span>
           <span className="text-body-xs text-pewter-hc">{item.meta}</span>
         </Card>
       ))}
@@ -96,7 +96,7 @@ function PrepMap() {
     <Section
       title="Prep Map"
       action={
-        <button type="button" className="lh-link inline-flex items-center gap-1 text-body-s font-bold">
+        <button type="button" className="lh-link inline-flex items-center gap-1 text-body-s font-semibold">
           <Search className="size-[13px]" strokeWidth={3} />
           Lookup
         </button>
@@ -109,7 +109,7 @@ function PrepMap() {
              влезала в ширину рельса — переносилась на две строки, и высоты
              карточек скакали от 74 до 103. */
           <Card key={stage.id} hover="xs" className="flex flex-col gap-2 px-4 py-3">
-            <span className={cn("text-body-m font-bold", stage.startsOn && "text-pewter-hc")}>
+            <span className={cn("text-body-m font-extrabold", stage.startsOn && "text-pewter-hc")}>
               {stage.name}
             </span>
 
@@ -150,7 +150,7 @@ function Section({
   return (
     <section className="flex flex-col gap-3">
       <div className="flex items-center justify-between gap-3">
-        <h2 className="text-body-m font-bold text-soft-black">{title}</h2>
+        <h2 className="text-body-m font-extrabold text-soft-black">{title}</h2>
         {action}
       </div>
       {children}
