@@ -13,6 +13,11 @@
 const MAX_DEPTH = 4;
 const MAX_CHARS = 80;
 
+const say = (text) => figma.ui.postMessage({ kind: "status", text });
+/* Отдать управление, чтобы окно плагина успело перерисоваться. Без этого
+   обход держит главный поток и снаружи выглядит зависшим. */
+const breathe = () => new Promise((r) => setTimeout(r, 0));
+
 /** Эффект как есть, вместе с visible: выключенная тень лежит в массиве. */
 const effect = (e) => ({
   type: e.type,
@@ -124,13 +129,15 @@ async function walk(node, depth, origin, styleNames) {
 }
 
 async function run() {
-  figma.ui.postMessage({ kind: "status", text: "Загружаю страницы…" });
+  say("Загружаю страницы файла… на большом файле это самый долгий шаг");
+  await breathe();
   await figma.loadAllPagesAsync();
 
   const dump = { file: figma.root.name, generatedAt: new Date().toISOString() };
 
   /* ── именованные стили: это не переменные, доступ обычный ───────────── */
-  figma.ui.postMessage({ kind: "status", text: "Читаю стили…" });
+  say("Читаю именованные стили…");
+  await breathe();
   const styleNames = new Map();
   const textStyles = await figma.getLocalTextStylesAsync();
   dump.textStyles = textStyles.map((s) => {
@@ -175,14 +182,29 @@ async function run() {
   }
 
   /* ── компоненты ─────────────────────────────────────────────────────── */
-  figma.ui.postMessage({ kind: "status", text: "Обхожу компоненты…" });
-  const nodes = figma.root.findAllWithCriteria({ types: ["COMPONENT_SET", "COMPONENT"] });
+  say("Ищу компоненты по всему файлу…");
+  await breathe();
+  let nodes;
+  try {
+    nodes = figma.root.findAllWithCriteria({ types: ["COMPONENT_SET", "COMPONENT"] });
+  } catch {
+    /* На старых сборках findAllWithCriteria недоступен. */
+    say("findAllWithCriteria недоступен, иду полным обходом — это дольше…");
+    await breathe();
+    nodes = figma.root.findAll((n) => n.type === "COMPONENT" || n.type === "COMPONENT_SET");
+  }
   const tops = nodes.filter((n) => !(n.parent && n.parent.type === "COMPONENT_SET"));
+
+  say(`Найдено компонентов: ${tops.length}. Начинаю обход…`);
+  await breathe();
 
   dump.components = [];
   for (let i = 0; i < tops.length; i++) {
     const n = tops[i];
-    if (i % 10 === 0) figma.ui.postMessage({ kind: "status", text: `Компонент ${i + 1} из ${tops.length}…` });
+    figma.ui.postMessage({ kind: "progress", done: i, total: tops.length, name: n.name });
+    /* Дышим каждые пять компонентов: чаще — заметно медленнее, реже — окно
+       снова начинает выглядеть замершим. */
+    if (i % 5 === 0) await breathe();
     let page = n.parent;
     while (page && page.type !== "PAGE") page = page.parent;
     const entry = await walk(n, 0, n.absoluteBoundingBox, styleNames);
@@ -200,5 +222,5 @@ async function run() {
   figma.ui.postMessage({ kind: "done", json: JSON.stringify(dump, null, 1), counts: dump.counts });
 }
 
-figma.showUI(__html__, { width: 380, height: 260 });
+figma.showUI(__html__, { width: 400, height: 330 });
 run().catch((e) => figma.ui.postMessage({ kind: "error", text: String(e && e.stack ? e.stack : e) }));
