@@ -93,9 +93,17 @@ export function TaskRow({
               </span>
             </span>
 
-            {/* время: цвет #aaaaaa задан в компоненте напрямую, мимо токенов —
-                та же непривязанная конвенция, что у семейства Label */}
-            <span className="shrink-0 text-body-xs tabular-nums text-[#aaaaaa]">{task.time}</span>
+            {/* Время: цвет #aaaaaa задан в компоненте напрямую, мимо токенов —
+                та же непривязанная конвенция, что у семейства Label. Через
+                style, а не классом: tailwind-merge считает произвольный
+                text-[...] той же группой, что размерный токен, и выбрасывает
+                один из двух. */}
+            <span
+              className="shrink-0 text-body-xs tabular-nums"
+              style={{ color: "#aaaaaa" }}
+            >
+              {task.time}
+            </span>
           </span>
         </span>
 
