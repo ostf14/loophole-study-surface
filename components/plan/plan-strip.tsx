@@ -47,9 +47,10 @@ export function PlanStrip({ today, onJumpToPhase, className }: PlanStripProps) {
 
   return (
     <div className={cn("flex flex-col", className)}>
-      {/* Метки над дорожкой. Today и Test day — две даты, которые студент
-          держит в голове, поэтому набраны одинаково: `tag` в soft-black.
-          Jun 22 остался внизу приглушённым — это не метка, а начало оси. */}
+      {/* Над дорожкой — события: Today и Test day, оба `tag` в soft-black.
+          Внутри дорожки, по концам, — границы оси: даты начала плана и
+          экзамена. Разделение по смыслу: сверху что происходит, внутри —
+          докуда тянется ось. Отдельной строки под дорожкой больше нет. */}
       <div className="relative h-[20px]">
         <span
           className="absolute -translate-x-1/2 text-tag whitespace-nowrap text-soft-black"
@@ -59,7 +60,7 @@ export function PlanStrip({ today, onJumpToPhase, className }: PlanStripProps) {
         </span>
 
         <span className="absolute right-0 top-0 text-tag whitespace-nowrap text-soft-black">
-          Test day · {formatShort(PLAN.end)}
+          Test day
         </span>
 
         {MILE_MARKERS.map((m) => (
@@ -94,6 +95,18 @@ export function PlanStrip({ today, onJumpToPhase, className }: PlanStripProps) {
             />
           ))}
         </div>
+
+        {/* Граничные даты прямо на дорожке. soft-black читается и на заливке
+            (6.8:1), и на пустой части (15.9:1) — поэтому цвет один, и подпись
+            не ломается, если край заполнения проходит сквозь неё. Белый там
+            не годится: 2.64:1. */}
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 flex items-center justify-between px-[10px] text-tag-s text-soft-black"
+          style={{ height: STRIP_HEIGHT }}
+        >
+          <span>{formatShort(PLAN.start)}</span>
+          <span>{formatShort(PLAN.end)}</span>
+        </div>
       </div>
 
       <div className="mt-3 flex">
@@ -114,7 +127,6 @@ export function PlanStrip({ today, onJumpToPhase, className }: PlanStripProps) {
         })}
       </div>
 
-      <div className="mt-1 text-body-xs text-pewter-hc">{formatShort(PLAN.start)}</div>
     </div>
   );
 }
