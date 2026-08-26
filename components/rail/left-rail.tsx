@@ -48,7 +48,16 @@ export function LeftRail({ workouts, routines }: LeftRailProps) {
           empty="Bookmark routines from your plan to add them to My Routines."
         />
       </Section>
-      <Section title="Video Course Review">
+      {/* Черта отделяет то, что ведёт наружу. Выше — инструменты этого плана:
+          Prep Map и полки закладок. Video Course Review — ссылки в другой
+          продукт и запертая за его покупкой фича, к плану отношения не имеет.
+          Без черты все три раздела читались одним потоком, как три
+          равноправных прибора.
+
+          Толщина 2px: линий тоньше в системе не существует, это её
+          единственный законный вес. Отступ сверху 8, чтобы черта не липла
+          к предыдущей секции при гэпе рельса 32. */}
+      <Section title="Video Course Review" className="border-t-[2px] border-soft-black pt-8">
         <ul className="flex flex-col gap-2 text-body-s">
           <li>
             <a href="#" className="lh-link font-semibold">
@@ -142,13 +151,15 @@ function Section({
   title,
   action,
   children,
+  className,
 }: {
   title: string;
   action?: React.ReactNode;
   children: React.ReactNode;
+  className?: string;
 }) {
   return (
-    <section className="flex flex-col gap-3">
+    <section className={cn("flex flex-col gap-3", className)}>
       <div className="flex items-center justify-between gap-3">
         <h2 className="text-body-m font-extrabold text-soft-black">{title}</h2>
         {action}
