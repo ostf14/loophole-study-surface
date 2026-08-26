@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@/lib/cn";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { formatShort } from "@/lib/plan";
 
@@ -12,11 +13,12 @@ type DayPagerProps = {
   prev: string | null;
   next: string | null;
   onJumpToDate: (date: string) => void;
+  className?: string;
 };
 
-export function DayPager({ prev, next, onJumpToDate }: DayPagerProps) {
+export function DayPager({ prev, next, onJumpToDate, className }: DayPagerProps) {
   return (
-    <div className="flex items-center justify-between gap-4">
+    <div className={cn("flex items-center justify-between gap-4", className)}>
       {prev ? (
         <button
           type="button"

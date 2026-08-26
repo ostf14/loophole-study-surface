@@ -130,7 +130,18 @@ export default function StudySurface() {
           onSelectPlan={jumpToFirstIncompleteDay}
         />
 
-        <main className="flex min-w-0 flex-1 flex-col gap-6">
+        {/*
+          Вертикальный ритм колонки. Раньше между всеми блоками стоял один
+          gap-6, и расстояние ничего не сообщало: хром вида, модуль цели,
+          шапка дня и его список шли через одинаковые 24, а группировка не
+          читалась.
+
+          Теперь 32 между смысловыми группами — так `Page header_V2` разделяет
+          свои блоки. Внутри дня 16: строка даты это шапка, список это тело,
+          они принадлежат друг другу. Между карточками групп 12. Нижний пейджер
+          отходит на 24, как `ob` отделяет шапку секции от списка.
+        */}
+        <main className="flex min-w-0 flex-1 flex-col gap-8">
           <ViewTabs
             today={TODAY}
             isToday={date === TODAY}
@@ -140,18 +151,20 @@ export default function StudySurface() {
           />
           <NextGoal />
 
-          <DateRow
-            date={date}
-            done={done}
-            progress={progress}
-            hideCompleted={hideCompleted}
-            onHideCompletedChange={setHideCompleted}
-            onJumpToDate={setDate}
-          />
+          {/* день: шапка, тело, конец — одна группа */}
+          <div className="flex flex-col gap-4">
+            <DateRow
+              date={date}
+              done={done}
+              progress={progress}
+              hideCompleted={hideCompleted}
+              onHideCompletedChange={setHideCompleted}
+              onJumpToDate={setDate}
+            />
 
-          {day ? (
-            <>
-              <div className="flex flex-col gap-5">
+            {day ? (
+              <>
+              <div className="flex flex-col gap-3">
                 {day.groups.map((group) => {
                   const key = `${date}:${group.id}`;
                   const gp = groupProgress(group, done);
@@ -187,9 +200,14 @@ export default function StudySurface() {
                 })}
               </div>
 
-              <DayPager prev={day.prev} next={day.next} onJumpToDate={setDate} />
-            </>
-          ) : (
+              <DayPager
+                prev={day.prev}
+                next={day.next}
+                onJumpToDate={setDate}
+                className="mt-2"
+              />
+              </>
+            ) : (
             <Card className="flex flex-col items-center gap-4 px-8 py-14 text-center">
               <span className="text-body-m font-bold">{formatLong(date)}</span>
               <span className="text-body-s text-pewter-hc">
@@ -199,7 +217,8 @@ export default function StudySurface() {
                 Back to today
               </Button>
             </Card>
-          )}
+            )}
+          </div>
         </main>
       </div>
 
