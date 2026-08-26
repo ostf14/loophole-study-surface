@@ -81,41 +81,37 @@ export function TaskRow({
             aria-label={task.title}
           />
 
-          <span className="flex min-w-0 items-center gap-5">
-            {/* Колонка расписания: номер и время. Гэп 20 из компонента остался
-                на месте, но теперь отделяет расписание от содержания. */}
-            <span className="flex shrink-0 items-center gap-2">
-              <span className="w-5 text-right text-body-xs tabular-nums text-pewter-hc">
-                {n}.
-              </span>
-
-              {/* Время: цвет #aaaaaa задан в компоненте напрямую, мимо токенов —
-                  та же непривязанная конвенция, что у семейства Label. Через
-                  style, а не классом: tailwind-merge считает произвольный
-                  text-[...] той же группой, что размерный токен, и выбрасывает
-                  один из двух. */}
-              <span
-                className="w-[var(--task-time-width)] shrink-0 text-right text-body-xs whitespace-nowrap tabular-nums"
-                style={{ color: "#aaaaaa" }}
-              >
-                {task.time}
-              </span>
+          {/* гэп 8 между номером, иконкой типа и заголовком */}
+          <span className="flex min-w-0 items-center gap-2">
+            <span className="w-5 shrink-0 text-right text-body-xs tabular-nums text-pewter-hc">
+              {n}.
             </span>
-
-            {/* гэп 8 между иконкой типа и заголовком */}
-            <span className="flex min-w-0 items-center gap-2">
-              <TaskIcon type={task.type} className="size-[16px] shrink-0 text-soft-black" />
-              <span
-                className={cn("truncate text-body-s", done && "line-through decoration-[2px]")}
-              >
-                {task.title}
-              </span>
+            <TaskIcon type={task.type} className="size-[16px] shrink-0 text-soft-black" />
+            <span className={cn("truncate text-body-s", done && "line-through decoration-[2px]")}>
+              {task.title}
             </span>
           </span>
         </span>
 
         <span className="flex shrink-0 items-center gap-5">
           {task.optional ? <Tag size="row">(optional)</Tag> : null}
+
+          {/* Время: цвет #aaaaaa задан в компоненте напрямую, мимо токенов —
+              та же непривязанная конвенция, что у семейства Label. Через
+              style, а не классом: tailwind-merge считает произвольный
+              text-[...] той же группой, что размерный токен, и выбрасывает
+              один из двух.
+
+              Фиксированная ширина с выключкой вправо: в компоненте время
+              держится за конец заголовка, а заголовки у нас разной длины —
+              шесть значений расползались на 162px. Порядок PRD при этом цел:
+              «checkbox, type icon, title, start time, and a launch arrow». */}
+          <span
+            className="w-[var(--task-time-width)] shrink-0 text-right text-body-xs whitespace-nowrap tabular-nums"
+            style={{ color: "#aaaaaa" }}
+          >
+            {task.time}
+          </span>
 
           {task.launchable ? (
             <button
