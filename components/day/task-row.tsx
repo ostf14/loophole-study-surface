@@ -1,10 +1,8 @@
 "use client";
 
-import { ArrowUpRight } from "lucide-react";
-import { Card } from "@/components/ui/card";
+import { ArrowRight } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { IconButton } from "@/components/ui/icon-button";
-import { PositionIcon } from "@/components/ui/position-icon";
 import { Tag } from "@/components/ui/tag";
 import { cn } from "@/lib/cn";
 import type { Embed, Task } from "@/lib/plan-data";
@@ -13,20 +11,26 @@ import { TaskIcon } from "./task-icon";
 import { EmbedCard } from "./embed-card";
 
 /**
- * Строка задачи. Собрана по Tandem_Plan_Item: чекбокс, иконка типа, заголовок,
- * время старта, стрелка запуска. Номер добавлен готовым PositionIcon, как
- * требует PRD («Each task is a numbered row»).
+ * Строка задачи, собранная по `Tandem_Plan_Item`.
  *
- * PositionIcon лежит снаружи карточки соседом, поэтому выполненная строка
- * гаснет прозрачностью, а кружок остаётся в полную силу — так это устроено в
- * их системе.
+ * Снято из Figma: строка 480 × 32, раскладка space-between, паддинг 4 сверху
+ * и снизу, 20 слева и справа, рамка только снизу 2px. Ни карточки, ни заливки,
+ * ни радиуса — карточка принадлежит группе, строки внутри неё разделены линией.
  *
- * Наклон чекбокса — вариант gentleRight, снятый с их живого чекбокса на
- * странице подписки.
+ * Левый блок с гэпом 12 держит чекбокс, иконку типа, заголовок и время.
+ * Правый с гэпом 20 — слот тега и круглую кнопку размера small, 24×24.
  *
- * Метрика карточки взята у семейства Label: радиус 12, обводка 2px, фон
- * soft-white, паддинг 8 сверху и снизу, 16 справа, 8 слева. Цифры самого
- * Tandem_Plan_Item из Figma не сняты, это приближение.
+ * Заголовок: Inter 500, 14px, трекинг -1.8%, цвет soft-black. Это токен
+ * `body-s`. Интерлиньяж взят из CSS (20px), а не из Figma (160% = 22.4) —
+ * расхождение шкалы v2.0 задокументировано, прод важнее макета.
+ *
+ * Свойства компонента: State (Default / Checked), Text, Show Time,
+ * Show optional, Subtext, Show Subtitle. Состояний два, и Checked приглушает
+ * строку целиком — ни теней, ни промежуточного состояния в компоненте нет.
+ *
+ * Две вещи добавлены сверх компонента, обе по требованию PRD: номер позиции
+ * и зачёркивание выполненного заголовка. Номер сделан простым текстом, как на
+ * текущей странице My Plan, а не кружком PositionIcon.
  */
 
 type TaskRowProps = {
@@ -48,64 +52,67 @@ export function TaskRow({
   isBookmarked,
   onToggleBookmark,
 }: TaskRowProps) {
-  const state = done ? "complete" : task.started ? "during" : "default";
   const hasNotes = Boolean(task.notes || task.intro || task.embeds?.length);
 
   return (
-    <div className="flex items-start gap-5">
-      <PositionIcon n={n} state={state} className="mt-[10px]" />
-
-      <Card hover="sm" className={cn("min-w-0 flex-1", done && "opacity-50")}>
-        <div className="flex items-center gap-4 py-2 pr-4 pl-2">
+    <div
+      className={cn(
+        "flex flex-col border-b-[2px] border-soft-black last:border-b-0",
+        done && "opacity-50",
+      )}
+    >
+      <div className="flex h-8 items-center justify-between px-5 py-1">
+        <span className="flex min-w-0 items-center gap-3">
           <Checkbox
+            size="small"
             rotation="gentleRight"
             checked={done}
             onChange={onToggle}
             aria-label={task.title}
           />
 
+          <span className="shrink-0 text-body-xs tabular-nums text-pewter-hc">{n}.</span>
+
           <TaskIcon type={task.type} className="size-[20px] shrink-0 text-soft-black" />
 
           <span
-            className={cn(
-              "truncate text-body-m font-bold",
-              done && "line-through decoration-[2px]",
-            )}
+            className={cn("truncate text-body-s", done && "line-through decoration-[2px]")}
           >
             {task.title}
           </span>
 
-          {task.optional ? <Tag>(optional)</Tag> : null}
-
-          <span className="flex-1" />
-
           <span className="shrink-0 text-body-xs tabular-nums text-pewter-hc">{task.time}</span>
+        </span>
+
+        <span className="flex shrink-0 items-center gap-5">
+          {task.optional ? <Tag>(optional)</Tag> : null}
 
           {task.launchable ? (
             <IconButton
-              icon={<ArrowUpRight strokeWidth={2.5} />}
+              size="small"
+              icon={<ArrowRight strokeWidth={2.5} />}
               label={`Start ${task.title}`}
               onClick={onLaunch}
             />
           ) : (
-            <span className="size-[32px] shrink-0" />
+            <span className="size-[24px]" />
           )}
-        </div>
+        </span>
+      </div>
 
-        {hasNotes ? (
-          <div className="flex flex-col gap-3 px-5 pt-1 pb-3">
-            <PlanNotes task={task} />
-            {task.embeds?.map((embed) => (
-              <EmbedCard
-                key={embed.id}
-                embed={embed}
-                bookmarked={isBookmarked(embed.id)}
-                onToggle={() => onToggleBookmark(embed)}
-              />
-            ))}
-          </div>
-        ) : null}
-      </Card>
+      {hasNotes ? (
+        <div className="flex flex-col gap-3 px-5 pb-4">
+          <PlanNotes task={task} />
+          {task.embeds?.map((embed) => (
+            <EmbedCard
+              key={embed.id}
+              embed={embed}
+              bookmarked={isBookmarked(embed.id)}
+              onToggle={() => onToggleBookmark(embed)}
+            />
+          ))}
+        </div>
+      ) : null}
     </div>
   );
 }

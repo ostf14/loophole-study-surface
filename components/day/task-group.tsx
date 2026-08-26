@@ -1,66 +1,77 @@
 "use client";
 
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Check } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { IconButton } from "@/components/ui/icon-button";
 import { cn } from "@/lib/cn";
 import type { Group } from "@/lib/plan-data";
 
 /**
- * Заголовок группы задач. Собран по Section_Label: карточка 64px, обводка 2px,
- * радиус 12, фон soft-white, паддинг 8 сверху и снизу, 16 справа, 20 слева,
- * заголовок Inter Bold 20px.
+ * Группа задач. Собрана по тому, как это устроено на текущей странице My Plan:
+ * группа — это одна карточка, а не шапка над карточками задач. Свёрнутая она
+ * тонкая строка: название слева, статус словами справа, круглый шеврон.
+ * Раскрытая вырастает вниз, и задачи появляются внутри неё.
  *
- * Правая колонка приведена к языку версии 1.1: счётчик и круглая кнопка вместо
- * полосы прогресса и длительности. Сам Section_Label остался в системе на схеме
- * версии 1.0, и рядом с новой строкой задачи выглядел бы инородно.
+ * Отсюда один уровень рамки на группу вместо двух. Раньше заголовок 64px и
+ * строка задачи 52px были двумя одинаковыми по весу объектами подряд, и список
+ * читался как россыпь коробок.
  *
- * Шеврон здесь уместен: запрет PRD на промежуточный шаг относится к запуску
- * контента, а сворачивание группы PRD описывает сам.
+ * Приподнятое состояние — рамка 3px и жёсткая тень 4px — маркирует активную
+ * группу, а не раскрытую. Раскрытость и так видна по содержимому и повёрнутому
+ * шеврону, тратить на неё второй сигнал незачем. Открытых при этом сколько
+ * угодно: PRD разводит «активную» и «развёрнутую» с самого начала.
  *
- * У тьюторского блока имя группы — название бизнеса репетитора, и рядом стоит
- * кружок с инициалами: домашка приходит от человека, а не от системы.
+ * Статус словами вместо счётчика — как на живом экране: Completed, Not Started.
  */
 
 type TaskGroupProps = {
   group: Group;
   done: number;
   open: boolean;
+  active: boolean;
   onToggle: () => void;
   children: React.ReactNode;
 };
 
-export function TaskGroup({ group, done, open, onToggle, children }: TaskGroupProps) {
+export function TaskGroup({ group, done, open, active, onToggle, children }: TaskGroupProps) {
   const total = group.tasks.length;
   const complete = done === total;
+  const status = complete ? "Completed" : done > 0 ? `${done} of ${total} done` : "Not started";
 
   return (
-    <section className="flex flex-col gap-4">
-      <Card hover="sm" className="flex h-[64px] items-center gap-5 pr-4 pl-5">
+    <Card
+      className={cn(
+        "flex flex-col",
+        active && "border-[3px] shadow-[4px_4px_0_0_var(--color-soft-black)]",
+      )}
+    >
+      <div className="flex h-10 shrink-0 items-center gap-3 pr-1 pl-5">
+        {group.tutor ? (
+          <span
+            aria-hidden
+            className="flex size-6 shrink-0 items-center justify-center rounded-full border-[2px] border-soft-black bg-turquoise text-tag-s font-extrabold text-soft-white"
+          >
+            {group.tutor.initials}
+          </span>
+        ) : null}
+
         <button
           type="button"
           onClick={onToggle}
           aria-expanded={open}
-          className="flex min-w-0 flex-1 cursor-pointer items-center gap-3 text-left"
+          className="min-w-0 flex-1 cursor-pointer truncate text-left text-body-m font-bold"
         >
-          {group.tutor ? (
-            <span
-              aria-hidden
-              className="flex size-6 shrink-0 items-center justify-center rounded-full border-[2px] border-soft-black bg-turquoise text-tag-s font-extrabold text-soft-white"
-            >
-              {group.tutor.initials}
-            </span>
-          ) : null}
-          <span className="truncate text-body-xl font-bold">{group.name}</span>
+          {group.name}
         </button>
 
         <span
           className={cn(
-            "shrink-0 text-body-xs tabular-nums",
+            "flex shrink-0 items-center gap-1 text-caption-medium",
             complete ? "text-turquoise-hc" : "text-pewter-hc",
           )}
         >
-          {done}/{total}
+          {complete ? <Check aria-hidden size={14} strokeWidth={3} className="rotate-[9.72deg]" /> : null}
+          {status}
         </span>
 
         <IconButton
@@ -73,9 +84,11 @@ export function TaskGroup({ group, done, open, onToggle, children }: TaskGroupPr
           label={open ? `Collapse ${group.name}` : `Expand ${group.name}`}
           onClick={onToggle}
         />
-      </Card>
+      </div>
 
-      {open ? <div className="flex flex-col gap-3">{children}</div> : null}
-    </section>
+      {open ? (
+        <div className="flex flex-col border-t-[2px] border-soft-black">{children}</div>
+      ) : null}
+    </Card>
   );
 }
