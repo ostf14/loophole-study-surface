@@ -16,11 +16,30 @@ In scope, from the PRD:
   proportionally sized phase segments, mile markers and a Today marker, and the
   resume banner ("Jump back in!").
 - **Day timeline view** — view switcher with day paging, Next Goal, the date row
-  (date dropdown paired with a progress donut, Hide completed), task groups,
-  numbered task rows with inline Plan Notes, embedded workout and routine cards
-  with a bookmark control, and the bottom day pager.
-- **Left rail** — plan selector, Prep Map, My Workouts, My Routines, Video Course
-  Review.
+  (date dropdown paired with a progress donut), task groups, numbered task rows
+  with inline Plan Notes, embedded workout and routine cards with a bookmark
+  control, and the bottom day pager.
+- **Left rail** — Prep Map, My Workouts, My Routines, Video Course Review.
+
+Two things the PRD asks for are deliberately not here, both for the same reason
+— on one screen they restate something else that is already louder:
+
+- **The plan selector and its quiet line.** The PRD gives the rail "the plans in
+  order, current plan highlighted", and beneath it a quiet line noting the plan
+  can be changed through AI Ellen or Adjust Plan. The plan strip in the header
+  already carries the plans in order with the current one filled, and adds date
+  proportions, a Today marker, mile markers and hover ranges. The quiet line
+  restates the Adjust Plan button standing on the same screen; Ellen belongs
+  inside that modal as the alternative to manual settings. The one behaviour the
+  selector owned — "jumps to that plan's first incomplete day" — went to the
+  strip, which the PRD would have jump to the plan's *first* day. First
+  incomplete is the more useful target: the first day of a plan you have already
+  worked through is an archive.
+- **Hide completed.** The PRD puts it in the view switcher row with the paging
+  controls. Completed groups already collapse themselves by the PRD's own rule
+  ("the active group renders expanded; completed groups collapse"), so the
+  toggle hid what was already folded away, and it sat in the date row competing
+  with the day's identity.
 
 Deliberately out of scope: Weekly view, Full Plan view, focus mode, the task
 detail popover, AI Ellen, the tutor-facing side, and paid-feature gating. Where

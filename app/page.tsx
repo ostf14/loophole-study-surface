@@ -16,11 +16,9 @@ import {
   allTasks,
   dayProgress,
   earliestIncomplete,
-  firstDayOfPhase,
   firstIncompleteDayOfPhase,
   formatLong,
   groupProgress,
-  phaseAt,
 } from "@/lib/plan";
 
 export default function StudySurface() {
@@ -104,29 +102,29 @@ export default function StudySurface() {
 
   const isBookmarked = (id: string) => bookmarks.some((b) => b.id === id);
 
-  /** Стрип: PRD — «jumps the current view to that plan's first day». */
-  const jumpToPhaseStart = (phase: Phase) => setDate(firstDayOfPhase(phase));
-
-  /** Рельс: PRD — «jumps to that plan's first incomplete day». Поведение другое. */
-  const jumpToFirstIncompleteDay = (phase: Phase) =>
-    setDate(firstIncompleteDayOfPhase(phase, done));
+  /*
+   * Клик по сегменту стрипа. PRD задаёт стрипу «that plan's first day», а
+   * селектору в рельсе «that plan's first incomplete day». Селектор убран,
+   * и стрипу досталась вторая цель: она полезнее. Первый день плана, куда
+   * студент уже заходил, — это архив; первый невыполненный — место, где он
+   * остановился.
+   */
+  const jumpToPhase = (phase: Phase) => setDate(firstIncompleteDayOfPhase(phase, done));
 
   return (
     <div className="flex min-h-full flex-col">
       <PlanHeader
         today={TODAY}
         resume={resume}
-        onJumpToPhase={jumpToPhaseStart}
+        onJumpToPhase={jumpToPhase}
         onAdjustPlan={() => say("Adjust Plan opens Study Plan Settings — out of scope for this build")}
         onStart={() => say("Start launches focus mode — out of scope for this build")}
       />
 
       <div className="mx-auto flex w-full max-w-[var(--study-surface-width)] flex-1 gap-10 px-10 py-8">
         <LeftRail
-          currentPhase={phaseAt(date)}
           workouts={bookmarks.filter((b) => b.kind === "workout")}
           routines={bookmarks.filter((b) => b.kind === "routine")}
-          onSelectPlan={jumpToFirstIncompleteDay}
         />
 
         {/*

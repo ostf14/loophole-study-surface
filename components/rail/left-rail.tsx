@@ -4,12 +4,22 @@ import { Lock, Search } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { SegmentMeter } from "@/components/ui/segment-meter";
 import { cn } from "@/lib/cn";
-import { PHASES, PREP_MAP, type Embed, type Phase } from "@/lib/plan-data";
+import { PREP_MAP, type Embed } from "@/lib/plan-data";
 import { formatShort } from "@/lib/plan";
 
 /**
- * Левый рельс, перенесённый с текущей страницы: селектор планов, карточки
- * Prep Map, My Workouts, My Routines, Video Course Review.
+ * Левый рельс, перенесённый с текущей страницы: карточки Prep Map,
+ * My Workouts, My Routines, Video Course Review.
+ *
+ * Селектора планов здесь нет, хотя PRD его требует. Он дублировал стрип
+ * целиком: те же пять планов, тот же порядок, тот же признак текущего —
+ * только без пропорций, дат, вех и маркера сегодня. Собственных функций у
+ * него было две, и обе отпали. Тихая строка «план можно поменять» — пересказ
+ * словами кнопки Adjust Plan, которая стоит на том же экране. Переход «на
+ * первый невыполненный день» не наблюдаем: четыре плана из пяти в будущем,
+ * там ничего не выполнено, и он совпадает с первым днём; у текущего плана он
+ * приводит на сегодня, то есть туда, где студент уже стоит. Ту же работу
+ * лучше делает Continue в шапке — он доводит до самой задачи, а не до даты.
  *
  * Пустые состояния стадий показывают дату старта, подтянутую из фаз стрипа:
  * ноль в шкале читается как сломанный интерфейс, дата — как «ещё не время».
@@ -18,16 +28,13 @@ import { formatShort } from "@/lib/plan";
  */
 
 type LeftRailProps = {
-  currentPhase: Phase;
   workouts: Embed[];
   routines: Embed[];
-  onSelectPlan: (phase: Phase) => void;
 };
 
-export function LeftRail({ currentPhase, workouts, routines, onSelectPlan }: LeftRailProps) {
+export function LeftRail({ workouts, routines }: LeftRailProps) {
   return (
     <aside className="flex w-[var(--study-rail-width)] shrink-0 flex-col gap-8">
-      <PlanSelector currentPhase={currentPhase} onSelectPlan={onSelectPlan} />
       <PrepMap />
       <Section title="My Workouts">
         <Bookmarked
@@ -81,45 +88,6 @@ function Bookmarked({ items, empty }: { items: Embed[]; empty: string }) {
         </Card>
       ))}
     </div>
-  );
-}
-
-function PlanSelector({
-  currentPhase,
-  onSelectPlan,
-}: {
-  currentPhase: Phase;
-  onSelectPlan: (phase: Phase) => void;
-}) {
-  return (
-    <Section title="Day-By-Day Study Schedule">
-      <Card className="flex flex-col gap-1 p-2">
-        {PHASES.map((phase, i) => {
-          const active = phase.id === currentPhase.id;
-          return (
-            <button
-              key={phase.id}
-              type="button"
-              onClick={() => onSelectPlan(phase)}
-              aria-current={active ? "true" : undefined}
-              className={cn(
-                "lh-card-hover-xs flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors duration-150",
-                /* turquoise-lc — заливка активного пункта в их Tandem_Plan_Item_Menu */
-                active ? "bg-turquoise-lc" : "hover:bg-seafoam-lc",
-              )}
-            >
-              <span className="w-[14px] shrink-0 text-body-xs tabular-nums text-pewter-hc">
-                {i + 1}.
-              </span>
-              <span className={cn("text-body-s", active && "font-bold")}>{phase.planName}</span>
-            </button>
-          );
-        })}
-      </Card>
-      <p className="text-body-xs text-pewter-hc">
-        You can change your plan anytime through AI Ellen or Adjust Plan.
-      </p>
-    </Section>
   );
 }
 
