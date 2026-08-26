@@ -108,7 +108,7 @@ export function TaskRow({
         </span>
 
         <span className="flex shrink-0 items-center gap-5">
-          {task.optional ? <Tag>(optional)</Tag> : null}
+          {task.optional ? <Tag size="row">(optional)</Tag> : null}
 
           {task.launchable ? (
             <button

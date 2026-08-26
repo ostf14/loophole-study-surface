@@ -1,6 +1,7 @@
 import { Compare } from "@/components/stat-point/compare";
 import { StatPoint } from "@/components/stat-point/stat-point";
 import { TimeRange } from "@/components/stat-point/time-range";
+import { Tag } from "@/components/ui/tag";
 import { GOALS, type Goal } from "@/lib/plan-data";
 
 /**
@@ -26,15 +27,15 @@ import { GOALS, type Goal } from "@/lib/plan-data";
  * сорванный. Два значения из градиента выглядели бы похоже и читались бы
  * неверно.
  *
- * Подпись карточки расширена до трёх строк по образцу `Onboarding list item`
- * со страницы Lists — там та же задача решена тремя уровнями: «Step 1»
- * мелким капсом цветом turquoise-hc, инструкция жирно, объяснение приглушённо
- * и мельче.
+ * Подпись карточки расширена до трёх уровней по образцу `Onboarding list
+ * item` со страницы Lists, где та же задача решена так же: метка, название
+ * жирно, объяснение приглушённо и мельче. В компоненте слот подписи один
+ * и рассчитан на короткую строку вроде «Metric being measured»; название
+ * и критерий одним кеглем читались полотном из четырёх строк.
  *
- * У нас так же: секция мелким капсом, название цели жирным, критерий мельче
- * и приглушённым. В компоненте слот подписи один и рассчитан на короткую
- * строку вроде «Metric being measured»; название и критерий одним кеглем
- * читались полотном из четырёх строк.
+ * Метка секции — компонент `tag` со страницы Tags в варианте Green. Он назван
+ * под эту задачу и содержит ровно такие значения: LR, RC, TRANSLATION,
+ * ACCURACY, LEARN.
  *
  * PRD ставит модуль наверх day timeline и требует по строке на секцию, когда
  * LR и RC стоят на разных ступенях.
@@ -55,10 +56,8 @@ export function NextGoal() {
             gap={goal.kind === "gate" ? 6 : 13}
             label={
               <>
-                <span className="block text-caption-medium font-extrabold uppercase text-turquoise-hc">
-                  {goal.section}
-                </span>
-                <span className="mt-1 block text-body-small font-bold text-soft-black">
+                <Tag tone="green">{goal.section}</Tag>
+                <span className="mt-2 block text-body-small font-bold text-soft-black">
                   {goal.name}
                 </span>
                 <span className="mt-1 block text-caption-large text-pewter-hc">
