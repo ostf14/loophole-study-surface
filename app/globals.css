@@ -19,7 +19,7 @@
 
   --color-soft-black: #171712;  --color-soft-white: #fbfbfb;     --color-stark-white: #fff;
   --color-sand: #f3f1ed;        --color-sand-hc: #989286;
-  --color-pewter: #c7c7c5;      --color-pewter-hc: #575752;
+  --color-pewter: #c7c7c5;      --color-pewter-hc: #575752;      --color-pewter-lc: #747471;
   --color-scrim-lighter: #758a8233;
 
   /* типографика интерфейса, шкала v2.0. Интерлиньяж из продакшн-CSS:
@@ -91,10 +91,16 @@ body {
 .lh-card-hover-sm:hover,.lh-card-hover-sm:active{box-shadow:2px 2px 0 0 var(--color-soft-black);translate:-2px -2px}
 .lh-card-hover-xs:hover,.lh-card-hover-xs:active{box-shadow:1px 1px 0 0 var(--color-soft-black);translate:-1px -1px}
 
-.lh-link{color:var(--color-turquoise-hc);cursor:pointer;transition:color .2s}
-.lh-link:hover{color:var(--color-turquoise);text-decoration:underline}
+/* Подчёркивание стоит всегда, ховер только меняет цвет — снято с живого
+   theloophole.com. Раньше здесь было наоборот. */
+.lh-link{color:var(--color-turquoise-hc);cursor:pointer;text-decoration:underline;transition:color .2s}
+.lh-link:hover{color:var(--color-turquoise)}
 .lh-link:active{color:var(--color-turquoise);opacity:.7}
 .lh-link:disabled,.lh-link[disabled]{cursor:not-allowed;opacity:.5}
+
+/* Фокус-кольцо системы. Висит на каждой живой кнопке и инпуте. */
+.lh-outline{outline:none}
+.lh-outline:focus-visible{outline:3px dotted var(--color-pewter-hc);outline-offset:2px}
 
 /* Штатный механизм гейтинга платных фич */
 .lh-link-lock{pointer-events:none;user-select:none;filter:blur(5px)}

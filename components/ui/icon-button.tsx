@@ -31,7 +31,7 @@ export function IconButton({ icon, label, size = "default", className, ...props 
       type="button"
       aria-label={label}
       className={cn(
-        "lh-card-hover-xs inline-flex shrink-0 cursor-pointer items-center justify-center",
+        "lh-card-hover-xs lh-outline inline-flex shrink-0 cursor-pointer items-center justify-center",
         "rounded-full border-[2px] border-soft-black bg-soft-white text-soft-black",
         sizes[size],
         "disabled:cursor-not-allowed disabled:opacity-50",

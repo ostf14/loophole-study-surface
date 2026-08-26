@@ -12,7 +12,7 @@ import { cn } from "@/lib/cn";
  */
 
 const base = `
-  inline-flex cursor-pointer items-center justify-center rounded-full
+  inline-flex cursor-pointer items-center justify-center rounded-full lh-outline
   font-extrabold uppercase
   [transition:background-color_0.15s_cubic-bezier(0.4,0,0.2,1),border-color_0.15s_cubic-bezier(0.4,0,0.2,1),box-shadow_0.15s_cubic-bezier(0.4,0,0.2,1),translate_0.15s_cubic-bezier(0.4,0,0.2,1)]
   disabled:cursor-not-allowed disabled:opacity-50
