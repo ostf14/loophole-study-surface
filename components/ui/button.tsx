@@ -9,11 +9,18 @@ import { cn } from "@/lib/cn";
  *
  * Асимметричный паддинг у secondary (pl-4 pr-3) рассчитан на кнопку с иконкой
  * справа.
+ *
+ * Текст кнопок снят из Figma-компонента `Button`, стиль
+ * `Misc type/Buttons/Button 1`: Inter **900**, 14/20, **трекинг ноль**, капсом.
+ * Это единственное место в системе, где трекинг не отрицательный, — правило
+ * «минус везде» на кнопки не распространяется. Живой theloophole.com
+ * подтверждает: там на кнопках `font-black` и размер задан арбитрарно, без
+ * токена, то есть тоже без трекинга.
  */
 
 const base = `
   inline-flex cursor-pointer items-center justify-center rounded-full lh-outline
-  font-extrabold uppercase
+  font-black tracking-normal uppercase
   [transition:background-color_0.15s_cubic-bezier(0.4,0,0.2,1),border-color_0.15s_cubic-bezier(0.4,0,0.2,1),box-shadow_0.15s_cubic-bezier(0.4,0,0.2,1),translate_0.15s_cubic-bezier(0.4,0,0.2,1)]
   disabled:cursor-not-allowed disabled:opacity-50
 `;
