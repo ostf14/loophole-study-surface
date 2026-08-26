@@ -101,10 +101,14 @@ async function walk(node, depth, origin, styleNames) {
     out.text = await textInfo(node, sid ? styleNames.get(sid) : undefined);
   }
 
-  if (node.type === "INSTANCE") {
-    const main = await node.getMainComponentAsync();
-    out.instanceOf = main ? main.name : "(не разрешён)";
-  }
+  /*
+   * Главный компонент инстанса намеренно НЕ резолвится.
+   *
+   * `getMainComponentAsync` — запрос через мост, и если инстанс ссылается на
+   * опубликованную библиотеку, запрос уходит наружу: замерено 1.44 секунды на
+   * вызов. На 2776 инстансах это 67 минут, то есть весь прогон целиком, ради
+   * поля, которое почти всегда повторяет `name` самого инстанса.
+   */
 
   if ("componentPropertyDefinitions" in node) {
     try {
@@ -118,7 +122,10 @@ async function walk(node, depth, origin, styleNames) {
     } catch { /* у инстансов бывает недоступно */ }
   }
 
-  if ("children" in node && depth < MAX_DEPTH) {
+  /* Внутрь инстансов не спускаемся: их поддерево — копия главного компонента,
+     который дампится отдельно. На этом файле это 4010 узлов из 15706. */
+  const descend = node.type !== "INSTANCE" && depth < MAX_DEPTH;
+  if ("children" in node && descend) {
     out.children = [];
     for (const c of node.children) out.children.push(await walk(c, depth + 1, origin, styleNames));
   } else if ("children" in node && node.children.length) {
@@ -132,8 +139,12 @@ async function run() {
   say("Загружаю страницы файла… на большом файле это самый долгий шаг");
   await breathe();
   await figma.loadAllPagesAsync();
+  mark("страницы");
 
   const dump = { file: figma.root.name, generatedAt: new Date().toISOString() };
+  const t0 = Date.now();
+  const marks = {};
+  const mark = (name) => { marks[name] = Math.round((Date.now() - t0) / 100) / 10; };
 
   /* ── именованные стили: это не переменные, доступ обычный ───────────── */
   say("Читаю именованные стили…");
@@ -158,6 +169,7 @@ async function run() {
   dump.effectStyles = (await figma.getLocalEffectStylesAsync()).map((s) => ({
     name: s.name, effects: s.effects.map(effect),
   }));
+  mark("стили");
 
   /* ── переменные: если тариф не отдаёт, честно пишем это в дамп ──────── */
   try {
@@ -201,19 +213,26 @@ async function run() {
   say(`Найдено компонентов: ${tops.length}. Начинаю обход…`);
   await breathe();
 
+  let lastBreath = Date.now();
   dump.components = [];
   for (let i = 0; i < tops.length; i++) {
     const n = tops[i];
     figma.ui.postMessage({ kind: "progress", done: i, total: tops.length, name: n.name });
-    /* Дышим каждые пять компонентов: чаще — заметно медленнее, реже — окно
-       снова начинает выглядеть замершим. */
-    if (i % 5 === 0) await breathe();
+    /* Уступаем по времени, а не по счётчику: компоненты разного размера, и
+       фиксированный шаг то морозит окно, то тормозит обход впустую. */
+    if (Date.now() - lastBreath > 150) {
+      lastBreath = Date.now();
+      await breathe();
+    }
     let page = n.parent;
     while (page && page.type !== "PAGE") page = page.parent;
     const entry = await walk(n, 0, n.absoluteBoundingBox, styleNames);
     entry.page = page ? page.name : "?";
     dump.components.push(entry);
   }
+
+  mark("компоненты");
+  dump.secondsByStep = marks;
 
   dump.counts = {
     components: dump.components.length,
@@ -222,7 +241,7 @@ async function run() {
     effectStyles: dump.effectStyles.length,
   };
 
-  figma.ui.postMessage({ kind: "done", json: JSON.stringify(dump, null, 1), counts: dump.counts });
+  figma.ui.postMessage({ kind: "done", json: JSON.stringify(dump), counts: dump.counts });
 }
 
 figma.showUI(__html__, { width: 400, height: 330 });
