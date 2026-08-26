@@ -10,6 +10,7 @@ import { CHECKBOX_ROTATIONS, Checkbox } from "@/components/ui/checkbox";
 import { IconButton } from "@/components/ui/icon-button";
 import { PositionIcon } from "@/components/ui/position-icon";
 import { ProgressBar } from "@/components/ui/progress-bar";
+import { ProgressBarLong } from "@/components/ui/progress-bar-long";
 
 /** Служебная страница для сверки примитивов с системой. В выдачу не входит. */
 
@@ -95,6 +96,15 @@ export default function KitchenSink() {
         <Card hover="lg" className="px-5 py-3 text-body-m font-bold">
           hover lg
         </Card>
+      </Row>
+
+      <Row title="Progress bar/long-bar — дорожка, разделители слотов, заполнение, счётчик">
+        <div className="flex w-full max-w-[420px] flex-col gap-6">
+          <ProgressBarLong value={0.42} slots={8} label="42% пройдено" />
+          <ProgressBarLong value={0.42} slots={8} counter={3} label="3 из 8" />
+          <ProgressBarLong value={1} slots={8} counter={8} label="всё пройдено" />
+          <ProgressBarLong value={0} slots={8} label="ничего не пройдено" />
+        </div>
       </Row>
 
       <Row title="stat-point/time-range — Default с дельтами, No Deltas, регрессия">
