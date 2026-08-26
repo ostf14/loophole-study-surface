@@ -18,6 +18,12 @@ const say = (text) => figma.ui.postMessage({ kind: "status", text });
    обход держит главный поток и снаружи выглядит зависшим. */
 const breathe = () => new Promise((r) => setTimeout(r, 0));
 
+const rgba = (c) => {
+  const h = (v) => Math.round(v * 255).toString(16).padStart(2, "0");
+  const hex = `#${h(c.r)}${h(c.g)}${h(c.b)}`;
+  return c.a === undefined || c.a === 1 ? hex : `${hex} @${Math.round(c.a * 100)}%`;
+};
+
 /** Эффект как есть, вместе с visible: выключенная тень лежит в массиве. */
 const effect = (e) => ({
   type: e.type,
@@ -29,11 +35,6 @@ const effect = (e) => ({
   blendMode: e.blendMode,
 });
 
-const rgba = (c) => {
-  const h = (v) => Math.round(v * 255).toString(16).padStart(2, "0");
-  const hex = `#${h(c.r)}${h(c.g)}${h(c.b)}`;
-  return c.a === undefined || c.a === 1 ? hex : `${hex} @${Math.round(c.a * 100)}%`;
-};
 
 const paint = (p) => ({
   type: p.type,
@@ -136,15 +137,19 @@ async function walk(node, depth, origin, styleNames) {
 }
 
 async function run() {
+  /* Таймеры объявляются первыми: ниже они вызываются после каждого шага. */
+  const t0 = Date.now();
+  const marks = {};
+  const mark = (name) => {
+    marks[name] = Math.round((Date.now() - t0) / 100) / 10;
+  };
+
   say("Загружаю страницы файла… на большом файле это самый долгий шаг");
   await breathe();
   await figma.loadAllPagesAsync();
   mark("страницы");
 
   const dump = { file: figma.root.name, generatedAt: new Date().toISOString() };
-  const t0 = Date.now();
-  const marks = {};
-  const mark = (name) => { marks[name] = Math.round((Date.now() - t0) / 100) / 10; };
 
   /* ── именованные стили: это не переменные, доступ обычный ───────────── */
   say("Читаю именованные стили…");
@@ -245,4 +250,12 @@ async function run() {
 }
 
 figma.showUI(__html__, { width: 400, height: 330 });
-run().catch((e) => figma.ui.postMessage({ kind: "error", text: String(e && e.stack ? e.stack : e) }));
+run().catch((e) =>
+  /* Имя и сообщение печатаются отдельно от стека: у Figma стек приходит без
+     них, и в чат прилетала одна строка «at run (…)», по которой не понять
+     ничего. */
+  figma.ui.postMessage({
+    kind: "error",
+    text: [e && e.name, e && e.message, e && e.stack].filter(Boolean).join("\n"),
+  }),
+);
