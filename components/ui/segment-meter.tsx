@@ -2,49 +2,108 @@ import { Check } from "lucide-react";
 import { cn } from "@/lib/cn";
 
 /**
- * Сегментный индикатор Prep Map. Ряд квадратов в чёрной обводке: пройденные
- * залиты turquoise с галочкой, текущий — chartreuse, остальные пустые.
+ * Сегментный индикатор Prep Map. Компоненты `Progress bar/Ticks` и
+ * `Progress Bar/ticked items` со страницы Progress, сняты через Figma REST.
  *
- * Со страницы Progress. Точные размеры из Figma не сняты, квадрат взят 18px
- * под рост строки метрики.
+ * Числа компонента: сегмент 34×36, радиус 6, обводка 2.647 внутрь, ряд с
+ * шагом **минус четыре** — сегменты налезают друг на друга. Ряд из восьми
+ * штук измеряется как 241×42.
+ *
+ * Пять состояний, и различаются они не только цветом:
+ *   Complete    — sand снизу, поверх turquoise, белая галочка, тень 3/3
+ *   In-Progress — sand снизу, поверх seafoam, тень 3/3
+ *   Current     — sand снизу, поверх chartreuse, тень 3/3
+ *   Default     — только sand, тени нет, и сегмент сдвинут на +3/+3
+ *   Clear       — как Default
+ *
+ * То есть залитые сегменты приподняты жёсткой тенью, а пустые стоят плоско
+ * ровно там, где у залитых лежит тень. Ряд поэтому не скачет по базовой линии.
+ *
+ * На живом экране My Plan сегменты мельче тридцати четырёх: продукт масштабирует
+ * их под ширину рельса. Здесь то же самое — пропорции компонента сохраняются,
+ * габарит задаётся на месте использования.
  */
+
+export type SegmentState = "complete" | "in-progress" | "current" | "default";
 
 type SegmentMeterProps = {
   done: number;
   total: number;
-  /** Текущий сегмент подсвечивается chartreuse, как в PositionIcon */
+  /** Подсветить следующий сегмент как текущий. */
   showCurrent?: boolean;
+  /** Ширина сегмента. В компоненте 34, всё остальное считается от неё. */
+  size?: number;
   className?: string;
 };
 
-export function SegmentMeter({ done, total, showCurrent = true, className }: SegmentMeterProps) {
+/** Все производные размеры компонента как доли от ширины сегмента 34. */
+const unit = (w: number) => ({
+  w,
+  h: (w * 36) / 34,
+  radius: (w * 6) / 34,
+  stroke: (w * 2.647) / 34,
+  lift: (w * 3) / 34,
+  overlap: (w * 4) / 34,
+});
+
+const fills: Record<SegmentState, string> = {
+  complete: "var(--color-turquoise)",
+  "in-progress": "var(--color-seafoam)",
+  current: "var(--color-chartreuse)",
+  default: "var(--color-sand)",
+};
+
+export function SegmentMeter({
+  done,
+  total,
+  showCurrent = true,
+  size = 34,
+  className,
+}: SegmentMeterProps) {
+  const u = unit(size);
+
   return (
-    <span
-      className={cn("inline-flex gap-[3px]", className)}
-      role="img"
-      aria-label={`${done} of ${total}`}
-    >
+    <span className={cn("inline-flex", className)} role="img" aria-label={`${done} of ${total}`}>
       {Array.from({ length: total }, (_, i) => {
-        const complete = i < done;
-        const current = showCurrent && i === done;
+        const state: SegmentState =
+          i < done ? "complete" : showCurrent && i === done ? "current" : "default";
+        const raised = state !== "default";
+
         return (
           <span
             key={i}
-            className={cn(
-              "inline-flex size-[18px] items-center justify-center rounded-sm border-[2px] border-soft-black",
-              complete && "bg-turquoise",
-              current && "bg-chartreuse",
-              !complete && !current && "bg-transparent",
-            )}
+            className="relative shrink-0"
+            style={{
+              width: u.w + u.lift,
+              height: u.h + u.lift,
+              /* отрицательный gap в CSS недопустим, налезание задаётся отступом */
+              marginLeft: i === 0 ? 0 : -u.overlap,
+            }}
           >
-            {complete ? (
-              <Check
-                aria-hidden
-                size={10}
-                strokeWidth={4}
-                className="rotate-[9.72deg] text-turquoise-lc"
-              />
-            ) : null}
+            <span
+              className="absolute inline-flex items-center justify-center bg-sand"
+              style={{
+                width: u.w,
+                height: u.h,
+                left: raised ? 0 : u.lift,
+                top: raised ? 0 : u.lift,
+                borderRadius: u.radius,
+                border: `${u.stroke}px solid var(--color-soft-black)`,
+                backgroundColor: fills[state],
+                boxShadow: raised
+                  ? `${u.lift}px ${u.lift}px 0 0 var(--color-soft-black)`
+                  : undefined,
+              }}
+            >
+              {state === "complete" ? (
+                <Check
+                  aria-hidden
+                  strokeWidth={3}
+                  className="text-stark-white"
+                  style={{ width: (u.w * 16) / 34, height: (u.w * 12) / 34 }}
+                />
+              ) : null}
+            </span>
           </span>
         );
       })}

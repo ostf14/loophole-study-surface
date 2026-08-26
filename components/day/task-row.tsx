@@ -16,8 +16,12 @@ import { EmbedCard } from "./embed-card";
  * и снизу, 20 слева и справа, рамка только снизу 2px. Ни карточки, ни заливки,
  * ни радиуса — карточка принадлежит группе, строки внутри неё разделены линией.
  *
- * Левый блок с гэпом 12 держит чекбокс, иконку типа, заголовок и время.
- * Правый с гэпом 20 — слот тега и круглую кнопку размера small, 24×24.
+ * Левый блок с гэпом 12: чекбокс, затем контент. Внутри контента гэп 20 до
+ * времени, а между иконкой типа 16×16 и заголовком — гэп 8. Правый блок с
+ * гэпом 20 держит слот тега и кнопку запуска.
+ *
+ * Время залито `#aaaaaa` прямо в компоненте, мимо токенов. Это та же
+ * непривязанная конвенция, что и у семейства Label; воспроизведено как есть.
  *
  * Заголовок: Inter 500, 14px, трекинг -1.8%, цвет soft-black. Это токен
  * `body-s`. Интерлиньяж взят из CSS (20px), а не из Figma (160% = 22.4) —
@@ -67,6 +71,7 @@ export function TaskRow({
       )}
     >
       <div className="flex h-8 items-center justify-between px-5 py-1">
+        {/* левый блок: гэп 12 между чекбоксом и контентом, внутри контента 20 до времени */}
         <span className="flex min-w-0 items-center gap-3">
           <Checkbox
             size="small"
@@ -76,17 +81,22 @@ export function TaskRow({
             aria-label={task.title}
           />
 
-          <span className="shrink-0 text-body-xs tabular-nums text-pewter-hc">{n}.</span>
+          <span className="flex min-w-0 items-center gap-5">
+            {/* гэп 8 между иконкой типа и заголовком */}
+            <span className="flex min-w-0 items-center gap-2">
+              <span className="shrink-0 text-body-xs tabular-nums text-pewter-hc">{n}.</span>
+              <TaskIcon type={task.type} className="size-[16px] shrink-0 text-soft-black" />
+              <span
+                className={cn("truncate text-body-s", done && "line-through decoration-[2px]")}
+              >
+                {task.title}
+              </span>
+            </span>
 
-          <TaskIcon type={task.type} className="size-[20px] shrink-0 text-soft-black" />
-
-          <span
-            className={cn("truncate text-body-s", done && "line-through decoration-[2px]")}
-          >
-            {task.title}
+            {/* время: цвет #aaaaaa задан в компоненте напрямую, мимо токенов —
+                та же непривязанная конвенция, что у семейства Label */}
+            <span className="shrink-0 text-body-xs tabular-nums text-[#aaaaaa]">{task.time}</span>
           </span>
-
-          <span className="shrink-0 text-body-xs tabular-nums text-pewter-hc">{task.time}</span>
         </span>
 
         <span className="flex shrink-0 items-center gap-5">

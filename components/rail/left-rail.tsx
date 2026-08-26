@@ -149,7 +149,7 @@ function PrepMap() {
                 Not started · starts {formatShort(stage.startsOn)}
               </span>
             ) : (
-              <SegmentMeter done={stage.done} total={stage.total} />
+              <SegmentMeter done={stage.done} total={stage.total} size={26} />
             )}
           </Card>
         ))}

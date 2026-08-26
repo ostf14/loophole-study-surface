@@ -1,8 +1,8 @@
 "use client";
 
-import { ChevronDown, Check } from "lucide-react";
+import { Check } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { IconButton } from "@/components/ui/icon-button";
+import { SectionCollapse } from "@/components/ui/section-collapse";
 import { cn } from "@/lib/cn";
 import type { Group } from "@/lib/plan-data";
 
@@ -22,6 +22,10 @@ import type { Group } from "@/lib/plan-data";
  * и так говорит resume-баннер.
  *
  * Статус словами вместо счётчика — как на живом экране: Completed, Not Started.
+ *
+ * Шеврон — компонент `Section Collapse` размера Small. Тенью он помечает
+ * раскрытость: в варианте Expanded у него жёсткая тень 2/2, в Collapsed её
+ * нет. Строка выросла до 48, чтобы кнопка 32 с тенью 2 не упиралась в край.
  */
 
 type TaskGroupProps = {
@@ -39,7 +43,7 @@ export function TaskGroup({ group, done, open, onToggle, children }: TaskGroupPr
 
   return (
     <Card className="flex flex-col">
-      <div className="flex h-10 shrink-0 items-center gap-3 pr-1 pl-5">
+      <div className="flex h-12 shrink-0 items-center gap-3 pr-3 pl-5">
         {group.tutor ? (
           <span
             aria-hidden
@@ -68,13 +72,8 @@ export function TaskGroup({ group, done, open, onToggle, children }: TaskGroupPr
           {status}
         </span>
 
-        <IconButton
-          icon={
-            <ChevronDown
-              strokeWidth={2.5}
-              className={cn("transition-transform duration-150", open && "rotate-180")}
-            />
-          }
+        <SectionCollapse
+          open={open}
           label={open ? `Collapse ${group.name}` : `Expand ${group.name}`}
           onClick={onToggle}
         />

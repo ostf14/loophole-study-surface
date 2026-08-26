@@ -37,7 +37,7 @@ export function NextGoal() {
 function GoalRow({ goal }: { goal: Goal }) {
   return (
     <div className="flex items-start gap-4">
-      <Tag tone="brand" className="mt-[3px]">
+      <Tag tone="brand" size="lg" className="mt-[3px]">
         {goal.section}
       </Tag>
       <div className="flex min-w-0 flex-col gap-1">
