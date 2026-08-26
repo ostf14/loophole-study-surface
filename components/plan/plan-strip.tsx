@@ -48,7 +48,7 @@ export function PlanStrip({ today, onJumpToPhase, className }: PlanStripProps) {
   return (
     <div className={cn("flex flex-col", className)}>
       {/* засечки вех и подпись Today над дорожкой */}
-      <div className="relative h-[26px]">
+      <div className="relative h-[20px]">
         <span
           className="absolute -translate-x-1/2 text-tag whitespace-nowrap text-soft-black"
           style={{ left: `${todayPct}%`, top: 0 }}

@@ -3,7 +3,6 @@
 import { ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProgressDonut } from "@/components/ui/progress-donut";
-import { TaskIcon } from "@/components/day/task-icon";
 import { formatShort } from "@/lib/plan";
 import type { Task } from "@/lib/plan-data";
 
@@ -23,6 +22,16 @@ import type { Task } from "@/lib/plan-data";
  *
  * Цвета намеренно не взяты: `Training Block` залит sangria-lc, а баннер стоит
  * внутри шапки на turquoise-lc, и розовая полоса там читалась бы как чужая.
+ *
+ * Два отступления от геометрии, оба ради ритма страницы. Вертикальный паддинг
+ * 24 вместо 40: `Training Block` — самостоятельный блок на контентной странице,
+ * а наш баннер третий блок в постоянной шапке, и на сорока она занимала
+ * шестьдесят два процента высоты окна.
+ *
+ * И роли текста переставлены. В `Training Block` двадцатичетвёртым кеглем
+ * набрано имя блока, то есть содержание. У нас там стояло «Jump back in!» —
+ * подпись, а сама задача шла мелко под ней. Теперь наоборот: подпись мелким
+ * капсом, заголовок задачи крупно.
  *
  * Компонентами `Alert/Alert Bar` и `Action Bar` баннер не собран сознательно.
  * Первый — уведомление о проблеме с кнопкой отката и крестиком закрытия,
@@ -52,20 +61,16 @@ export function ResumeBanner({ task, date, today, onStart }: ResumeBannerProps) 
   const p = progress(task);
 
   return (
-    <div className="flex items-center gap-6 rounded-3xl border-[2px] border-soft-black bg-soft-white px-6 py-10">
+    <div className="flex items-center gap-6 rounded-3xl border-[2px] border-soft-black bg-soft-white px-6 py-6">
       <div className="flex min-w-0 flex-1 items-center gap-4">
         <ProgressDonut done={p.done} total={p.total} size={32} />
 
         <div className="flex min-w-0 flex-col gap-2">
-          <span className="text-title-medium font-extrabold">Jump back in!</span>
+          <span className="text-caption-medium uppercase text-pewter-hc">Jump back in!</span>
 
-          <span className="flex min-w-0 items-center gap-4 text-body-s">
-            <span className="flex min-w-0 items-center gap-2">
-              <TaskIcon type={task.type} className="size-[18px] shrink-0 text-soft-black" />
-              <span className="truncate font-bold">{task.title}</span>
-            </span>
-
-            <span className="shrink-0 text-pewter-hc">
+          <span className="flex min-w-0 items-baseline gap-3">
+            <span className="truncate text-title-medium font-extrabold">{task.title}</span>
+            <span className="shrink-0 text-body-s text-pewter-hc">
               {task.started ? task.remaining : task.duration}
               {later ? ` · ${formatShort(date)}` : null}
             </span>
