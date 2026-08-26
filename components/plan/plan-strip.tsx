@@ -66,6 +66,11 @@ export function PlanStrip({ today, onJumpToPhase, className }: PlanStripProps) {
           value={todayPct / 100}
           separators={boundaries}
           height={STRIP_HEIGHT}
+          /* В компоненте разделители #d9d9d9, но там дорожка 36 и они 14
+             в высоту. На нашей 28 они становятся 11 и тонут в песочной
+             заливке: 217 против 241 по светлоте. sand-hc — токен той же
+             семьи, что и заливка, и на ней читается. */
+          separatorColor="var(--color-sand-hc)"
           label={`Plan progress: ${Math.round(todayPct)}%`}
         />
 

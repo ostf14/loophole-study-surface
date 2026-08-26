@@ -158,7 +158,9 @@ function PrepMap() {
             <SegmentMeter
               done={stage.done}
               total={stage.total}
-              next={stage.startsOn ? "none" : "in-progress"}
+              /* Метки следующего сегмента нет: seafoam рядом с sand не
+                 читается, а границу пройденного и так показывает заливка. */
+              next="none"
               size={26}
             />
           </Card>

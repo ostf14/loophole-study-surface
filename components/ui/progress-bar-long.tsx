@@ -39,6 +39,11 @@ type ProgressBarLongProps = {
   counter?: number | string;
   /** Высота дорожки. В компоненте 36, всё остальное считается от неё. */
   height?: number;
+  /**
+   * Цвет разделителей. В компоненте `#d9d9d9`, и на дорожке 36 он читается.
+   * На дорожке ниже он тонет в песочной заливке, поэтому задаётся на месте.
+   */
+  separatorColor?: string;
   className?: string;
   label?: string;
 };
@@ -49,6 +54,7 @@ export function ProgressBarLong({
   separators,
   counter,
   height = 36,
+  separatorColor = "#d9d9d9",
   className,
   label,
 }: ProgressBarLongProps) {
@@ -88,9 +94,7 @@ export function ProgressBarLong({
             key={i}
             className="absolute"
             style={{
-              /* #d9d9d9 стоит в компоненте напрямую, мимо токенов — та же
-                 непривязанная конвенция, что у #aaaaaa и #1a1a1a */
-              backgroundColor: "#d9d9d9",
+              backgroundColor: separatorColor,
               left: `${at * 100}%`,
               width: 2 * k,
               height: separatorH,

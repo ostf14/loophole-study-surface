@@ -36,7 +36,7 @@ type ViewTabsProps = {
 export function ViewTabs({ today, isToday, prev, next, onJumpToDate }: ViewTabsProps) {
   return (
     <nav className="flex items-center justify-between gap-6">
-      <Tabs items={VIEWS} selected="day" className="max-w-[420px] flex-1" />
+      <Tabs items={VIEWS} selected="day" />
 
       <div className="flex items-center gap-2">
         <PageButton label="Previous day" disabled={!prev} onClick={() => prev && onJumpToDate(prev)}>

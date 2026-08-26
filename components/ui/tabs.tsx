@@ -20,6 +20,11 @@ import { cn } from "@/lib/cn";
  * Свойства компонента: Number of items (2 / 3) и Selected item
  * (Left / Middle / Right). Выключенных вкладок в компоненте нет — состояние
  * для Weekly и Full Plan добавлено сверх него.
+ *
+ * Одно отступление: в компоненте кнопки равной ширины и делят фрейм поровну,
+ * здесь они по содержимому. В макете лейблы короткие — «all», «lr only», —
+ * а у нас «Day timeline» и «Full Plan». При равных третях на текст оставалось
+ * 89 пикселей при нужных 105, и он переносился на две строки внутри пилюли.
  */
 
 type TabItem = {
@@ -57,7 +62,7 @@ export function Tabs({ items, selected, onSelect, className }: TabsProps) {
             title={item.title}
             onClick={() => onSelect?.(item.id)}
             className={cn(
-              "lh-outline flex h-10 flex-1 cursor-pointer items-center justify-center gap-2 rounded-full",
+              "lh-outline flex h-10 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-full whitespace-nowrap",
               "text-caption-large font-extrabold uppercase text-soft-black",
               "[transition:background-color_.15s_cubic-bezier(.4,0,.2,1)]",
               active
