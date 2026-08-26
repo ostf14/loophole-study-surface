@@ -50,7 +50,7 @@ export default function KitchenSink() {
         <Checkbox
           checked={a}
           onChange={(e) => setA(e.target.checked)}
-          label={<span className="text-body-m font-bold">Basic Translation Drill</span>}
+          label={<span className="text-body-small font-extrabold">Basic Translation Drill</span>}
         />
       </Row>
 
@@ -87,13 +87,13 @@ export default function KitchenSink() {
       </Row>
 
       <Row title="Card — фирменное движение, sm / md / lg">
-        <Card hover="sm" className="px-5 py-3 text-body-m font-bold">
+        <Card hover="sm" className="px-5 py-3 text-body-small font-extrabold">
           hover sm
         </Card>
-        <Card hover="md" className="px-5 py-3 text-body-m font-bold">
+        <Card hover="md" className="px-5 py-3 text-body-small font-extrabold">
           hover md
         </Card>
-        <Card hover="lg" className="px-5 py-3 text-body-m font-bold">
+        <Card hover="lg" className="px-5 py-3 text-body-small font-extrabold">
           hover lg
         </Card>
       </Row>
@@ -144,8 +144,8 @@ export default function KitchenSink() {
         <div className="flex flex-col gap-1">
           <span className="text-display-m">Display M 32/800</span>
           <span className="text-title-medium">Title Medium 24/700</span>
-          <span className="text-body-xl font-bold">Body XL 20 Bold — заголовок группы</span>
-          <span className="text-body-m font-bold">Body M 16 Bold — заголовок задачи</span>
+          <span className="text-body-xl font-extrabold">Body XL 20 Bold — заголовок группы</span>
+          <span className="text-body-small font-extrabold">Body 3 · 16/24 · 800 — заголовок задачи</span>
           <span className="text-body-s">Body S 14 — подменю</span>
           <span className="text-body-xs text-pewter-hc">Body XS 12 — время и подписи</span>
           <span className="text-caption-medium">Caption Medium 12/600</span>
@@ -159,7 +159,7 @@ export default function KitchenSink() {
 function Row({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="flex flex-col gap-4">
-      <h2 className="text-body-m font-bold text-soft-black">{title}</h2>
+      <h2 className="text-body-small font-extrabold text-soft-black">{title}</h2>
       <div className="flex flex-wrap items-center gap-6">{children}</div>
     </section>
   );

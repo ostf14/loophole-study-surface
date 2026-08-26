@@ -118,7 +118,7 @@ function PrepMap() {
              влезала в ширину рельса — переносилась на две строки, и высоты
              карточек скакали от 74 до 103. */
           <Card key={stage.id} hover="xs" className="flex flex-col gap-2 px-4 py-3">
-            <span className={cn("text-body-m font-extrabold", stage.startsOn && "text-pewter-hc")}>
+            <span className={cn("text-body-small font-extrabold", stage.startsOn && "text-pewter-hc")}>
               {stage.name}
             </span>
 
@@ -161,7 +161,7 @@ function Section({
   return (
     <section className={cn("flex flex-col gap-3", className)}>
       <div className="flex items-center justify-between gap-3">
-        <h2 className="text-body-m font-extrabold text-soft-black">{title}</h2>
+        <h2 className="text-body-small font-extrabold text-soft-black">{title}</h2>
         {action}
       </div>
       {children}

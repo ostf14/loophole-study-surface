@@ -58,7 +58,7 @@ export function StatPoint({ label, children, eyebrow, hover = false, gap = 13, c
       <div className="flex flex-col pt-[2px]" style={{ gap }}>
         {eyebrow}
         {children}
-        <p className="text-body-m text-pewter-hc">{label}</p>
+        <p className="text-body-small text-pewter-hc">{label}</p>
       </div>
     </div>
   );

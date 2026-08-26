@@ -227,7 +227,7 @@ export default function StudySurface() {
               </>
             ) : (
             <Card className="flex flex-col items-center gap-4 px-8 py-14 text-center">
-              <span className="text-body-m font-extrabold">{formatLong(date)}</span>
+              <span className="text-body-small font-extrabold">{formatLong(date)}</span>
               <span className="text-body-s text-pewter-hc">
                 Demo data covers Jul 14 – Jul 16.
               </span>

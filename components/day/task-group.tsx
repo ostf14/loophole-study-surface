@@ -57,7 +57,7 @@ export function TaskGroup({ group, done, open, onToggle, children }: TaskGroupPr
           type="button"
           onClick={onToggle}
           aria-expanded={open}
-          className="min-w-0 flex-1 cursor-pointer truncate text-left text-body-m font-extrabold"
+          className="min-w-0 flex-1 cursor-pointer truncate text-left text-body-small font-extrabold"
         >
           {group.name}
         </button>
