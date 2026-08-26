@@ -9,13 +9,22 @@ import type { NoteBlock, Run, Task } from "@/lib/plan-data";
  * Move On) идут тем же блоком. Overview ведёт абзацем без метки, остальные
  * поля — вторичными строками с короткими лид-инами: четыре равновесных
  * подписи капсом читались как каша.
+ *
+ * Весь блок идёт цветом pewter-hc. Заголовок задачи остаётся единственной
+ * почти чёрной вещью в строке: раньше заметка шла тем же soft-black тем же
+ * кеглем и весом, то есть подпорка звучала ровно так же громко, как то, что
+ * она подпирает.
+ *
+ * Вертикальной линии слева нет. Рамок тоньше двух пикселей и серых линий в
+ * системе не существует, а границы блока и так заданы разделителями строк
+ * сверху и снизу.
  */
 
 export function PlanNotes({ task }: { task: Task }) {
   if (!task.notes && !task.intro) return null;
 
   return (
-    <div className="flex flex-col gap-2 border-l-[2px] border-pewter pl-4">
+    <div className="flex flex-col gap-2 text-pewter-hc">
       {task.notes?.map((block, i) => (
         <Block key={i} block={block} />
       ))}
@@ -57,14 +66,14 @@ function Runs({ runs }: { runs: Run[] }) {
       {runs.map((run, i) => {
         if ("href" in run) {
           return (
-            <a key={i} href={run.href} className="lh-link font-bold">
+            <a key={i} href={run.href} className="lh-link">
               {run.t}
             </a>
           );
         }
         if ("bold" in run) {
           return (
-            <b key={i} className="font-bold">
+            <b key={i} className="font-bold text-soft-black">
               {run.t}
             </b>
           );
@@ -78,7 +87,7 @@ function Runs({ runs }: { runs: Run[] }) {
 function Field({ label, value }: { label: string; value: string }) {
   return (
     <p className="text-body-xs text-pewter-hc">
-      <span className="font-bold uppercase">{label}:</span> {value}
+      <span className="text-caption-medium uppercase">{label}:</span> {value}
     </p>
   );
 }

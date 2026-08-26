@@ -1,6 +1,7 @@
 "use client";
 
 import { Bookmark, BookmarkCheck } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import type { Embed } from "@/lib/plan-data";
 
@@ -24,16 +25,11 @@ export function EmbedCard({ embed, bookmarked, onToggle }: EmbedCardProps) {
   return (
     <Card className="flex items-center gap-4 px-4 py-3">
       <span className="flex min-w-0 flex-col">
-        <span className="truncate text-body-s font-bold">{name}</span>
+        <span className="truncate text-body-s">{name}</span>
         <span className="text-body-xs text-pewter-hc">{meta}</span>
       </span>
       <span className="flex-1" />
-      <button
-        type="button"
-        onClick={onToggle}
-        aria-pressed={bookmarked}
-        className="lh-card-hover-xs inline-flex shrink-0 cursor-pointer items-center gap-2 rounded-full border-[2px] border-soft-black bg-soft-white px-3 py-1 text-caption-medium uppercase"
-      >
+      <Button variant="secondary" onClick={onToggle} aria-pressed={bookmarked}>
         {bookmarked ? (
           <>
             <BookmarkCheck className="size-[14px]" strokeWidth={2.5} />
@@ -45,7 +41,7 @@ export function EmbedCard({ embed, bookmarked, onToggle }: EmbedCardProps) {
             Bookmark
           </>
         )}
-      </button>
+      </Button>
     </Card>
   );
 }

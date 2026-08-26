@@ -101,7 +101,7 @@ export function TaskRow({
       </div>
 
       {hasNotes ? (
-        <div className="flex flex-col gap-3 px-5 pb-4">
+        <div className="flex flex-col gap-3 px-5 pt-2 pb-4">
           <PlanNotes task={task} />
           {task.embeds?.map((embed) => (
             <EmbedCard
