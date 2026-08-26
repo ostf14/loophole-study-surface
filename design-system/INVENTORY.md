@@ -174,6 +174,76 @@ Area Extended Trial, Display (Alt) — Area Normal Trial.
 
 ---
 
+## Маркетинговый сайт: та же система
+
+Проверено на `theloophole.com`: бандл скачан, значения сняты в браузере на
+ширине 1440 и сверены с исходником `app/globals.css`, а не с нашим билдом —
+Tailwind вырезает неиспользованные токены, и «нет в выхлопе» не значит «нет
+в системе».
+
+**84 сопоставимых токена, расходятся 3**, и все три — трекинг:
+
+| Токен | Маркетинг | У нас (из приложения) |
+|---|---|---|
+| `--text-body-large--letter-spacing` | `-.0125rem` | `-.0225rem` |
+| `--text-body-medium--letter-spacing` | `-.01125rem` | `-.02025rem` |
+| `--text-display-small--letter-spacing` | `-.054rem` | `-.042rem` |
+
+Кегли, интерлиньяжи, веса и все четырнадцать общих цветов совпали до
+значения. Взяты наши: экран относится к приложению, а не к сайту.
+
+Компонентный язык тот же: жёсткие тени `4px 4px 0 0 var(--color-soft-black)`,
+`6px 6px`, `2px 2px`; рамки 1/2/3px; Inter; фирменное движение
+`hover { translate: -4px -4px }` с `transition: translate .15s
+cubic-bezier(.4,0,.2,1)` — та же кривая и длительность, что в
+`lh-card-hover-*`.
+
+### Шкала с развёрнутыми именами — это и есть примитивы
+
+Маркетинг даёт недостающее звено: имена из панели переменных ложатся на CSS
+один в один, все десять.
+
+| Figma | CSS | px |
+|---|---|---|
+| Display 1 | `--text-display-large` | 74 |
+| Display 2 | `--text-display-medium` | 60 |
+| Display 3 | `--text-display-small` | 48 |
+| Title 1 | `--text-title-large` | 32 |
+| Title 2 | `--text-title-medium` | 24 |
+| Body 1 | `--text-body-large` | 20 |
+| Body 2 | `--text-body-medium` | 18 |
+| Body 3 | `--text-body-small` | 16 |
+| Caption 1 | `--text-caption-large` | 14 |
+| Caption 2 | `--text-caption-medium` | 12 |
+
+Отсюда понятно, почему подпись в `Stat point` размечена `Body 3`: компонент
+размечен примитивами, а не короткой шкалой v2.0. Короткая шкала
+(`display-xl/l/m/s`, `body-xl/l/m/s/xs`, `tag`, `tag-s`) в примитивах
+отсутствует — это второй слой поверх. Маркетинг несёт обе, как и приложение.
+
+### Compact реализован, но расходится с макетом начиная с Title
+
+| Токен | CSS маркетинга | Колонка Compact в Figma |
+|---|---|---|
+| `display-large-compact` | 54 | 54 ✓ |
+| `display-medium-compact` | 46 | 46 ✓ |
+| `display-small-compact` | 34 | 34 ✓ |
+| `title-large-compact` | 26 | 28 ✗ |
+| `title-medium-compact` | 20 | 24 ✗ |
+| `body-large-compact` | 14 | 18 ✗ |
+| `body-medium-compact` | 14 | 16 ✗ |
+| `body-small-compact` | 14 | 15 ✗ |
+
+Семейство display сходится, ниже — нет: прод схлопывает все три body в 14.
+Вопрос их команде.
+
+### Что привязано к поверхности, а не к системе
+
+`--layout-px` — 2rem у маркетинга против 3.5rem в приложении;
+`--section-py` — 3rem против 2rem. Своя сетка у своей страницы.
+
+---
+
 ## Расхождения внутри самой системы
 
 Найдены при сверке, вынесены в вопросы к их команде.
