@@ -35,7 +35,8 @@ import { GOALS, type Goal } from "@/lib/plan-data";
  *
  * Метка секции — компонент `tag` со страницы Tags в варианте Green. Он назван
  * под эту задачу и содержит ровно такие значения: LR, RC, TRANSLATION,
- * ACCURACY, LEARN.
+ * ACCURACY, LEARN. Стоит над показателем: слота под метку в `Stat point` нет,
+ * добавлен сверх компонента.
  *
  * PRD ставит модуль наверх day timeline и требует по строке на секцию, когда
  * LR и RC стоят на разных ступенях.
@@ -54,10 +55,10 @@ export function NextGoal() {
             key={goal.section}
             className="w-full"
             gap={goal.kind === "gate" ? 6 : 13}
+            eyebrow={<Tag tone="green">{goal.section}</Tag>}
             label={
               <>
-                <Tag tone="green">{goal.section}</Tag>
-                <span className="mt-2 block text-body-small font-bold text-soft-black">
+                <span className="block text-body-small font-bold text-soft-black">
                   {goal.name}
                 </span>
                 <span className="mt-1 block text-caption-large text-pewter-hc">

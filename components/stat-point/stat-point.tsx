@@ -28,13 +28,19 @@ type StatPointProps = {
   label: ReactNode;
   /** Стата: time-range, trend, personal-best и остальные виды семейства. */
   children: ReactNode;
+  /**
+   * Метка над статой. Слота под неё в компоненте нет — там только стата
+   * и подпись. Добавлено, чтобы метка секции стояла над показателем,
+   * а не в подписи под ним.
+   */
+  eyebrow?: ReactNode;
   hover?: boolean;
   /** Гэп между статой и подписью. 13 у Visual Gauge, 6 у Compare. */
   gap?: number;
   className?: string;
 };
 
-export function StatPoint({ label, children, hover = false, gap = 13, className }: StatPointProps) {
+export function StatPoint({ label, children, eyebrow, hover = false, gap = 13, className }: StatPointProps) {
   return (
     <div
       className={cn(
@@ -45,6 +51,7 @@ export function StatPoint({ label, children, hover = false, gap = 13, className 
       )}
     >
       <div className="flex flex-col pt-[2px]" style={{ gap }}>
+        {eyebrow}
         {children}
         <p className="text-body-small text-pewter-hc">{label}</p>
       </div>
