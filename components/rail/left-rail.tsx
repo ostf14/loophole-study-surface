@@ -13,6 +13,8 @@ import { formatShort } from "@/lib/plan";
  *
  * Пустые состояния стадий показывают дату старта, подтянутую из фаз стрипа:
  * ноль в шкале читается как сломанный интерфейс, дата — как «ещё не время».
+ * Сами сегменты при этом рисуются у всех пяти, как на живом экране My Plan,
+ * поэтому карточки одной высоты и рельс читается лестницей.
  */
 
 type LeftRailProps = {
@@ -51,9 +53,14 @@ export function LeftRail({ currentPhase, workouts, routines, onSelectPlan }: Lef
               My History
             </a>
           </li>
-          <li className="flex items-center gap-2 text-pewter-hc">
-            <Lock className="size-[14px] shrink-0" strokeWidth={2.5} />
-            <span className="lh-link-lock font-bold">Concept Review</span>
+          {/* lh-link-lock — их штатный механизм гейтинга платных фич.
+              Ряд держится в одну строку: размытый текст в две читался
+              как артефакт рендера, а не как закрытая функция. */}
+          <li className="flex flex-col gap-1 text-pewter-hc">
+            <span className="flex items-center gap-2">
+              <Lock className="size-[14px] shrink-0" strokeWidth={2.5} />
+              <span className="lh-link-lock font-bold whitespace-nowrap">Concept Review</span>
+            </span>
             <span className="text-body-xs">unlocks with the video course</span>
           </li>
         </ul>
@@ -129,29 +136,31 @@ function PrepMap() {
     >
       <div className="flex flex-col gap-3">
         {PREP_MAP.map((stage) => (
+          /* Один порядок для всех пяти: заголовок, под ним строка состояния,
+             под ней сегменты. Раньше метрика стояла справа от заголовка и не
+             влезала в ширину рельса — переносилась на две строки, и высоты
+             карточек скакали от 74 до 103. */
           <Card key={stage.id} hover="xs" className="flex flex-col gap-2 px-4 py-3">
-            <div className="flex items-baseline justify-between gap-3">
-              <span
-                className={cn(
-                  "text-body-m font-bold",
-                  stage.startsOn && "text-pewter-hc",
-                )}
-              >
-                {stage.name}
-              </span>
-              {stage.startsOn ? null : (
-                <span className="text-body-xs text-pewter-hc">
-                  {stage.done}/{stage.total} {stage.metric}
-                </span>
-              )}
-            </div>
-            {stage.startsOn ? (
-              <span className="text-body-xs text-pewter-hc">
-                Not started · starts {formatShort(stage.startsOn)}
-              </span>
-            ) : (
-              <SegmentMeter done={stage.done} total={stage.total} size={26} />
-            )}
+            <span className={cn("text-body-m font-bold", stage.startsOn && "text-pewter-hc")}>
+              {stage.name}
+            </span>
+
+            <span className="text-body-xs text-pewter-hc">
+              {stage.startsOn
+                ? `Not started · starts ${formatShort(stage.startsOn)}`
+                : `${stage.done}/${stage.total} ${stage.metric}`}
+            </span>
+
+            {/* Сегменты показываются у всех пяти стадий, как на живом экране
+                My Plan: там у незапущенных стоят семь пустых квадратов.
+                Строка с датой старта при этом остаётся — она объясняет ноль,
+                чтобы он не читался как сломанный интерфейс. */}
+            <SegmentMeter
+              done={stage.done}
+              total={stage.total}
+              next={stage.startsOn ? "none" : "in-progress"}
+              size={26}
+            />
           </Card>
         ))}
       </div>
