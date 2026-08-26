@@ -26,8 +26,15 @@ import { GOALS, type Goal } from "@/lib/plan-data";
  * сорванный. Два значения из градиента выглядели бы похоже и читались бы
  * неверно.
  *
- * Подпись карточки расширена до двух строк: PRD требует и название цели,
- * и критерий словами, а в компоненте слот один.
+ * Подпись карточки расширена до трёх строк по образцу `Onboarding list item`
+ * со страницы Lists — там та же задача решена тремя уровнями: «Step 1»
+ * мелким капсом цветом turquoise-hc, инструкция жирно, объяснение приглушённо
+ * и мельче.
+ *
+ * У нас так же: секция мелким капсом, название цели жирным, критерий мельче
+ * и приглушённым. В компоненте слот подписи один и рассчитан на короткую
+ * строку вроде «Metric being measured»; название и критерий одним кеглем
+ * читались полотном из четырёх строк.
  *
  * PRD ставит модуль наверх day timeline и требует по строке на секцию, когда
  * LR и RC стоят на разных ступенях.
@@ -48,10 +55,15 @@ export function NextGoal() {
             gap={goal.kind === "gate" ? 6 : 13}
             label={
               <>
-                <span className="block font-bold text-soft-black">
-                  {goal.section} · {goal.name}
+                <span className="block text-caption-medium font-extrabold uppercase text-turquoise-hc">
+                  {goal.section}
                 </span>
-                <span className="block">{goal.criterion}</span>
+                <span className="mt-1 block text-body-small font-bold text-soft-black">
+                  {goal.name}
+                </span>
+                <span className="mt-1 block text-caption-large text-pewter-hc">
+                  {goal.criterion}
+                </span>
               </>
             }
           >

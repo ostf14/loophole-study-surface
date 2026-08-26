@@ -156,7 +156,10 @@ export const GOALS: Goal[] = [
   },
   {
     section: "RC",
-    name: "Translation + CLIR under 25:00",
+    /* Цель без порога в названии: 25:00 и так стоит в стате как Goal
+       и повторяется в критерии. Трижды одно и то же — и название
+       переносилось на две строки. */
+    name: "Translation + CLIR",
     criterion: "Translate a full RC passage with CLIR in under 25:00",
     kind: "clock",
     startSeconds: 2290,
