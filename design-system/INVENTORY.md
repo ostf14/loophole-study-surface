@@ -34,6 +34,7 @@
 | Кружок позиции | `Position_Icon` | Timeline |
 | Полоса прогресса | `Progress_bar` | Timeline |
 | Круглая кнопка-иконка | `Icon Button` | Buttons |
+| Кнопки пейджинга ‹ › | `Page control`, вариант `Round` | Buttons |
 | Геометрия resume-баннера | `Training Block` | Bars |
 | Длинная полоса прогресса со счётчиком | `Progress bar/long-bar`, `Counter` | Progress |
 | Plan strip | `Progress bar/long-bar` | Progress |
@@ -57,7 +58,7 @@
 |---|---|---|
 | `Note` | Bars | Plan Notes |
 | `Routine object`, `Routine Card`, `Workout Card` | Bars, Cards | Встроенные карточки воркаутов и рутин |
-| `Page control`, `Pagination` | Buttons, Navigation | Пейджинг дней |
+| `Pagination` | Navigation | Нижний пейджер дней |
 | `List box`, `Menu_Item` | Lists, Navigation | Селектор планов в рельсе |
 | `checkbox-list-item` | Lists | Тумблер Hide completed |
 
@@ -65,6 +66,7 @@
 
 | Где | Что в компоненте | Что у нас | Почему |
 |---|---|---|---|
+| `Page control` | тень 3/3 постоянная, на ховер отвечает заливка | так и сделано | Отмечено как отклонение от **нашей** конвенции, а не от компонента: везде на экране элемент уезжает вверх-влево и тень вырастает под ним, здесь тень стоит всегда. Компонент главнее конвенции |
 | Строка задачи | нет номера позиции | номер текстом | PRD: «Each task is a numbered row» |
 | Строка задачи | нет зачёркивания | зачёркивание выполненного | PRD: «Completing a row strikes it through» |
 | Строка задачи | время держится за конец заголовка | время в фиксированной колонке между тегом и стрелкой, выключка вправо | В компоненте заголовки одной длины. На настоящих названиях — от «Chapter 4» до «What is Reading? (you are not broken)» — время расползлось на 162px при ширине колонки 600. Порядок PRD цел: «checkbox, type icon, title, start time, and a launch arrow» |

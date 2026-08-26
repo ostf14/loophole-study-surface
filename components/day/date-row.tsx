@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Chip } from "@/components/ui/chip";
+import { PageControl } from "@/components/ui/page-control";
 import { Card } from "@/components/ui/card";
 import { ProgressDonut } from "@/components/ui/progress-donut";
 import { cn } from "@/lib/cn";
@@ -65,9 +66,9 @@ export function DateRow({
       <div className="flex items-center gap-3">
         <DayPicker date={date} done={done} onJumpToDate={onJumpToDate} />
 
-        <PageButton label="Previous day" disabled={!prev} onClick={() => prev && onJumpToDate(prev)}>
-          <ChevronLeft className="size-[18px]" strokeWidth={2.5} />
-        </PageButton>
+        <PageControl label="Previous day" disabled={!prev} onClick={() => prev && onJumpToDate(prev)}>
+          <ChevronLeft className="size-[24px]" strokeWidth={2.5} />
+        </PageControl>
         <Button
           variant="secondary"
           disabled={date === today}
@@ -76,9 +77,9 @@ export function DateRow({
         >
           Today
         </Button>
-        <PageButton label="Next day" disabled={!next} onClick={() => next && onJumpToDate(next)}>
-          <ChevronRight className="size-[18px]" strokeWidth={2.5} />
-        </PageButton>
+        <PageControl label="Next day" disabled={!next} onClick={() => next && onJumpToDate(next)}>
+          <ChevronRight className="size-[24px]" strokeWidth={2.5} />
+        </PageControl>
       </div>
 
       <ProgressDonut done={progress.done} total={progress.total} />
@@ -86,29 +87,6 @@ export function DateRow({
   );
 }
 
-function PageButton({
-  children,
-  label,
-  disabled,
-  onClick,
-}: {
-  children: React.ReactNode;
-  label: string;
-  disabled: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      aria-label={label}
-      disabled={disabled}
-      onClick={onClick}
-      className="lh-card-hover-xs inline-flex size-[38px] cursor-pointer items-center justify-center rounded-full border-[2px] border-soft-black bg-transparent disabled:cursor-not-allowed disabled:opacity-40"
-    >
-      {children}
-    </button>
-  );
-}
 
 function DayPicker({
   date,
