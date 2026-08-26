@@ -97,7 +97,8 @@ function PlanSelector({
               aria-current={active ? "true" : undefined}
               className={cn(
                 "lh-card-hover-xs flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors duration-150",
-                active ? "bg-chartreuse-lc" : "hover:bg-seafoam-lc",
+                /* turquoise-lc — заливка активного пункта в их Tandem_Plan_Item_Menu */
+                active ? "bg-turquoise-lc" : "hover:bg-seafoam-lc",
               )}
             >
               <span className="w-[14px] shrink-0 text-body-xs tabular-nums text-pewter-hc">

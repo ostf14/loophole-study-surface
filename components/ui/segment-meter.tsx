@@ -29,8 +29,15 @@ export type SegmentState = "complete" | "in-progress" | "current" | "default";
 type SegmentMeterProps = {
   done: number;
   total: number;
-  /** Подсветить следующий сегмент как текущий. */
-  showCurrent?: boolean;
+  /**
+   * Чем помечать следующий незакрытый сегмент. `in-progress` — заливка
+   * seafoam, `current` — chartreuse, `none` — ничем.
+   *
+   * В компоненте есть оба состояния, но chartreuse на этом экране уже занят
+   * первичным действием и активной вкладкой. Третья роль сделала бы акцент
+   * бессмысленным, поэтому здесь стоит seafoam.
+   */
+  next?: "in-progress" | "current" | "none";
   /** Ширина сегмента. В компоненте 34, всё остальное считается от неё. */
   size?: number;
   className?: string;
@@ -56,7 +63,7 @@ const fills: Record<SegmentState, string> = {
 export function SegmentMeter({
   done,
   total,
-  showCurrent = true,
+  next = "in-progress",
   size = 34,
   className,
 }: SegmentMeterProps) {
@@ -66,7 +73,7 @@ export function SegmentMeter({
     <span className={cn("inline-flex", className)} role="img" aria-label={`${done} of ${total}`}>
       {Array.from({ length: total }, (_, i) => {
         const state: SegmentState =
-          i < done ? "complete" : showCurrent && i === done ? "current" : "default";
+          i < done ? "complete" : next !== "none" && i === done ? next : "default";
         const raised = state !== "default";
 
         return (
