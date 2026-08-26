@@ -128,7 +128,7 @@ function PrepMap() {
     <Section
       title="Prep Map"
       action={
-        <button type="button" className="lh-link inline-flex items-center gap-1 text-caption-medium uppercase">
+        <button type="button" className="lh-link inline-flex items-center gap-1 text-body-s font-bold">
           <Search className="size-[13px]" strokeWidth={3} />
           Lookup
         </button>
@@ -182,7 +182,7 @@ function Section({
   return (
     <section className="flex flex-col gap-3">
       <div className="flex items-center justify-between gap-3">
-        <h2 className="text-caption-medium uppercase text-pewter-hc">{title}</h2>
+        <h2 className="text-body-m font-bold text-soft-black">{title}</h2>
         {action}
       </div>
       {children}

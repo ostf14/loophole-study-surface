@@ -159,7 +159,7 @@ export default function KitchenSink() {
 function Row({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="flex flex-col gap-4">
-      <h2 className="text-caption-medium uppercase text-pewter-hc">{title}</h2>
+      <h2 className="text-body-m font-bold text-soft-black">{title}</h2>
       <div className="flex flex-wrap items-center gap-6">{children}</div>
     </section>
   );

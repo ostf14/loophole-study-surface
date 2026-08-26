@@ -4,17 +4,20 @@ import { useEffect, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { Chip } from "@/components/ui/chip";
 import { Card } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
 import { ProgressDonut } from "@/components/ui/progress-donut";
 import { cn } from "@/lib/cn";
 import { DAYS, DAY_ORDER } from "@/lib/plan-data";
 import { allTasks, formatLong } from "@/lib/plan";
 
 /**
- * Строка дня: слева идентичность — пилюля даты с дропдауном и донат рядом,
- * как требует PRD («paired with a progress donut»); справа Hide completed со
- * счётчиком скрытого. Пейджинг ‹ Today › живёт в переключателе видов, где его
- * и описывает PRD.
+ * Строка дня: слева идентичность — пилюля даты с дропдауном, справа донат
+ * прогресса. PRD требует их парой («paired with a progress donut»), и парой
+ * они остаются: это два конца одной строки, а не два разных блока. Пейджинг
+ * ‹ Today › живёт в переключателе видов, где его и описывает PRD.
+ *
+ * Hide completed отсюда убран. Он не из PRD, его роль дублировало
+ * авто-сворачивание выполненной группы, а стоял он ровно там, где по проду
+ * стоит донат.
  *
  * Дата — единственная идентичность дня. Номеров дней нет нигде, PRD запрещает
  * их прямо, и это главное отличие от текущей страницы с её «DAY 3».
@@ -38,8 +41,6 @@ type DateRowProps = {
   date: string;
   done: ReadonlySet<string>;
   progress: { done: number; total: number };
-  hideCompleted: boolean;
-  onHideCompletedChange: (next: boolean) => void;
   onJumpToDate: (date: string) => void;
 };
 
@@ -47,29 +48,12 @@ export function DateRow({
   date,
   done,
   progress,
-  hideCompleted,
-  onHideCompletedChange,
   onJumpToDate,
 }: DateRowProps) {
   return (
     <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-4">
-      <div className="flex items-center gap-4">
-        <DayPicker date={date} done={done} onJumpToDate={onJumpToDate} />
-        <ProgressDonut done={progress.done} total={progress.total} />
-      </div>
-
-      <Checkbox
-        size="small"
-        rotation="gentleRight"
-        checked={hideCompleted}
-        onChange={(e) => onHideCompletedChange(e.target.checked)}
-        className="gap-3"
-        label={
-          <span className="text-body-s whitespace-nowrap text-pewter-hc">
-            Hide completed ({progress.done})
-          </span>
-        }
-      />
+      <DayPicker date={date} done={done} onJumpToDate={onJumpToDate} />
+      <ProgressDonut done={progress.done} total={progress.total} />
     </div>
   );
 }

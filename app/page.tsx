@@ -25,7 +25,6 @@ import {
 
 export default function StudySurface() {
   const [date, setDate] = useState(TODAY);
-  const [hideCompleted, setHideCompleted] = useState(false);
   const [bookmarks, setBookmarks] = useState<Embed[]>([]);
   const [toast, setToast] = useState<string | null>(null);
   const toastTimer = useRef<number | undefined>(undefined);
@@ -157,8 +156,6 @@ export default function StudySurface() {
               date={date}
               done={done}
               progress={progress}
-              hideCompleted={hideCompleted}
-              onHideCompletedChange={setHideCompleted}
               onJumpToDate={setDate}
             />
 
@@ -168,7 +165,6 @@ export default function StudySurface() {
                 {day.groups.map((group) => {
                   const key = `${date}:${group.id}`;
                   const gp = groupProgress(group, done);
-                  if (hideCompleted && gp.done === group.tasks.length) return null;
                   return (
                     <TaskGroup
                       key={group.id}
@@ -179,7 +175,6 @@ export default function StudySurface() {
                     >
                       {group.tasks.map((task) => {
                         const isDone = done.has(task.id);
-                        if (hideCompleted && isDone) return null;
                         return (
                           <TaskRow
                             key={task.id}
