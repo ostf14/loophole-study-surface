@@ -75,7 +75,7 @@ export function TaskRow({
             {task.title}
           </span>
 
-          {task.optional ? <Tag>optional</Tag> : null}
+          {task.optional ? <Tag>(optional)</Tag> : null}
 
           <span className="flex-1" />
 

@@ -91,8 +91,13 @@ export const PHASES: Phase[] = [
 ];
 
 /**
- * Вехи производны от расписания: система находит первую задачу нужного типа,
- * её дата и есть маркер. При ребалансе плана маркер едет вместе с задачей.
+ * Вехи по PRD производны от расписания: система находит первую задачу нужного
+ * типа, её дата и есть маркер, и при ребалансе плана маркер едет вместе с ней.
+ *
+ * Здесь они заданы явно, потому что расписание в этом прототипе есть только на
+ * три дня июля, а вехи ложатся на весь диапазон с июня по октябрь. Выводить
+ * не из чего. На реальных данных этот массив заменяется выборкой по типу
+ * задачи, состав и порядок вех при этом не меняются.
  */
 export const MILE_MARKERS: MileMarker[] = [
   { id: "translation", label: "Translation starts", date: "2026-07-06" },
@@ -285,7 +290,7 @@ export const DAYS: Record<string, Day> = {
       },
       {
         id: "d15-apex",
-        name: "Tutor's business name",
+        name: "Apex LSAT Tutoring",
         tutor: { initials: "AL" },
         tasks: [
           { id: "d15-t7", type: "tutor", title: "Problem set: Weaken questions (12)", time: "6:00 PM", duration: "40m", done: false, launchable: true },
@@ -336,7 +341,7 @@ export const DAYS: Record<string, Day> = {
       },
       {
         id: "d16-apex",
-        name: "Tutor's business name",
+        name: "Apex LSAT Tutoring",
         tutor: { initials: "AL" },
         tasks: [
           { id: "d16-t4", type: "tutor", title: "Review the set from Tuesday's session", time: "6:00 PM", duration: "30m", done: false, launchable: true },

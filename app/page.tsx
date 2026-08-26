@@ -16,14 +16,12 @@ import {
   allTasks,
   dayProgress,
   earliestIncomplete,
+  firstDayOfPhase,
+  firstIncompleteDayOfPhase,
   formatLong,
   groupProgress,
   phaseAt,
 } from "@/lib/plan";
-
-const WORKOUT_NAMES: Record<string, string> = {
-  "w-rc-3": "Translation Workout: RC vol. 3",
-};
 
 export default function StudySurface() {
   const [date, setDate] = useState(TODAY);
@@ -48,6 +46,15 @@ export default function StudySurface() {
     }
     return s;
   });
+
+  /** Имена воркаутов для рельса берутся из задач, отдельного справочника нет. */
+  const workoutNames = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const d of DAY_ORDER) {
+      for (const t of allTasks(DAYS[d])) if (t.workout) map.set(t.workout.id, t.workout.name);
+    }
+    return map;
+  }, []);
 
   const day = DAYS[date];
   const progress = useMemo(() => (day ? dayProgress(day, done) : { done: 0, total: 0 }), [day, done]);
@@ -101,26 +108,28 @@ export default function StudySurface() {
     );
   };
 
-  const jumpToPhase = (phase: Phase) => {
-    const first = DAY_ORDER.find((d) => d >= phase.start && d <= phase.end);
-    setDate(first ?? phase.start);
-  };
+  /** Стрип: PRD — «jumps the current view to that plan's first day». */
+  const jumpToPhaseStart = (phase: Phase) => setDate(firstDayOfPhase(phase));
+
+  /** Рельс: PRD — «jumps to that plan's first incomplete day». Поведение другое. */
+  const jumpToFirstIncompleteDay = (phase: Phase) =>
+    setDate(firstIncompleteDayOfPhase(phase, done));
 
   return (
     <div className="flex min-h-full flex-col">
       <PlanHeader
         today={TODAY}
         resume={resume}
-        onJumpToPhase={jumpToPhase}
-        onAdjustPlan={() => say("Adjust Plan открывает Study Plan Settings — вне скоупа")}
-        onStart={() => say("Start запускает focus mode — вне скоупа")}
+        onJumpToPhase={jumpToPhaseStart}
+        onAdjustPlan={() => say("Adjust Plan opens Study Plan Settings — out of scope for this build")}
+        onStart={() => say("Start launches focus mode — out of scope for this build")}
       />
 
       <div className="mx-auto flex w-full max-w-[var(--study-surface-width)] flex-1 gap-10 px-10 py-8">
         <LeftRail
           currentPhase={phaseAt(date)}
-          bookmarks={bookmarks.map((id) => ({ id, name: WORKOUT_NAMES[id] }))}
-          onSelectPlan={jumpToPhase}
+          bookmarks={bookmarks.map((id) => ({ id, name: workoutNames.get(id) ?? id }))}
+          onSelectPlan={jumpToFirstIncompleteDay}
         />
 
         <main className="flex min-w-0 flex-1 flex-col gap-6">
@@ -148,6 +157,7 @@ export default function StudySurface() {
                 {day.groups.map((group) => {
                   const key = `${date}:${group.id}`;
                   const gp = groupProgress(group, done);
+                  if (hideCompleted && gp.done === group.tasks.length) return null;
                   return (
                     <TaskGroup
                       key={group.id}
@@ -168,7 +178,7 @@ export default function StudySurface() {
                             done={isDone}
                             onToggle={() => toggleTask(task.id, date, group.id)}
                             onLaunch={() =>
-                              say(`«${task.title}» открывается в focus mode — вне скоупа`)
+                              say(`“${task.title}” opens in focus mode — out of scope for this build`)
                             }
                             bookmarked={workoutId ? bookmarks.includes(workoutId) : false}
                             onToggleBookmark={() => workoutId && toggleBookmark(workoutId)}
@@ -186,7 +196,7 @@ export default function StudySurface() {
             <Card className="flex flex-col items-center gap-4 px-8 py-14 text-center">
               <span className="text-body-m font-bold">{formatLong(date)}</span>
               <span className="text-body-s text-pewter-hc">
-                Демо-данные есть только для Jul 14 – Jul 16.
+                Demo data covers Jul 14 – Jul 16.
               </span>
               <Button variant="secondary" onClick={() => setDate(TODAY)}>
                 Back to today

@@ -17,6 +17,9 @@ import type { Group } from "@/lib/plan-data";
  *
  * Шеврон здесь уместен: запрет PRD на промежуточный шаг относится к запуску
  * контента, а сворачивание группы PRD описывает сам.
+ *
+ * У тьюторского блока имя группы — название бизнеса репетитора, и рядом стоит
+ * кружок с инициалами: домашка приходит от человека, а не от системы.
  */
 
 type TaskGroupProps = {
@@ -40,6 +43,14 @@ export function TaskGroup({ group, done, open, onToggle, children }: TaskGroupPr
           aria-expanded={open}
           className="flex min-w-0 flex-1 cursor-pointer items-center gap-3 text-left"
         >
+          {group.tutor ? (
+            <span
+              aria-hidden
+              className="flex size-6 shrink-0 items-center justify-center rounded-full border-[2px] border-soft-black bg-turquoise text-tag-s font-extrabold text-soft-white"
+            >
+              {group.tutor.initials}
+            </span>
+          ) : null}
           <span className="truncate text-body-xl font-bold">{group.name}</span>
         </button>
 

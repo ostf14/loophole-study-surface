@@ -38,7 +38,7 @@ export function ViewTabs({ today, isToday, prev, next, onJumpToDate }: ViewTabsP
             key={v.id}
             type="button"
             disabled={!v.enabled}
-            title={v.enabled ? undefined : "Вне скоупа тестового задания"}
+            title={v.enabled ? undefined : "Out of scope for this build"}
             className={cn(
               "-mb-[2px] cursor-pointer border-b-[3px] px-1 pb-3 text-caption-large uppercase",
               v.enabled
