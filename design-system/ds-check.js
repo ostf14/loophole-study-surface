@@ -67,9 +67,16 @@
       const row = find.taskRow();
       return row && [...row.querySelectorAll("span")].find((s) => s.childElementCount === 0 && s.textContent.length > 8);
     },
+    /* Только листовой span: у обёрток textContent тоже содержит время,
+       а цвет у них унаследованный. Тот же приём, что и в taskTitle. */
     taskTime: () => {
       const row = find.taskRow();
-      return row && [...row.querySelectorAll("span")].find((s) => /\d:\d\d\s?[AP]M/.test(s.textContent));
+      return (
+        row &&
+        [...row.querySelectorAll("span")].find(
+          (s) => s.childElementCount === 0 && /\d:\d\d\s?[AP]M/.test(s.textContent),
+        )
+      );
     },
     segment: () => {
       const meter = document.querySelector("aside [role=img][aria-label*=' of ']");
