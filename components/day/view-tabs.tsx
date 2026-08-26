@@ -3,12 +3,16 @@
 import type { ReactNode } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/cn";
+import { Tabs } from "@/components/ui/tabs";
 
 /**
- * Переключатель видов. PRD даёт три: Day timeline, Weekly, Full Plan; Day
- * timeline — вид по умолчанию. Weekly и Full Plan лежат вне скоупа тестового
- * и выключены явно, чтобы было видно, что они предусмотрены.
+ * Переключатель видов на компоненте `Tabs` со страницы Navigation — сегментная
+ * пилюля с залитым chartreuse активным элементом. Раньше здесь были придуманные
+ * подчёркнутые вкладки.
+ *
+ * PRD даёт три вида: Day timeline, Weekly, Full Plan; Day timeline по умолчанию.
+ * Weekly и Full Plan вне скоупа и выключены явно — выключенного состояния
+ * в компоненте нет, оно добавлено сверх него.
  *
  * Пейджинг ‹ / Today / › живёт здесь же — PRD описывает его как часть
  * переключателя, а не строки дня. Он относится к виду целиком и будет работать
@@ -16,9 +20,9 @@ import { cn } from "@/lib/cn";
  */
 
 const VIEWS = [
-  { id: "day", label: "Day timeline", enabled: true },
-  { id: "weekly", label: "Weekly", enabled: false },
-  { id: "full", label: "Full Plan", enabled: false },
+  { id: "day", label: "Day timeline" },
+  { id: "weekly", label: "Weekly", disabled: true, title: "Out of scope for this build" },
+  { id: "full", label: "Full Plan", disabled: true, title: "Out of scope for this build" },
 ] as const;
 
 type ViewTabsProps = {
@@ -31,27 +35,10 @@ type ViewTabsProps = {
 
 export function ViewTabs({ today, isToday, prev, next, onJumpToDate }: ViewTabsProps) {
   return (
-    <nav className="flex items-end justify-between gap-6 border-b-[2px] border-sand">
-      <div className="flex gap-8">
-        {VIEWS.map((v) => (
-          <button
-            key={v.id}
-            type="button"
-            disabled={!v.enabled}
-            title={v.enabled ? undefined : "Out of scope for this build"}
-            className={cn(
-              "-mb-[2px] cursor-pointer border-b-[3px] px-1 pb-3 text-caption-large uppercase",
-              v.enabled
-                ? "border-turquoise text-soft-black"
-                : "cursor-not-allowed border-transparent text-pewter-hc opacity-60",
-            )}
-          >
-            {v.label}
-          </button>
-        ))}
-      </div>
+    <nav className="flex items-center justify-between gap-6">
+      <Tabs items={VIEWS} selected="day" className="max-w-[420px] flex-1" />
 
-      <div className="flex items-center gap-2 pb-2">
+      <div className="flex items-center gap-2">
         <PageButton label="Previous day" disabled={!prev} onClick={() => prev && onJumpToDate(prev)}>
           <ChevronLeft className="size-[18px]" strokeWidth={2.5} />
         </PageButton>

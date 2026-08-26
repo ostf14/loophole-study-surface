@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Chip } from "@/components/ui/chip";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ProgressDonut } from "@/components/ui/progress-donut";
@@ -21,6 +21,11 @@ import { allTasks, formatLong } from "@/lib/plan";
  *
  * Дропдаун построен на Tandem_Plan_Item_Menu: список дней, у каждого свой
  * донат, активный выделен фоном turquoise-lc и жирным начертанием.
+ *
+ * Сама пилюля даты — компонент `Chips` со страницы Buttons в состоянии
+ * Selected. Шеврон садится в его слот Counter, кружок 30×30 с обводкой 3px.
+ * Раньше здесь стояла primary-кнопка с переопределённой высотой — гибрид,
+ * которого в системе не существует.
  */
 
 type DateRowProps = {
@@ -91,19 +96,21 @@ function DayPicker({
 
   return (
     <div ref={box} className="relative">
-      <Button
-        variant="primary"
+      <Chip
+        selected
         aria-expanded={open}
         aria-haspopup="listbox"
         onClick={() => setOpen((v) => !v)}
-        className="h-[38px] gap-2 px-4"
+        counter={
+          <ChevronDown
+            aria-hidden
+            className={cn("size-[16px] transition-transform duration-150", open && "rotate-180")}
+            strokeWidth={3}
+          />
+        }
       >
         {formatLong(date)}
-        <ChevronDown
-          className={cn("size-[16px] transition-transform duration-150", open && "rotate-180")}
-          strokeWidth={3}
-        />
-      </Button>
+      </Chip>
 
       {open ? (
         <Card
