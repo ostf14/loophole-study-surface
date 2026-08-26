@@ -1,0 +1,52 @@
+<style>
+  body { font: 13px/1.4 Inter, system-ui, sans-serif; margin: 0; padding: 16px; color: #171712; }
+  h1 { font-size: 13px; font-weight: 800; margin: 0 0 10px; }
+  #status { color: #575752; min-height: 34px; white-space: pre-wrap; }
+  button { font: inherit; font-weight: 700; padding: 8px 14px; margin-right: 8px;
+           border: 2px solid #171712; border-radius: 999px; background: #eaf84f; cursor: pointer; }
+  button:disabled { background: #f3f1ed; color: #989286; cursor: not-allowed; }
+  #counts { margin-top: 10px; color: #575752; font-variant-numeric: tabular-nums; }
+</style>
+
+<h1>LO Design System Dump</h1>
+<div id="status">Запускаюсь…</div>
+<div>
+  <button id="save" disabled>Скачать JSON</button>
+  <button id="copy" disabled>Скопировать</button>
+</div>
+<div id="counts"></div>
+
+<script>
+  let json = null;
+  const $ = (id) => document.getElementById(id);
+
+  onmessage = (e) => {
+    const m = e.data.pluginMessage;
+    if (!m) return;
+    if (m.kind === 'status') $('status').textContent = m.text;
+    if (m.kind === 'error') { $('status').textContent = 'Ошибка:\n' + m.text; }
+    if (m.kind === 'done') {
+      json = m.json;
+      $('status').textContent = 'Готово. Размер ' + (json.length / 1024 / 1024).toFixed(2) + ' МБ.';
+      $('counts').textContent =
+        'компонентов ' + m.counts.components +
+        ' · текстовых стилей ' + m.counts.textStyles +
+        ' · заливок ' + m.counts.paintStyles +
+        ' · эффектов ' + m.counts.effectStyles;
+      $('save').disabled = false;
+      $('copy').disabled = false;
+    }
+  };
+
+  $('save').onclick = () => {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([json], { type: 'application/json' }));
+    a.download = 'lo-design-system.json';
+    a.click();
+  };
+
+  $('copy').onclick = async () => {
+    await navigator.clipboard.writeText(json);
+    $('copy').textContent = 'Скопировано';
+  };
+</script>

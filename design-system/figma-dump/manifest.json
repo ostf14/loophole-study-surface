@@ -1,0 +1,10 @@
+{
+  "name": "LO Design System Dump",
+  "id": "lo-ds-dump",
+  "api": "1.0.0",
+  "main": "code.js",
+  "ui": "ui.html",
+  "documentAccess": "dynamic-page",
+  "editorType": ["figma", "dev"],
+  "networkAccess": { "allowedDomains": ["none"] }
+}
