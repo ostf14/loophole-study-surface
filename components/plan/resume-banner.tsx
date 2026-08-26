@@ -3,6 +3,7 @@
 import { ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProgressDonut } from "@/components/ui/progress-donut";
+import { TaskIcon } from "@/components/day/task-icon";
 import { formatShort } from "@/lib/plan";
 import type { Task } from "@/lib/plan-data";
 
@@ -46,13 +47,19 @@ type ResumeBannerProps = {
   onStart: () => void;
 };
 
-/** Доля пройденного у начатой задачи: из «25m» и «12m left». */
+/**
+ * Доля пройденного у начатой задачи: из «25m» и «12m left». Возвращает null,
+ * когда считать нечего, — тогда донат не рисуется вовсе.
+ *
+ * Раньше в этом случае он рисовался пустым кольцом: задача одна, закрашивать
+ * нечего, и элемент занимал место, ничего не сообщая. Теперь в слоте стоит
+ * иконка типа задачи — та же, что в строках списка. Слот говорит либо
+ * «ты прошёл столько-то», либо «вот что это за задача», но не молчит.
+ */
 function progress(task: Task) {
   const total = Number.parseInt(task.duration, 10);
   const left = task.remaining ? Number.parseInt(task.remaining, 10) : Number.NaN;
-  if (!task.started || Number.isNaN(total) || Number.isNaN(left) || total <= 0) {
-    return { done: 0, total: 1 };
-  }
+  if (!task.started || Number.isNaN(total) || Number.isNaN(left) || total <= 0) return null;
   return { done: total - left, total };
 }
 
@@ -63,7 +70,11 @@ export function ResumeBanner({ task, date, today, onStart }: ResumeBannerProps) 
   return (
     <div className="flex items-center gap-6 rounded-3xl border-[2px] border-soft-black bg-soft-white px-6 py-6">
       <div className="flex min-w-0 flex-1 items-center gap-4">
-        <ProgressDonut done={p.done} total={p.total} size={32} />
+        {p ? (
+          <ProgressDonut done={p.done} total={p.total} size={32} />
+        ) : (
+          <TaskIcon type={task.type} className="size-[28px] shrink-0 text-soft-black" />
+        )}
 
         <div className="flex min-w-0 flex-col gap-2">
           <span className="text-caption-medium uppercase text-pewter-hc">Jump back in!</span>

@@ -47,13 +47,19 @@ export function PlanStrip({ today, onJumpToPhase, className }: PlanStripProps) {
 
   return (
     <div className={cn("flex flex-col", className)}>
-      {/* засечки вех и подпись Today над дорожкой */}
+      {/* Метки над дорожкой. Today и Test day — две даты, которые студент
+          держит в голове, поэтому набраны одинаково: `tag` в soft-black.
+          Jun 22 остался внизу приглушённым — это не метка, а начало оси. */}
       <div className="relative h-[20px]">
         <span
           className="absolute -translate-x-1/2 text-tag whitespace-nowrap text-soft-black"
           style={{ left: `${todayPct}%`, top: 0 }}
         >
           Today
+        </span>
+
+        <span className="absolute right-0 top-0 text-tag whitespace-nowrap text-soft-black">
+          Test day · {formatShort(PLAN.end)}
         </span>
 
         {MILE_MARKERS.map((m) => (
@@ -108,10 +114,7 @@ export function PlanStrip({ today, onJumpToPhase, className }: PlanStripProps) {
         })}
       </div>
 
-      <div className="mt-1 flex justify-between text-body-xs text-pewter-hc">
-        <span>{formatShort(PLAN.start)}</span>
-        <span>Test day · {formatShort(PLAN.end)}</span>
-      </div>
+      <div className="mt-1 text-body-xs text-pewter-hc">{formatShort(PLAN.start)}</div>
     </div>
   );
 }
