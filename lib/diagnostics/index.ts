@@ -164,8 +164,8 @@ export function install() {
   window.__lo = { check, trace, tokens };
   console.info(
     "%cLoophole · Study Surface%c\n" +
-      "Every value on this screen came out of your Figma file. You can check that from here,\n" +
-      "without the repository — three commands, they read the page you are looking at:\n\n" +
+      "Every value on this screen came out of your Figma file. You can check that from here —\n" +
+      "three commands, they read the page you are looking at:\n\n" +
       "  __lo.check()      compares the screen to the file and to the token scale, prints what disagrees\n" +
       "  __lo.trace($0)    select an element in the Elements panel, then run this: it names the token\n" +
       "                    behind every colour and size it uses, or says the value has no token\n" +

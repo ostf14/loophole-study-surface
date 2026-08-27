@@ -168,7 +168,7 @@ off by default:
   what the system offers.
 
 Both live in `components/meta/` and never touch the screen: the only thing the
-product carries for them is a `data-note` attribute on ten anchors. The catalog
+product carries for them is a `data-note` attribute on eleven anchors. The catalog
 in `lib/meta/catalog.ts` is the source of truth — array order is the pin number.
 
 Together with the console route above, this is the answer to "how do I verify
