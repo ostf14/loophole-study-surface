@@ -77,7 +77,7 @@ export function DateRow({
   onJumpToDate,
 }: DateRowProps) {
   return (
-    <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-4">
+    <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-4" data-note="date-row">
       {/* Пара: какой день и сколько в нём сделано. */}
       <div className="flex items-center gap-3">
         <DayPicker date={date} done={done} onJumpToDate={onJumpToDate} />

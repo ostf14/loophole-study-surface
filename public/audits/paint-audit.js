@@ -78,26 +78,27 @@
 
   let checked = 0;
   for (const n of document.querySelectorAll("body *")) {
-    if (n.closest("script,style,noscript")) continue;
+    /* Мета-слой — леса вокруг работы, а не работа. Проверки меряют экран. */
+    if (n.closest("script,style,noscript,[data-meta]")) continue;
     const r = n.getBoundingClientRect();
     if (!r.width && !r.height) continue;
     checked++;
     const s = getComputedStyle(n);
 
     const claims = [
-      ["цвет текста", s.color],
-      ["фон", s.backgroundColor],
+      ["text colour", s.color],
+      ["background", s.backgroundColor],
     ];
     for (const side of ["Top", "Right", "Bottom", "Left"]) {
       if (parseFloat(s[`border${side}Width`]) > 0) {
-        claims.push([`рамка ${side.toLowerCase()}`, s[`border${side}Color`]]);
+        claims.push([`border ${side.toLowerCase()}`, s[`border${side}Color`]]);
       }
     }
     for (const [what, value] of claims) {
-      if (!known(value)) bad.push({ элемент: label(n), что: what, значение: value });
+      if (!known(value)) bad.push({ element: label(n), property: what, value });
     }
     if (!shadowOk(s.boxShadow)) {
-      bad.push({ элемент: label(n), что: "тень", значение: s.boxShadow.slice(0, 70) });
+      bad.push({ element: label(n), property: "shadow", value: s.boxShadow.slice(0, 70) });
     }
     /*
      * SVG: заливка и обводка фигур. Только фигуры и только когда цвет задан
@@ -108,15 +109,15 @@
     if (SHAPES.has(n.tagName)) {
       for (const [what, value] of [["fill", s.fill], ["stroke", s.stroke]]) {
         if (!value || value === "none" || value === s.color) continue;
-        if (!known(value)) bad.push({ элемент: label(n), что: what, значение: value });
+        if (!known(value)) bad.push({ element: label(n), property: what, value });
       }
     }
   }
 
   console.table(bad);
   const verdict = bad.length
-    ? `Мимо палитры: ${bad.length} из ${checked} элементов`
-    : `Все ${checked} элементов красятся палитрой; теней вне системы нет`;
+    ? `${bad.length} of ${checked} elements paint outside the palette`
+    : `All ${checked} elements paint from the palette; no shadow outside the system`;
   console.log(verdict);
   return { ok: bad.length === 0, verdict, total: checked, failures: bad, rows: bad };
 })();

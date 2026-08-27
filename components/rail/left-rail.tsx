@@ -125,7 +125,7 @@ function PrepMap() {
         </Button>
       }
     >
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3" data-note="prep-map">
         {PREP_MAP.map((stage) => (
           /* Один порядок для всех пяти: заголовок, под ним строка состояния,
              под ней сегменты. Раньше метрика стояла справа от заголовка и не

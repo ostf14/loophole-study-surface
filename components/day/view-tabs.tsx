@@ -31,5 +31,9 @@ const VIEWS = [
 ] as const;
 
 export function ViewTabs() {
-  return <Tabs items={VIEWS} selected="day" className="w-[452px] max-w-full" />;
+  return (
+    <div data-note="view-tabs" className="w-[452px] max-w-full">
+      <Tabs items={VIEWS} selected="day" />
+    </div>
+  );
 }

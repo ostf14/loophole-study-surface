@@ -55,7 +55,7 @@ const mmss = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, 
 
 export function NextGoal() {
   return (
-    <section className="flex flex-col gap-4">
+    <section className="flex flex-col gap-4" data-note="next-goal">
       <h2 className="text-body-small font-extrabold text-soft-black">Next Goal</h2>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

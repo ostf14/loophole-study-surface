@@ -50,7 +50,7 @@ export function TaskGroup({ group, done, open, onToggle, children }: TaskGroupPr
   const status = complete ? "Completed" : done > 0 ? `${done} of ${total} done` : "Not started";
 
   return (
-    <Card className="flex flex-col">
+    <Card className="flex flex-col" data-note="task-group">
       <div className="flex h-12 shrink-0 items-center gap-3 pr-3 pl-5">
         <button
           type="button"

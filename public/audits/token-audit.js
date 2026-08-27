@@ -50,7 +50,8 @@
   const near = (a, b) => Math.abs(a - b) < 0.06;
   const rows = [];
   for (const n of document.querySelectorAll("body *")) {
-    if (n.closest("script,style,noscript")) continue;
+    /* Мета-слой — леса вокруг работы, а не работа. Проверки меряют экран. */
+    if (n.closest("script,style,noscript,[data-meta]")) continue;
     const own = [...n.childNodes]
       .filter((c) => c.nodeType === 3 && c.nodeValue.trim())
       .map((c) => c.nodeValue.trim())
@@ -74,11 +75,11 @@
     const exception = !hit && byMetrics && (near(ls, 0) || near(ls, size * 0.005));
 
     rows.push({
-      текст: own.slice(0, 28),
-      токен: hit ? hit.name : exception ? `${byMetrics.name} · кнопочный трекинг` : "— мимо",
-      кегль: `${size}/${lh}`,
-      трекинг: +ls.toFixed(3),
-      вес: s.fontWeight,
+      text: own.slice(0, 28),
+      token: hit ? hit.name : exception ? `${byMetrics.name} · button tracking` : "— off scale",
+      size: `${size}/${lh}`,
+      tracking: +ls.toFixed(3),
+      weight: s.fontWeight,
       "": hit ? "✓" : exception ? "≈" : "✗",
     });
   }
@@ -87,9 +88,9 @@
   const exc = rows.filter((r) => r[""] === "≈").length;
   console.table(bad.length ? bad : rows);
   const verdict = bad.length
-    ? `Мимо токенов: ${bad.length} из ${rows.length}`
-    : `Все ${rows.length} текстовых узлов на токенах` +
-      (exc ? `, из них ${exc} с кнопочным трекингом — законное исключение` : "");
+    ? `${bad.length} of ${rows.length} text nodes are off the scale`
+    : `All ${rows.length} text nodes are on tokens` +
+      (exc ? `, ${exc} of them on button tracking — the system's own exception` : "");
   console.log(verdict);
   return { ok: bad.length === 0, verdict, total: rows.length, failures: bad, rows };
 })();

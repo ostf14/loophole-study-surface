@@ -53,8 +53,10 @@
   const find = {
     header: () => document.querySelector("header"),
     pageTitle: () => document.querySelector("header h1"),
-    tabsShell: () => document.querySelector("[role=tablist]"),
-    tabSelected: () => document.querySelector("[role=tablist] [aria-selected=true]"),
+    /* Внутри `main`: у панели дизайн-системы свой tablist, и без этой
+       оговорки сверка ловила бы его. */
+    tabsShell: () => document.querySelector("main [role=tablist]"),
+    tabSelected: () => document.querySelector("main [role=tablist] [aria-selected=true]"),
     datePill: () => document.querySelector("main [aria-haspopup=menu]"),
     donut: () => document.querySelector('main svg[viewBox="0 0 42 42"]'),
     group: () => document.querySelector("main section, main [data-group]") || document.querySelectorAll("main > div")[3]?.children[0],
@@ -92,53 +94,53 @@
 
   /* Ожидаемое. Источник указан у каждой строки. */
   const CHECKS = [
-    ["Page header_V2 · Headings", "паддинг", () => box(find.header()).pad, "48/56/32/56"],
-    ["Page header_V2 · Headings", "фон", () => box(find.header()).fill, "#e2f3f2"],
-    ["Page header_V2 · Headings", "заголовок", () => text(find.pageTitle()), "40/48 w900 ls -0.72"],
+    ["Page header_V2 · Headings", "padding", () => box(find.header()).pad, "48/56/32/56"],
+    ["Page header_V2 · Headings", "background", () => box(find.header()).fill, "#e2f3f2"],
+    ["Page header_V2 · Headings", "heading", () => text(find.pageTitle()), "40/48 w900 ls -0.72"],
 
-    ["Tabs · Navigation", "высота обёртки", () => box(find.tabsShell()).h, 52],
-    ["Tabs · Navigation", "паддинг обёртки", () => box(find.tabsShell()).pad, "6/6/6/6"],
-    ["Tabs · Navigation", "рамка обёртки", () => box(find.tabsShell()).border, 3],
-    ["Tabs · Navigation", "высота активной", () => box(find.tabSelected()).h, 40],
-    ["Tabs · Navigation", "паддинг активной", () => box(find.tabSelected()).pad, "0/24/0/24"],
-    ["Tabs · Navigation", "заливка активной", () => box(find.tabSelected()).fill, "#eaf84f"],
-    ["Tabs · Navigation", "текст", () => text(find.tabSelected()), "14/20 w800 ls -0.25"],
+    ["Tabs · Navigation", "shell height", () => box(find.tabsShell()).h, 52],
+    ["Tabs · Navigation", "shell padding", () => box(find.tabsShell()).pad, "6/6/6/6"],
+    ["Tabs · Navigation", "shell border", () => box(find.tabsShell()).border, 3],
+    ["Tabs · Navigation", "selected height", () => box(find.tabSelected()).h, 40],
+    ["Tabs · Navigation", "selected padding", () => box(find.tabSelected()).pad, "0/24/0/24"],
+    ["Tabs · Navigation", "selected fill", () => box(find.tabSelected()).fill, "#eaf84f"],
+    ["Tabs · Navigation", "label", () => text(find.tabSelected()), "14/20 w800 ls -0.25"],
 
-    ["Chips · Buttons", "высота", () => box(find.datePill()).h, 42],
-    ["Chips · Buttons", "паддинг", () => box(find.datePill()).pad, "0/6/0/18"],
-    ["Chips · Buttons", "рамка", () => box(find.datePill()).border, 3],
-    ["Chips · Buttons", "текст", () => text(find.datePill()), "12/18 w900 ls 0.06"],
+    ["Chips · Buttons", "height", () => box(find.datePill()).h, 42],
+    ["Chips · Buttons", "padding", () => box(find.datePill()).pad, "0/6/0/18"],
+    ["Chips · Buttons", "border", () => box(find.datePill()).border, 3],
+    ["Chips · Buttons", "label", () => text(find.datePill()), "12/18 w900 ls 0.06"],
 
-    ["Progress · Progress", "габарит с тенью", () => Math.round(find.donut().getBoundingClientRect().width), 42],
+    ["Progress · Progress", "size incl. shadow", () => Math.round(find.donut().getBoundingClientRect().width), 42],
 
     /* Стрелки пейджинга. Не `Page control`, хотя имя зовёт: тот встречается
        только внутри `Carousels` и `.Page Horizontal Scroll`. Пейджер собран
        компонентом `Pagination`, и там по краям стоит `Icon Button` размера
        Default. В покое тени у него нет — она приходит на ховер. */
-    ["Icon Button · Buttons", "габарит", () => `${box(find.pagerArrow()).w}×${box(find.pagerArrow()).h}`, "38×38"],
-    ["Icon Button · Buttons", "рамка", () => box(find.pagerArrow()).border, 2],
-    ["Icon Button · Buttons", "тень в покое", () => box(find.pagerArrow()).shadow, "нет"],
-    ["Icon Button · Buttons", "иконка", () => Math.round(find.pagerArrow().querySelector("svg").getBoundingClientRect().width), 24],
+    ["Icon Button · Buttons", "size", () => `${box(find.pagerArrow()).w}×${box(find.pagerArrow()).h}`, "38×38"],
+    ["Icon Button · Buttons", "border", () => box(find.pagerArrow()).border, 2],
+    ["Icon Button · Buttons", "shadow at rest", () => box(find.pagerArrow()).shadow, "нет"],
+    ["Icon Button · Buttons", "icon", () => Math.round(find.pagerArrow().querySelector("svg").getBoundingClientRect().width), 24],
 
-    ["Section Collapse · Buttons", "габарит раскрытого", () => `${box(find.chevronOpen()).w}×${box(find.chevronOpen()).h}`, "46×32"],
-    ["Section Collapse · Buttons", "рамка", () => box(find.chevronOpen()).border, 2],
-    ["Section Collapse · Buttons", "тень раскрытого", () => box(find.chevronOpen()).shadow, "rgb(23, 23, 18) 2px 2px 0px 0px"],
+    ["Section Collapse · Buttons", "expanded size", () => `${box(find.chevronOpen()).w}×${box(find.chevronOpen()).h}`, "46×32"],
+    ["Section Collapse · Buttons", "border", () => box(find.chevronOpen()).border, 2],
+    ["Section Collapse · Buttons", "expanded shadow", () => box(find.chevronOpen()).shadow, "rgb(23, 23, 18) 2px 2px 0px 0px"],
 
     /* Кнопка запуска — тот же `Icon Button`, ужатый инстанс 24 с иконкой 16,
        как он стоит в самом `Tandem_Plan_Item`. */
-    ["Icon Button · Tandem_Plan", "габарит запуска", () => `${box(find.launch()).w}×${box(find.launch()).h}`, "24×24"],
-    ["Icon Button · Tandem_Plan", "рамка запуска", () => box(find.launch()).border, 2],
-    ["Icon Button · Tandem_Plan", "иконка запуска", () => Math.round(find.launch().querySelector("svg").getBoundingClientRect().width), 16],
+    ["Icon Button · Tandem_Plan", "launch size", () => `${box(find.launch()).w}×${box(find.launch()).h}`, "24×24"],
+    ["Icon Button · Tandem_Plan", "launch border", () => box(find.launch()).border, 2],
+    ["Icon Button · Tandem_Plan", "launch icon", () => Math.round(find.launch().querySelector("svg").getBoundingClientRect().width), 16],
 
     /* Нижний пейджинг — `Button / Default / Small`, и обе кнопки проверяют
        разные положения иконки: у ведущей паддинг 12 слева и 16 справа,
        у замыкающей зеркально. Иконка в системе всегда ближе к краю, чем
        текст, — от этого кнопка и остаётся оптически симметричной. */
-    ["Button · Buttons", "пейджинг назад, ведущая иконка", () => `${box(find.dayPagerPrev()).h}·${box(find.dayPagerPrev()).pad}`, "38·0/16/0/12"],
-    ["Button · Buttons", "пейджинг вперёд, замыкающая", () => `${box(find.dayPagerNext()).h}·${box(find.dayPagerNext()).pad}`, "38·0/12/0/16"],
+    ["Button · Buttons", "day paging back, leading icon", () => `${box(find.dayPagerPrev()).h}·${box(find.dayPagerPrev()).pad}`, "38·0/16/0/12"],
+    ["Button · Buttons", "day paging forward, trailing icon", () => `${box(find.dayPagerNext()).h}·${box(find.dayPagerNext()).pad}`, "38·0/12/0/16"],
 
-    ["Tandem_Plan_Item · Tandem_Plan", "высота строки", () => box(find.taskRow()).h, 32],
-    ["Tandem_Plan_Item · Tandem_Plan", "паддинг строки", () => box(find.taskRow()).pad, "4/20/4/20"],
+    ["Tandem_Plan_Item · Tandem_Plan", "row height", () => box(find.taskRow()).h, 32],
+    ["Tandem_Plan_Item · Tandem_Plan", "row padding", () => box(find.taskRow()).pad, "4/20/4/20"],
     /* Два осознанных расхождения с компонентом, оба записаны здесь ожидаемым
        значением, а не спрятаны.
 
@@ -153,28 +155,30 @@
        стоит на двух слоях и оба раза без переменной и без стиля. Это обрыв
        привязки, а не решение, и стоил он 2.24:1 — мимо AA при любом кегле.
        Взят `text-secondary` из их семантического слоя, то есть pewter-hc. */
-    ["Tandem_Plan_Item · Tandem_Plan", "заголовок", () => text(find.taskTitle()), "14/20 w600 ls -0.25"],
-    ["Tandem_Plan_Item · Tandem_Plan", "цвет времени", () => rgb(getComputedStyle(find.taskTime()).color), "#575752"],
+    ["Tandem_Plan_Item · Tandem_Plan", "heading", () => text(find.taskTitle()), "14/20 w600 ls -0.25"],
+    ["Tandem_Plan_Item · Tandem_Plan", "time colour", () => rgb(getComputedStyle(find.taskTime()).color), "#575752"],
 
     /* Сегменты в рельсе масштабированы: семь штук по 34 туда не влезают.
        Пропорции компонента при этом сохраняются, поэтому ожидаемое
        считается от отрисованной ширины. */
-    /* Веха на стрипе — `button.tool-btn` из `Toolbar_Movable`, размер 24
-       с обводкой 2. Заливка у них цветная, у нас stark-white. */
-    ["button.tool-btn · Toolbar_Movable", "габарит вехи", () => `${box(find.mileBead()).w}×${box(find.mileBead()).h}`, "24×24"],
-    ["button.tool-btn · Toolbar_Movable", "рамка вехи", () => box(find.mileBead()).border, 2],
+    /* Веха на стрипе — `button.tool-btn` из `Toolbar_Movable`, обводка 2,
+       заливка у них цветная, у нас stark-white. Размер 16 — ужатый инстанс:
+       собственные у компонента 28, 24 и 20, и на 24 шесть бусин подряд
+       читались рядом кнопок, а не отметками на оси. */
+    ["button.tool-btn · Toolbar_Movable", "milestone size", () => `${box(find.mileBead()).w}×${box(find.mileBead()).h}`, "16×16"],
+    ["button.tool-btn · Toolbar_Movable", "milestone border", () => box(find.mileBead()).border, 2],
 
-    ["Progress bar/Ticks · Progress", "радиус", () => box(find.segment()).radius, () => round2((6 * box(find.segment()).w) / 34)],
-    ["Progress bar/Ticks · Progress", "тень залитого", () => box(find.segment()).shadow, () => {
+    ["Progress bar/Ticks · Progress", "radius", () => box(find.segment()).radius, () => round2((6 * box(find.segment()).w) / 34)],
+    ["Progress bar/Ticks · Progress", "filled cell shadow", () => box(find.segment()).shadow, () => {
       /* Округляем и ожидаемое, и отрисованное: браузер печатает тень
          с полной точностью, а масштаб даёт дробь. */
       const lift = (3 * box(find.segment()).w) / 34;
       return `rgb(23, 23, 18) ${lift}px ${lift}px 0px 0px`;
     }],
 
-    ["Button · Buttons", "высота", () => box(find.primaryButton()).h, 48],
-    ["Button · Buttons", "рамка", () => box(find.primaryButton()).border, 3],
-    ["Button · Buttons", "текст", () => text(find.primaryButton()), "14/20 w900 ls 0"],
+    ["Button · Buttons", "height", () => box(find.primaryButton()).h, 48],
+    ["Button · Buttons", "border", () => box(find.primaryButton()).border, 3],
+    ["Button · Buttons", "label", () => text(find.primaryButton()), "14/20 w900 ls 0"],
   ];
 
   const rows = CHECKS.map(([source, prop, actual, expected]) => {
@@ -187,14 +191,14 @@
     const want = typeof expected === "function" ? expected() : expected;
     const norm = (v) => String(v).replace(/(\d+\.\d{2})\d+/g, "$1");
     const ok = norm(got) === norm(want);
-    return { компонент: source, свойство: prop, ожидалось: want, отрисовано: got, "": ok ? "✓" : "✗" };
+    return { component: source, property: prop, expected: want, rendered: got, "": ok ? "✓" : "✗" };
   });
 
   console.table(rows);
   const bad = rows.filter((r) => r[""] === "✗");
   const verdict = bad.length
-    ? `Расхождений: ${bad.length} из ${rows.length}`
-    : `Все ${rows.length} проверок сошлись`;
+    ? `${bad.length} of ${rows.length} values disagree`
+    : `All ${rows.length} values match the file`;
   console.log(verdict);
   /* Единый конверт на все три скрипта: `design-system/audit.mjs` читает его,
      а в консоли браузера таблица уже напечатана выше. */

@@ -58,7 +58,7 @@ export function PlanStrip({ today, onJumpToPhase, className }: PlanStripProps) {
   }
 
   return (
-    <div className={cn("flex flex-col", className)}>
+    <div className={cn("flex flex-col", className)} data-note="plan-strip">
       {/* Над дорожкой — события: Today и Test day, оба `tag` в soft-black.
           Внутри дорожки, по концам, — границы оси: даты начала плана и
           экзамена. Разделение по смыслу: сверху что происходит, внутри —
@@ -154,10 +154,16 @@ export function PlanStrip({ today, onJumpToPhase, className }: PlanStripProps) {
  * Веха на дорожке. PRD требует их отдельно от сегментов: «small markers at the
  * dates the plan reaches its landmarks… hovering shows its name and date».
  *
- * Форма — `button.tool-btn` из `Toolbar_Movable`: круг 24 с обводкой 2
+ * Форма — `button.tool-btn` из `Toolbar_Movable`: круг с обводкой 2
  * soft-black. В компоненте он залит цветом пометки — розовым, оранжевым,
  * жёлтым; у нас stark-white, потому что бусина ничего не категоризует,
  * а отмечает точку.
+ *
+ * Размер 16, ужатый инстанс. Собственные у компонента 28, 24 и 20, и на 24
+ * шесть бусин подряд читались не отметками на оси, а рядом кнопок: у них
+ * этот круг встречается поштучно, а не россыпью. Шестнадцать — чуть больше
+ * разделителя фаз (14), поэтому бусина остаётся заметнее его, но перестаёт
+ * спорить с самой дорожкой.
  *
  * Пройденность бусина кодирует положением, а не собственным цветом: слева от
  * края заливки она лежит на бирюзовом, справа — на песочном. Отдельного
@@ -167,12 +173,12 @@ function MileBead({ label, date, passed }: { label: string; date: string; passed
   return (
     <span
       className="group/mile absolute top-1/2 -translate-x-1/2 -translate-y-1/2"
-      style={{ left: `${planFraction(date)}%`, height: 24 }}
+      style={{ left: `${planFraction(date)}%`, height: 16 }}
     >
       <span
         role="img"
         aria-label={`${label} · ${formatShort(date)}${passed ? " · passed" : ""}`}
-        className="block size-6 rounded-full border-[2px] border-soft-black bg-stark-white"
+        className="block size-4 rounded-full border-[2px] border-soft-black bg-stark-white"
       />
       <span
         className={cn(

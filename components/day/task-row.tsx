@@ -98,7 +98,7 @@ export function TaskRow({
         done && "opacity-50",
       )}
     >
-      <div className="flex h-8 items-center justify-between px-5 py-1">
+      <div className="flex h-8 items-center justify-between px-5 py-1" data-note="task-row">
         {/* левый блок: гэп 12 между чекбоксом и контентом, внутри контента 20 до времени */}
         <span className="flex min-w-0 items-center gap-3">
           <Checkbox
@@ -151,7 +151,7 @@ export function TaskRow({
           Снизу — те же четыре, что у строки без заметки, чтобы объект
           «строка с заметкой» отбивался от соседей ровно так же. */}
       {hasNotes ? (
-        <div className="flex flex-col gap-3 pr-5 pb-1 pl-[var(--task-text-indent)]">
+        <div className="flex flex-col gap-3 pr-5 pb-1 pl-[var(--task-text-indent)]" data-note="plan-notes">
           <PlanNotes task={task} />
           {task.embeds?.map((embed) => (
             <EmbedCard

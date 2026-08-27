@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+/* Markdown из сканирования исключён. Правило системы звучит «`text-caption-medium`,
+   никогда `text-xs`; `text-pewter-hc`, никогда `text-gray-500`» — и записано оно
+   в README и CLAUDE.md буквально этими строками. Сканер Tailwind принимал их за
+   кандидаты в классы и добавлял `--text-xs` и `--color-gray-500` в собранный CSS.
+   То есть запрет на дефолтные утилиты сам протаскивал их в сборку. */
+@source not "../**/*.md";
+
 /* Дизайн-система Loophole Online.
    Значения сняты с продакшн-сборки new.theloophole.com и из файла Figma
    `LO Design System (FSH Update)`. Правило: семантические имена, никаких

@@ -57,7 +57,10 @@ export function ResumeBanner({ task, date, today, onStart }: ResumeBannerProps) 
   const later = date > today;
 
   return (
-    <div className="flex flex-wrap items-center gap-6 rounded-3xl border-[2px] border-soft-black bg-soft-white px-6 py-6">
+    <div
+      data-note="resume-banner"
+      className="flex flex-wrap items-center gap-6 rounded-3xl border-[2px] border-soft-black bg-soft-white px-6 py-6"
+    >
       {/*
        * Сетка, а не два вложенных ряда. Слот прогресса стоит в первой колонке
        * второго ряда, подпись и заголовок — во второй; выравнивание по верху
@@ -97,6 +100,7 @@ export function ResumeBanner({ task, date, today, onStart }: ResumeBannerProps) 
       <Button
         variant="primary"
         onClick={onStart}
+        data-note="continue"
         className="shrink-0"
         icon={<ArrowUpRight className="size-[28px]" strokeWidth={2.5} />}
       >

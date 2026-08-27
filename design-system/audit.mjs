@@ -19,13 +19,17 @@ import { readFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
-const HERE = dirname(fileURLToPath(import.meta.url));
+/* Канонический дом скриптов — `public/audits/`. Оттуда их отдаёт сам сайт,
+   поэтому один и тот же файл выполняют три пути: эта запускалка, консоль
+   браузера и панель дизайн-системы на живом экране. Копий нет, расходиться
+   нечему. */
+const HERE = join(dirname(fileURLToPath(import.meta.url)), "..", "public", "audits");
 const URL = process.env.AUDIT_URL ?? "http://localhost:3000";
 
 const CHECKS = [
-  ["ds-check.js", "Сверка с Figma", "конкретные значения против снятых из файла"],
-  ["token-audit.js", "Типографика", "каждый текстовый узел против шкалы"],
-  ["paint-audit.js", "Краска и тени", "каждый видимый элемент против палитры"],
+  ["ds-check.js", "Figma reconciliation", "named values against what was read out of the file"],
+  ["token-audit.js", "Type scale", "every text node against the token table"],
+  ["paint-audit.js", "Paint and shadow", "every visible element against the palette"],
 ];
 
 const CANDIDATES = [
@@ -75,6 +79,6 @@ for (const [file, title, what] of CHECKS) {
 
 await browser.close();
 console.log(
-  failed ? `\n${failed} проверки из ${CHECKS.length} не сошлись.` : `\nВсе ${CHECKS.length} проверки сошлись.`,
+  failed ? `\n${failed} of ${CHECKS.length} checks failed.` : `\nAll ${CHECKS.length} checks passed.`,
 );
 process.exit(failed ? 1 : 0);

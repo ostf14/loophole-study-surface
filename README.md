@@ -135,15 +135,37 @@ set `CHROME_PATH` if it lives somewhere unusual. Without a browser, paste any
 of the three scripts into the browser console with the screen open; each
 prints a table and a one-line verdict.
 
-| Скрипт | Что проверяет | Текущий результат |
+| Script | What it checks | Result |
 |---|---|---|
-| `ds-check.js` | 38 конкретных значений против снятых из Figma: габариты, паддинги, рамки, тени, типографика | все сходятся |
-| `token-audit.js` | каждый текстовый узел экрана против типографической шкалы | 114 из 114 на токенах |
-| `paint-audit.js` | цвет текста, фон, рамки, заливку SVG и тени каждого видимого элемента против палитры | 448 из 448 |
+| `ds-check.js` | 38 named values against what was read out of Figma: sizes, paddings, borders, shadows, type | all match |
+| `token-audit.js` | every text node on the screen against the type scale | 114 of 114 on tokens |
+| `paint-audit.js` | text colour, background, borders, SVG fills and shadows of every visible element against the palette | 449 of 449 |
 
-`ds-check.js` ловит регрессии в известных местах, два других — самодеятельность
-в неизвестных. Оба сплошных скрипта проверены подсадкой нарушений: они их
-находят, а не просто печатают «всё хорошо».
+`ds-check.js` catches regressions where a value is known and recorded; the other
+two catch improvisation where nobody is looking. Both sweeps were verified by
+planting violations — they find them, rather than only printing "all good".
+
+The same three files back three routes: `npm run audit` in a terminal, a paste
+into the browser console, and the **Design system** panel on the screen itself
+(see below). One source, nothing to drift.
+
+### The meta layer
+
+The screen carries its own explanation. A bar above it holds two toggles, both
+off by default:
+
+- **Design notes** — ten numbered pins anchored to the elements they explain.
+  Each opens a card: what this is, and why it is shaped this way.
+- **Design system** — a panel with the colour tokens and type tokens that reach
+  the built CSS, the twenty components taken from the Figma file, and a button
+  that runs the three checks against the page you are looking at.
+
+Both live in `components/meta/` and never touch the screen: the only thing the
+product carries for them is a `data-note` attribute on ten anchors. The catalog
+in `lib/meta/catalog.ts` is the source of truth — array order is the pin number.
+
+This is also the answer to "how do I verify this without the repository": open
+the deployed screen, turn on the panel, press **Run the checks**.
 
 ## Code structure
 
