@@ -110,6 +110,30 @@ Working rules in this repo:
 - **Tilt as a motif.** The checkbox rotates on check and hover; the check inside
   `PositionIcon` is fixed at 9.72°; mile markers on the plan strip sit at 8°.
 - Line heights come from the production CSS where Figma disagrees with it.
+- **Hard shadows are tokens.** `shadow-hard-1|2|3|4|6` and `shadow-lift-4` in the
+  `@theme` block; the number is the offset, and it matches the distance the
+  element travels on hover. `lift-4` is the only shadow in the system with blur,
+  from `Section Collapse` at its Default size.
+- **Motion is the Tailwind default.** 150ms and one curve are set as
+  `--default-transition-duration` and `--default-transition-timing-function`, so
+  a bare `transition` is already in the system. The checkbox keeps its own 200ms
+  because that is what the production bundle does.
+
+### Checking it
+
+Three scripts in `design-system/` verify the claim that the screen is built on
+the system. Paste any of them into the browser console with the screen open;
+each prints a table and a one-line verdict.
+
+| Скрипт | Что проверяет | Текущий результат |
+|---|---|---|
+| `ds-check.js` | 31 конкретное значение против снятых из Figma: габариты, паддинги, рамки, тени, типографика | все сходятся |
+| `token-audit.js` | каждый текстовый узел экрана против типографической шкалы | 114 из 114 на токенах |
+| `paint-audit.js` | цвет текста, фон, рамки, заливку SVG и тени каждого видимого элемента против палитры | 446 из 446 |
+
+`ds-check.js` ловит регрессии в известных местах, два других — самодеятельность
+в неизвестных. Оба сплошных скрипта проверены подсадкой нарушений: они их
+находят, а не просто печатают «всё хорошо».
 
 ## Code structure
 

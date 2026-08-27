@@ -55,7 +55,7 @@
     pageTitle: () => document.querySelector("header h1"),
     tabsShell: () => document.querySelector("[role=tablist]"),
     tabSelected: () => document.querySelector("[role=tablist] [aria-selected=true]"),
-    datePill: () => document.querySelector("main [aria-haspopup=listbox]"),
+    datePill: () => document.querySelector("main [aria-haspopup=menu]"),
     donut: () => document.querySelector('main svg[viewBox="0 0 42 42"]'),
     group: () => document.querySelector("main section, main [data-group]") || document.querySelectorAll("main > div")[3]?.children[0],
     chevronOpen: () => {
