@@ -1,32 +1,26 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import { Check, X } from "lucide-react";
-import { AUDITS, COMPONENTS } from "@/lib/meta/system";
+import { useEffect, useState } from "react";
+import { X } from "lucide-react";
+import { COMPONENTS } from "@/lib/meta/system";
 import { useMeta } from "@/lib/meta/context";
 import { cn } from "@/lib/cn";
 
 /**
- * Выдвижная панель дизайн-системы. Три вкладки: цвет, типографика,
- * компоненты — плюс проверка, которую можно запустить прямо здесь.
+ * Выдвижная панель дизайн-системы: цвет, типографика, компоненты.
  *
  * Токены панель читает с живого `:root`, а не из списка в коде. Tailwind
  * оставляет в собранном CSS только те, которые экран действительно
  * использует, поэтому то, что панель показывает, и есть применённое.
  * Захардкоженная копия такого свойства не имеет.
- *
- * Проверка выполняет ровно те же файлы из `public/audits/`, что запускает
- * `npm run audit` и что можно вставить в консоль руками. Один источник,
- * расходиться нечему — и рецензенту не нужен ни репозиторий, ни терминал.
  */
 
-type Tab = "color" | "type" | "components" | "checks";
+type Tab = "color" | "type" | "components";
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "color", label: "Colour" },
   { id: "type", label: "Type" },
   { id: "components", label: "Components" },
-  { id: "checks", label: "Checks" },
 ];
 
 export function SystemPanel() {
@@ -95,7 +89,6 @@ export function SystemPanel() {
         {tab === "color" ? <Colours /> : null}
         {tab === "type" ? <TypeScale /> : null}
         {tab === "components" ? <Components /> : null}
-        {tab === "checks" ? <Checks /> : null}
       </div>
     </aside>
   );
@@ -214,94 +207,6 @@ function Components() {
             {c.note ? <span className="text-body-xs text-pewter-hc">{c.note}</span> : null}
           </li>
         ))}
-      </ul>
-    </section>
-  );
-}
-
-type Verdict = { ok: boolean; verdict: string; failures: unknown[] };
-
-function Checks() {
-  const [results, setResults] = useState<Record<string, Verdict | "running">>({});
-
-  const run = useCallback(async () => {
-    for (const audit of AUDITS) {
-      setResults((prev) => ({ ...prev, [audit.file]: "running" }));
-      /*
-       * Тот же файл, что выполняет `npm run audit` и что вставляется в
-       * консоль браузера. Скрипт — самодостаточное выражение-функция,
-       * возвращающее конверт с вердиктом, поэтому исполняется как есть:
-       * копия на TypeScript была бы четвёртым местом, где живёт та же
-       * логика, и разошлась бы первой.
-       */
-      const source = await fetch(`/audits/${audit.file}`).then((r) => r.text());
-      const result = new Function(`return (${source.trim().replace(/;$/, "")})`)() as Verdict;
-      setResults((prev) => ({ ...prev, [audit.file]: result }));
-    }
-  }, []);
-
-  return (
-    <section className="flex flex-col gap-4">
-      <Preamble>
-        Runs against this page, right now. The same three files back the terminal command and
-        the console-paste route — one source, nothing to drift.
-      </Preamble>
-
-      <button
-        type="button"
-        onClick={run}
-        className={cn(
-          "lh-outline inline-flex h-[38px] cursor-pointer items-center justify-center gap-2 self-start",
-          "rounded-full border-[2px] border-soft-black bg-chartreuse px-6",
-          "text-caption-medium font-black uppercase tracking-normal text-soft-black",
-          "transition-[box-shadow,translate] hover:shadow-hard-3 hover:[translate:-3px_-3px]",
-        )}
-      >
-        Run the checks
-      </button>
-
-      <ul className="flex flex-col gap-3">
-        {AUDITS.map((a) => {
-          const r = results[a.file];
-          return (
-            <li
-              key={a.file}
-              className="flex flex-col gap-1 rounded-xl border-[2px] border-soft-black bg-stark-white p-3"
-            >
-              <span className="flex items-center gap-2">
-                {r && r !== "running" ? (
-                  <span
-                    aria-hidden
-                    className={cn(
-                      "flex size-5 shrink-0 items-center justify-center rounded-full border-[2px] border-soft-black",
-                      r.ok ? "bg-turquoise text-soft-white" : "bg-chartreuse text-soft-black",
-                    )}
-                  >
-                    {r.ok ? (
-                      <Check className="size-[10px] rotate-[9.72deg]" strokeWidth={4} />
-                    ) : (
-                      <X className="size-[10px]" strokeWidth={4} />
-                    )}
-                  </span>
-                ) : null}
-                <span className="text-body-s font-semibold text-soft-black">{a.title}</span>
-              </span>
-              <span className="text-body-xs text-pewter-hc">{a.what}</span>
-              {r === "running" ? (
-                <span className="text-body-xs text-pewter-hc">running…</span>
-              ) : r ? (
-                <span
-                  className={cn(
-                    "text-body-xs font-semibold",
-                    r.ok ? "text-turquoise-hc" : "text-soft-black",
-                  )}
-                >
-                  {r.verdict}
-                </span>
-              ) : null}
-            </li>
-          );
-        })}
       </ul>
     </section>
   );

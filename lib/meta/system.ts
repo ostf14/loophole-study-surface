@@ -39,28 +39,3 @@ export const COMPONENTS: ComponentUse[] = [
   { element: "Milestones on the strip", component: "button.tool-btn", page: "Toolbar_Movable", note: "filled stark-white; in the file it carries a highlight colour" },
   { element: "Resume banner geometry", component: "Training Block", page: "Bars", note: "vertical padding 24 instead of 40 — it lives in a persistent header" },
 ];
-
-export type Audit = {
-  /** Имя файла в `public/audits/`. */
-  file: string;
-  title: string;
-  what: string;
-};
-
-export const AUDITS: Audit[] = [
-  {
-    file: "ds-check.js",
-    title: "Figma reconciliation",
-    what: "Named values against what was read out of the file: sizes, paddings, borders, shadows, type.",
-  },
-  {
-    file: "token-audit.js",
-    title: "Type scale",
-    what: "Every text node on the screen against the token table — size, line height, tracking.",
-  },
-  {
-    file: "paint-audit.js",
-    title: "Paint and shadow",
-    what: "Text colour, background, borders, SVG fills and shadows of every visible element against the palette.",
-  },
-];

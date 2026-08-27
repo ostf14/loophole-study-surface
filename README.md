@@ -145,9 +145,9 @@ prints a table and a one-line verdict.
 two catch improvisation where nobody is looking. Both sweeps were verified by
 planting violations — they find them, rather than only printing "all good".
 
-The same three files back three routes: `npm run audit` in a terminal, a paste
-into the browser console, and the **Design system** panel on the screen itself
-(see below). One source, nothing to drift.
+The same three files back both routes: `npm run audit` in a terminal and a
+paste into the browser console. One source, nothing to drift — and the console
+route needs no repository, only the deployed screen.
 
 ### The meta layer
 
@@ -157,15 +157,18 @@ off by default:
 - **Design notes** — ten numbered pins anchored to the elements they explain.
   Each opens a card: what this is, and why it is shaped this way.
 - **Design system** — a panel with the colour tokens and type tokens that reach
-  the built CSS, the twenty components taken from the Figma file, and a button
-  that runs the three checks against the page you are looking at.
+  the built CSS, and the twenty components taken from the Figma file. The token
+  lists are read off the live `:root`, so they show what the screen uses, not
+  what the system offers.
 
 Both live in `components/meta/` and never touch the screen: the only thing the
 product carries for them is a `data-note` attribute on ten anchors. The catalog
 in `lib/meta/catalog.ts` is the source of truth — array order is the pin number.
 
-This is also the answer to "how do I verify this without the repository": open
-the deployed screen, turn on the panel, press **Run the checks**.
+Together with the console route above, this is the answer to "how do I verify
+this without the repository": the deployed screen shows the tokens and
+components it is built from, and the check scripts run against it from the
+browser console.
 
 ## Code structure
 

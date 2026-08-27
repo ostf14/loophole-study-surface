@@ -19,11 +19,7 @@ import { readFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
-/* Канонический дом скриптов — `public/audits/`. Оттуда их отдаёт сам сайт,
-   поэтому один и тот же файл выполняют три пути: эта запускалка, консоль
-   браузера и панель дизайн-системы на живом экране. Копий нет, расходиться
-   нечему. */
-const HERE = join(dirname(fileURLToPath(import.meta.url)), "..", "public", "audits");
+const HERE = dirname(fileURLToPath(import.meta.url));
 const URL = process.env.AUDIT_URL ?? "http://localhost:3000";
 
 const CHECKS = [
