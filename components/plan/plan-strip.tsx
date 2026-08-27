@@ -166,7 +166,18 @@ export function PlanStrip({ today, onJumpToPhase, className }: PlanStripProps) {
   );
 }
 
-/** Веха: короткая засечка над дорожкой, имя и дата по наведению. */
+/**
+ * Веха: короткая засечка над дорожкой, имя и дата по наведению. PRD требует
+ * их отдельно от сегментов: «small markers at the dates the plan reaches its
+ * landmarks… hovering shows its name and date».
+ *
+ * Наклон 8° — не украшение, а различение. На дорожке живут три вида отметок
+ * сразу: границы планов, маркер сегодня и вехи. Все три вертикальные засечки
+ * шириной два-три пикселя, и пройденная веха soft-black отличалась от маркера
+ * сегодня только высотой. Наклон — собственный мотив системы, тот же, что у
+ * чекбокса и галочки в `PositionIcon`, — снимает совпадение мгновенно:
+ * вертикальное это ось, наклонное это событие.
+ */
 function MileTick({ label, date, passed }: { label: string; date: string; passed: boolean }) {
   return (
     <span
@@ -177,7 +188,7 @@ function MileTick({ label, date, passed }: { label: string; date: string; passed
         role="img"
         aria-label={`${label} · ${formatShort(date)}`}
         className={cn(
-          "block h-[9px] w-[2px] rounded-full",
+          "block h-[9px] w-[2px] rotate-[8deg] rounded-full",
           passed ? "bg-soft-black" : "bg-pewter",
         )}
       />
