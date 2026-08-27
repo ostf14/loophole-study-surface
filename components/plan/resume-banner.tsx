@@ -69,28 +69,46 @@ export function ResumeBanner({ task, date, today, onStart }: ResumeBannerProps) 
 
   return (
     <div className="flex flex-wrap items-center gap-6 rounded-3xl border-[2px] border-soft-black bg-soft-white px-6 py-6">
-      <div className="flex min-w-0 flex-1 basis-[280px] items-center gap-4">
-        {p ? (
-          <ProgressDonut done={p.done} total={p.total} size={32} />
-        ) : (
-          <TaskIcon type={task.type} className="size-[28px] shrink-0 text-soft-black" />
-        )}
+      {/*
+       * Сетка, а не два вложенных ряда. Слот прогресса стоит в первой колонке
+       * второго ряда, подпись и заголовок — во второй; выравнивание по верху
+       * ряда, как в `Training Block`, где Progress 32 и заголовок 24/34 стоят
+       * вровень (`counter: MIN`).
+       *
+       * Раньше слот лежал в одном ряду с колонкой из двух строк и центрировался
+       * по ней целиком — то есть висел между «Jump back in!» и названием, не
+       * принадлежа ни тому, ни другому. А показывает он прогресс именно
+       * названной задачи.
+       */}
+      <div className="grid min-w-0 flex-1 basis-[280px] grid-cols-[auto_1fr] items-start gap-x-4 gap-y-2">
+        <span className="col-start-2 text-caption-medium uppercase text-pewter-hc">
+          Jump back in!
+        </span>
 
-        <div className="flex min-w-0 flex-col gap-2">
-          <span className="text-caption-medium uppercase text-pewter-hc">Jump back in!</span>
+        <span className="col-start-1 row-start-2 flex">
+          {p ? (
+            <ProgressDonut
+              done={p.done}
+              total={p.total}
+              size={32}
+              label={`${p.done} of ${p.total} minutes done`}
+            />
+          ) : (
+            <TaskIcon type={task.type} className="size-[28px] shrink-0 text-soft-black" />
+          )}
+        </span>
 
-          {/* Пока строка помещается, длительность стоит справа от названия
-              на общей базовой линии; когда перестаёт — уходит под него.
-              Иначе `truncate` отдавал всю ширину неразрывной длительности
-              и съедал название целиком. */}
-          <span className="flex min-w-0 flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-3">
-            <span className="truncate text-title-medium font-extrabold">{task.title}</span>
-            <span className="shrink-0 text-body-s text-pewter-hc">
-              {task.started ? task.remaining : task.duration}
-              {later ? ` · ${formatShort(date)}` : null}
-            </span>
+        {/* Пока строка помещается, длительность стоит справа от названия
+            на общей базовой линии; когда перестаёт — уходит под него.
+            Иначе `truncate` отдавал всю ширину неразрывной длительности
+            и съедал название целиком. */}
+        <span className="col-start-2 row-start-2 flex min-w-0 flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-3">
+          <span className="truncate text-title-medium font-extrabold">{task.title}</span>
+          <span className="shrink-0 text-body-s text-pewter-hc">
+            {task.started ? task.remaining : task.duration}
+            {later ? ` · ${formatShort(date)}` : null}
           </span>
-        </div>
+        </span>
       </div>
 
       <Button

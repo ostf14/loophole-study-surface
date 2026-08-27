@@ -76,10 +76,24 @@ export function TimeRange({
 
   return (
     <div className={cn("flex w-full flex-col gap-2", className)}>
-      <div className="flex h-[18px] items-center justify-between pl-2 pr-[3px]">
-        <span className="text-caption-medium font-semibold text-pewter-hc">Start</span>
+      {/*
+       * Подписи и ячейки трека делят одну раскладку, а не выравниваются
+       * каждая сама по себе. Крайние элементы в обеих строках берут по
+       * равной доле остатка, средний идёт по содержимому — значит его центр
+       * в обеих строках равен центру контейнера, каким бы ни было содержимое.
+       *
+       * Горизонтальный паддинг 11 = 2 на обводку дорожки, 1 на её паддинг
+       * и 8 на паддинг крайней ячейки: подписи встают ровно над текстом
+       * в ячейках, а не над краем дорожки.
+       *
+       * Раньше обе строки стояли на `justify-between` с разными паддингами
+       * и разной шириной элементов. Совпадение центров при этом ничем не
+       * обеспечивалось: Current уезжал влево от своей капсулы на 6.5.
+       */}
+      <div className="flex h-[18px] items-center px-[11px]">
+        <span className="flex-1 text-caption-medium font-semibold text-pewter-hc">Start</span>
         <span className="text-caption-medium font-extrabold text-soft-black">Current</span>
-        <span className="flex items-center gap-[2px] pl-1">
+        <span className="flex flex-1 items-center justify-end gap-[2px]">
           <span className="text-caption-medium font-semibold text-soft-black">Goal</span>
           <Flag aria-hidden size={16} fill="currentColor" className="shrink-0 text-soft-black" />
         </span>
@@ -87,12 +101,12 @@ export function TimeRange({
 
       {/* Трек: 290×24, радиус полный, обводка 2, заливка sand — как в
           компоненте. Раньше был прозрачным. */}
-      <div className="flex h-6 items-center justify-between rounded-full border-[2px] border-soft-black bg-sand px-px py-1">
+      <div className="flex h-6 items-center rounded-full border-[2px] border-soft-black bg-sand px-px py-1">
         {/* Start и Goal лежат прямо на треке: у `number-of-items` в компоненте
             задан strokeWeight 2, но краски обводки нет и заливки нет — то есть
             ни рамки, ни фона, только паддинг 4/8. Число без проверки того,
             есть ли чем его отрисовать, ничего не значит. */}
-        <span className="flex h-6 items-center px-2 text-caption-medium font-semibold text-soft-black">
+        <span className="flex h-6 flex-1 items-center px-2 text-caption-medium font-semibold text-soft-black">
           {start}
         </span>
 
@@ -114,7 +128,7 @@ export function TimeRange({
           {withDeltas ? <Delta value={deltaToGoal!} side="goal" sign="minus" /> : null}
         </span>
 
-        <span className="flex h-6 items-center px-2 text-caption-medium font-semibold text-soft-black">
+        <span className="flex h-6 flex-1 items-center justify-end px-2 text-caption-medium font-semibold text-soft-black">
           {goal}
         </span>
       </div>

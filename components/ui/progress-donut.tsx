@@ -25,6 +25,12 @@ type ProgressDonutProps = {
   total: number;
   /** Диаметр круга без тени. Тень добавляет два пикселя справа и снизу. */
   size?: number;
+  /**
+   * Подпись для читалки. По умолчанию доля считается задачами, но донат
+   * стоит и там, где единицы другие: в resume-баннере он показывает минуты
+   * одной задачи, и «13 of 25 tasks done» там было прямой неправдой.
+   */
+  label?: string;
   className?: string;
 };
 
@@ -38,7 +44,7 @@ function wedge(frac: number) {
   return `M ${c} ${c} L ${c} ${c - r} A ${r} ${r} 0 ${frac > 0.5 ? 1 : 0} 1 ${x} ${y} Z`;
 }
 
-export function ProgressDonut({ done, total, size = 40, className }: ProgressDonutProps) {
+export function ProgressDonut({ done, total, size = 40, label, className }: ProgressDonutProps) {
   const frac = total > 0 ? Math.min(done / total, 1) : 0;
   const complete = total > 0 && done >= total;
   const box = (size * 42) / 40;
@@ -50,7 +56,7 @@ export function ProgressDonut({ done, total, size = 40, className }: ProgressDon
         height={box}
         viewBox="0 0 42 42"
         role="img"
-        aria-label={`${done} of ${total} tasks done`}
+        aria-label={label ?? `${done} of ${total} tasks done`}
       >
         {/* тень: тот же круг, сдвинутый на два пикселя вниз-вправо */}
         <circle cx="22" cy="22" r="20" fill="var(--color-soft-black)" />

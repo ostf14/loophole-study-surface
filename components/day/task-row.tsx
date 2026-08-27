@@ -84,7 +84,17 @@ export function TaskRow({
   return (
     <div
       className={cn(
-        "flex flex-col border-b-[2px] border-soft-black last:border-b-0",
+        /*
+         * Четыре сверху и снизу — воздух строки, не карточки. Вместе с
+         * паддингом самого компонента (4) это восемь от текста до всего, что
+         * снаружи: до рамки карточки, до разделителя, до соседней строки.
+         * Один зазор на все стыки.
+         *
+         * На теле карточки тот же воздух не работает: он достаётся только
+         * первой и последней строке, и у них над текстом получается 12,
+         * а под ним 4.
+         */
+        "flex flex-col border-b-[2px] border-soft-black py-1 last:border-b-0",
         done && "opacity-50",
       )}
     >
@@ -135,8 +145,13 @@ export function TaskRow({
         </span>
       </div>
 
+      {/* Заметка принадлежит своей строке, поэтому липнет к ней: сверху
+          отступа нет вовсе, и между заголовком задачи и первой строкой
+          заметки остаются только четыре пикселя нижнего паддинга строки.
+          Снизу — те же четыре, что у строки без заметки, чтобы объект
+          «строка с заметкой» отбивался от соседей ровно так же. */}
       {hasNotes ? (
-        <div className="flex flex-col gap-3 pt-2 pr-5 pb-4 pl-[var(--task-text-indent)]">
+        <div className="flex flex-col gap-3 pr-5 pb-1 pl-[var(--task-text-indent)]">
           <PlanNotes task={task} />
           {task.embeds?.map((embed) => (
             <EmbedCard

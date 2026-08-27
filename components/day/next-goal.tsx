@@ -63,8 +63,8 @@ export function NextGoal() {
           <StatPoint
             key={goal.section}
             className="w-full"
-            gap={goal.kind === "gate" ? 6 : 13}
-            inset={goal.kind === "gate" ? 4 : 7.5}
+            gap={goal.kind === "gate" ? 6 : 8}
+            inset={goal.kind === "gate" ? 4 : 12.5}
             eyebrow={<Tag tone="green">{goal.section}</Tag>}
             label={
               <>
