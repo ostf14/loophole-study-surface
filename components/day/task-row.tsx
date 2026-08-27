@@ -2,6 +2,7 @@
 
 import { ArrowUpRight } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
+import { IconButton } from "@/components/ui/icon-button";
 import { Tag } from "@/components/ui/tag";
 import { cn } from "@/lib/cn";
 import type { Embed, Task } from "@/lib/plan-data";
@@ -47,11 +48,16 @@ import { EmbedCard } from "./embed-card";
  * и зачёркивание выполненного заголовка. Номер сделан простым текстом, как на
  * текущей странице My Plan, а не кружком PositionIcon.
  *
- * Одно расхождение с компонентом: запуск нарисован голым глифом ↗, а не
- * обведённой кнопкой. В Figma там `Icon Button`, но на живом экране My Plan
- * стрелка стоит глифом, и PRD называет её «a launch arrow (↗)» — символом.
- * Пять обведённых кружков у задач спорили с единственным кружком шеврона
- * группы; глиф этот спор снимает.
+ * Запуск — `Icon Button` ужатым инстансом до 24, ровно как он стоит в
+ * `Tandem_Plan_Item`. Какое-то время здесь был голый глиф: я рассудил, что
+ * пять обведённых кружков спорят с кружком шеврона группы. Спор был настоящий,
+ * но снят он не там — шеврон 46×32 с жёсткой тенью, кнопка запуска 24 без
+ * тени, весов у них разные порядки. А голый глиф взамен компонента — это уже
+ * не решение, а вкус вместо системы.
+ *
+ * Глиф внутри оставлен стрелкой вверх-вправо: в компоненте там `Icon/arrow-right`,
+ * но PRD называет её «a launch arrow (↗)» и рисует именно так. Компонент даёт
+ * контейнер, PRD — направление; они не спорят.
  */
 
 type TaskRowProps = {
@@ -117,14 +123,12 @@ export function TaskRow({
           </span>
 
           {task.launchable ? (
-            <button
-              type="button"
-              aria-label={`Start ${task.title}`}
+            <IconButton
+              size="xs"
+              label={`Start ${task.title}`}
               onClick={onLaunch}
-              className="inline-flex size-[24px] cursor-pointer items-center justify-center text-soft-black transition-transform hover:-translate-x-[1px] hover:-translate-y-[1px]"
-            >
-              <ArrowUpRight aria-hidden className="size-[18px]" strokeWidth={2.5} />
-            </button>
+              icon={<ArrowUpRight aria-hidden strokeWidth={2.5} />}
+            />
           ) : (
             <span className="size-[24px]" />
           )}

@@ -1,6 +1,7 @@
 "use client";
 
 import { Lock, Search } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { SegmentMeter } from "@/components/ui/segment-meter";
 import { cn } from "@/lib/cn";
@@ -104,11 +105,24 @@ function PrepMap() {
   return (
     <Section
       title="Prep Map"
+      /*
+       * Lookup — «the Lookup control» из PRD, то есть действие, а не переход.
+       * Раньше он был размечен `lh-link`: подчёркнутый turquoise-hc, то есть
+       * стилем ссылки. После этой правки `lh-link` на экране значит ровно
+       * одно — уход наружу: «My Saved Videos», «My History» и ссылка внутри
+       * заметки. Действие в рельсе несёт `Button` варианта ghost: у него нет
+       * ни рамки, ни заливки, ни движения — только смена фона на ховер, — и
+       * рядом с заголовком секции он не спорит с ним весом.
+       */
       action={
-        <button type="button" className="lh-link inline-flex items-center gap-1 text-body-s font-semibold">
-          <Search className="size-[13px]" strokeWidth={3} />
+        <Button
+          variant="ghost"
+          className="h-8 px-3"
+          iconSide="leading"
+          icon={<Search className="size-[13px]" strokeWidth={3} />}
+        >
           Lookup
-        </button>
+        </Button>
       }
     >
       <div className="flex flex-col gap-3">

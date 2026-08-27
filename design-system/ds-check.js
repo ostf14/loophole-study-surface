@@ -84,6 +84,9 @@
     },
     primaryButton: () => [...document.querySelectorAll("button")].find((b) => /START|CONTINUE/i.test(b.innerText)),
     pagerArrow: () => document.querySelector('button[aria-label="Previous day"]'),
+    launch: () => document.querySelector('main button[aria-label^="Start"]'),
+    dayPagerPrev: () => [...document.querySelectorAll("main button")].find((b) => /^JUL \d/i.test(b.innerText.trim())),
+    dayPagerNext: () => [...document.querySelectorAll("main button")].filter((b) => /^JUL \d/i.test(b.innerText.trim())).pop(),
   };
 
   /* Ожидаемое. Источник указан у каждой строки. */
@@ -119,6 +122,19 @@
     ["Section Collapse · Buttons", "габарит раскрытого", () => `${box(find.chevronOpen()).w}×${box(find.chevronOpen()).h}`, "46×32"],
     ["Section Collapse · Buttons", "рамка", () => box(find.chevronOpen()).border, 2],
     ["Section Collapse · Buttons", "тень раскрытого", () => box(find.chevronOpen()).shadow, "rgb(23, 23, 18) 2px 2px 0px 0px"],
+
+    /* Кнопка запуска — тот же `Icon Button`, ужатый инстанс 24 с иконкой 16,
+       как он стоит в самом `Tandem_Plan_Item`. */
+    ["Icon Button · Tandem_Plan", "габарит запуска", () => `${box(find.launch()).w}×${box(find.launch()).h}`, "24×24"],
+    ["Icon Button · Tandem_Plan", "рамка запуска", () => box(find.launch()).border, 2],
+    ["Icon Button · Tandem_Plan", "иконка запуска", () => Math.round(find.launch().querySelector("svg").getBoundingClientRect().width), 16],
+
+    /* Нижний пейджинг — `Button / Default / Small`, и обе кнопки проверяют
+       разные положения иконки: у ведущей паддинг 12 слева и 16 справа,
+       у замыкающей зеркально. Иконка в системе всегда ближе к краю, чем
+       текст, — от этого кнопка и остаётся оптически симметричной. */
+    ["Button · Buttons", "пейджинг назад, ведущая иконка", () => `${box(find.dayPagerPrev()).h}·${box(find.dayPagerPrev()).pad}`, "38·0/16/0/12"],
+    ["Button · Buttons", "пейджинг вперёд, замыкающая", () => `${box(find.dayPagerNext()).h}·${box(find.dayPagerNext()).pad}`, "38·0/12/0/16"],
 
     ["Tandem_Plan_Item · Tandem_Plan", "высота строки", () => box(find.taskRow()).h, 32],
     ["Tandem_Plan_Item · Tandem_Plan", "паддинг строки", () => box(find.taskRow()).pad, "4/20/4/20"],
