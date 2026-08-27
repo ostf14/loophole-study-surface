@@ -33,7 +33,7 @@ type DayPagerProps = {
 
 export function DayPager({ prev, next, onJumpToDate, className }: DayPagerProps) {
   return (
-    <div className={cn("flex items-center justify-between gap-4", className)}>
+    <div className={cn("flex items-center justify-between gap-4", className)} data-note="rhythm">
       {prev ? (
         <Button
           variant="secondary"

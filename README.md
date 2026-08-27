@@ -154,7 +154,7 @@ route needs no repository, only the deployed screen.
 The screen carries its own explanation. A bar above it holds two toggles, both
 off by default:
 
-- **Design notes** — ten numbered pins anchored to the elements they explain.
+- **Design notes** — eleven numbered pins anchored to the elements they explain.
   Each opens a card: what this is, and why it is shaped this way.
 - **Design system** — a panel with the colour tokens and type tokens that reach
   the built CSS, and the twenty components taken from the Figma file. The token

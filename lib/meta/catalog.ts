@@ -22,62 +22,68 @@ export type DesignNote = {
 export const DESIGN_NOTES: DesignNote[] = [
   {
     id: "plan-strip",
-    title: "The strip fills to today, not to work done",
+    title: "The strip sits in the column, not the header",
     body:
-      "It is a calendar axis: the fill measures elapsed time, and its right edge is the today marker — no second tick needed. Milestones sit on the track as `button.tool-btn` beads; a bead on the teal has passed, one on the sand has not. Built on `Progress bar/long-bar`, taught unequal segments because the PRD sizes each plan by its date range.",
+      "The PRD puts it inside the plan header. It is not an action, it is an instrument: it answers “where am I in the programme”, not “what do I do now”, and next to the launch button the two competed for the first read. In the header, 407 pixels stood between the top of the page and the first task — more than half of an 800-pixel window. In the column the header takes 274. The PRD's requirement holds either way: the strip renders above all three views, and it does.\n\nThe bar itself is a calendar axis. Filled is the time elapsed since the plan began, and the edge of the fill is today. The beads are the plan's milestones — filled has passed, hollow has not.\n\nThe plan selector the PRD asks for in the rail folds into this: the same five plans in the same order with the same current one marked, plus the date proportions and the milestones a list did not carry.",
   },
   {
     id: "next-goal",
     title: "Next Goal sits above the view tabs",
     body:
-      "The PRD places it inside the day timeline. It changes with neither the selected day nor the selected view, and anything that survives a tab switch belongs above the tabs — otherwise the tab bar promises something it does not do.",
+      "The PRD puts the module inside the day timeline, as its first block. Placing it above is my call. Next Goal is not part of planning inside a day: it changes with neither the selected day nor the selected view. So it cannot stand under the same heading, or inside the same frame, as the day's own elements. The column then descends by scale: programme → goal → view → day → tasks.",
   },
   {
     id: "view-tabs",
     title: "The tabs span the column",
     body:
-      "`Tabs` is drawn 452 wide in the file, and it spent a while at that width here: the chartreuse pill comes out 155 instead of 205 and stops competing with Continue, which carries the same colour and the primary role. But a row of three ending two thirds across read as cut off — the view switcher heads everything below it and should not stop short of it. The width is set at the point of use; the component is not tied to 452.",
+      "This is about the width of the Day timeline / Weekly / Full Plan row. In the file `Tabs` is drawn at 452 — about two thirds of our column. A row that stops two thirds across reads as cut off: the switcher heads everything below it and should reach the same edge. The width is set at the point of use; the component is not tied to 452.",
   },
   {
     id: "date-row",
-    title: "Date and donut are a pair",
+    title: "Date and progress are a pair",
     body:
-      "The PRD pairs them — “a date pill … paired with a progress donut”. They used to sit at opposite ends of the row with three other controls and 171 pixels between. Now the row reads as two groups: which day and how much of it is done, then the controls that change it.",
+      "The PRD pairs them outright — “a date pill … paired with a progress donut”. They sit flush against each other and read as one thought: which day, and how much of it is done.\n\nHide completed is gone from this row. The component already dims a finished task outright: `Tandem_Plan_Item` in `State=Checked` is opacity 0.5 on the whole element, so what is done is already half as loud. And a day here holds four to eight tasks in two to four groups — at that size the control takes up room without removing any. A filter earns its place where scanning the list is itself the work.",
   },
   {
     id: "task-group",
-    title: "A group is one card, not a header over cards",
+    title: "A group is one card",
     body:
-      "Taken from the live My Plan page. A 64px group header above 52px task rows made two objects of equal weight in a row, and the list read as a scatter of boxes. One border per group; rows are divided by rules inside it. The chevron marks openness with a shadow, which is what `Section Collapse` does.",
+      "Taken from the reference Peter sent with the PRD — the My Plan page from their app.\n\nA task group there is a single card: the tutor's name in the header, tasks as rows inside it, divided by rules. Make the group header a card and each task a card, and objects of equal weight stand in a row — the structure “a group and its tasks” stops reading, and what is left is a stack of identical rectangles.\n\nThe chevron is `Section Collapse`: expanded carries a hard shadow, collapsed does not.",
   },
   {
     id: "task-row",
     title: "PRD order, component geometry",
     body:
-      "`Tandem_Plan_Item` gives 32 tall, padding 4/20, gaps 12 → 20 → 8. The number and the strike-through are added on the PRD's instruction. The launch control is `Icon Button` shrunk to 24 — the size it is inside that same component. Time sits in a fixed right column: real titles run from “Chapter 4” to “What is Reading? (you are not broken)”, and a time hanging off the title spread across 162 pixels.",
+      "The row is built on `Tandem_Plan_Item` — 32 tall, its paddings and its gaps. The position number and the strike-through on a finished task are added over the component; the PRD asks for both. The launch control is `Icon Button`.\n\nIn the Figma file the task's time is set in a raw grey, `#aaaaaa` — a value the system has no token for. Took their semantic `text-secondary` instead.",
   },
   {
     id: "plan-notes",
-    title: "Notes render inline, never behind a popover",
+    title: "Notes are visible at once, not behind a click",
     body:
-      "The PRD is explicit about it. The whole block goes pewter so the task title stays the only near-black thing in the row, and the lead-ins are lighter than the title they sit under — a caption must not outweigh what it captions.",
+      "The PRD requires it. The note block is set in grey: the only near-black thing in the row is the task title. The sub-headings inside a note are lighter than the title they sit under.",
   },
   {
     id: "resume-banner",
-    title: "The slot shows what kind of task it is",
+    title: "The icon says what will open",
     body:
-      "A progress donut stood here. For an unstarted task it has nothing to show; for a started one the same thing is already said in words to the right — “12m left”. The type icon answers the question the banner actually raises: what am I about to open.",
+      "The banner answers one question: what am I about to open. The icon names the type — lesson, drill, workout. How much is left is said in words beside it: “12m left”.",
   },
   {
     id: "prep-map",
-    title: "One card per Prep Stage, meter and label",
+    title: "One card per Prep Stage",
     body:
-      "The PRD's wording, followed literally. Three of the five stages say only “Not started” — faithful to the requirement, and worth a conversation: two active stages as cards and three future ones as a compact list would give the rail back about a third of its height.",
+      "The PRD's wording, followed literally: a meter and a label on each of the five stages. Three of the five say only “Not started” — two active stages as cards and three future ones as a compact list would give the rail back about a third of its height.",
   },
   {
     id: "continue",
     title: "One yellow on the screen",
     body:
-      "Chartreuse is `action-primary`. Continue is the screen's single primary action, so it is the only element carrying that fill at size. The checked checkbox uses it too, at 23 pixels — small enough to read as the same idea rather than compete with it.",
+      "There is one primary action on this screen, Continue, and it is the only thing carrying yellow at size. The checked checkbox uses the same colour, at 23 pixels.\n\nEverything else that asked for yellow went to a standard state instead: the current plan to turquoise-lc, as in their `Tandem_Plan_Item_Menu`; the next Prep Map segment to seafoam, that is `In-Progress`; the date pill to the unfilled variant, because `Selected=True` on `Chips` means “this filter is on”, and a date dropdown is not a filter.",
+  },
+  {
+    id: "rhythm",
+    title: "Spacing between blocks",
+    body:
+      "The system has no scale for the space between blocks — only the .25rem base unit and whatever the components do inside themselves. So this scale is mine, and it holds to one rule: the distance shrinks with every level of nesting. 32 between blocks of the screen, 24 from a heading to the block it heads, 16 from a heading to its body, 12 between siblings of the same kind. The same ladder runs in the rail. Equal spacing everywhere would say nothing about what belongs to what.",
   },
 ];

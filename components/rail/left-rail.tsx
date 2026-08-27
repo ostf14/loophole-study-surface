@@ -56,8 +56,8 @@ export function LeftRail({ workouts, routines }: LeftRailProps) {
           равноправных прибора.
 
           Толщина 2px: линий тоньше в системе не существует, это её
-          единственный законный вес. Отступ сверху 8, чтобы черта не липла
-          к предыдущей секции при гэпе рельса 32. */}
+          единственный законный вес. Под чертой 32 — тот же отступ, что и над
+          ней даёт гэп рельса, так что черта стоит по центру разрыва. */}
       <Section title="Video Course Review" className="border-t-[2px] border-soft-black pt-8">
         <ul className="flex flex-col gap-2 text-body-s">
           <li>
@@ -90,7 +90,7 @@ export function LeftRail({ workouts, routines }: LeftRailProps) {
 function Bookmarked({ items, empty }: { items: Embed[]; empty: string }) {
   if (!items.length) return <Empty>{empty}</Empty>;
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-3">
       {items.map((item) => (
         <Card key={item.id} hover="xs" className="flex flex-col px-4 py-2">
           <span className="text-body-s font-semibold">{item.name}</span>
@@ -173,7 +173,7 @@ function Section({
   className?: string;
 }) {
   return (
-    <section className={cn("flex flex-col gap-3", className)}>
+    <section className={cn("flex flex-col gap-4", className)}>
       <div className="flex items-center justify-between gap-3">
         <h2 className="text-body-small font-extrabold text-soft-black">{title}</h2>
         {action}

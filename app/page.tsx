@@ -150,15 +150,24 @@ export default function StudySurface() {
         />
 
         {/*
-          Вертикальный ритм колонки. Раньше между всеми блоками стоял один
-          gap-6, и расстояние ничего не сообщало: хром вида, модуль цели,
-          шапка дня и его список шли через одинаковые 24, а группировка не
-          читалась.
+          Вертикальный ритм. Своей шкалы отступов между блоками в системе нет —
+          есть базовая единица .25rem и употребление внутри компонентов, — так
+          что шкала здесь своя, и держится она на одном правиле: **расстояние
+          убывает с каждым уровнем вложенности**. Четыре ступени, 32 сверху,
+          шаг 8:
 
-          Теперь 32 между смысловыми группами — так `Page header_V2` разделяет
-          свои блоки. Внутри дня 16: строка даты это шапка, список это тело,
-          они принадлежат друг другу. Между карточками групп 12. Нижний пейджер
-          отходит на 24, как `ob` отделяет шапку секции от списка.
+            32  между блоками экрана          стрип · цель · вид
+            24  от заголовка к его блоку      вкладки → день
+            16  от заголовка к телу           строка даты → список, и пейджер
+            12  между однородными соседями    карточки групп, карточки целей
+
+          Смысл правила в том, что отступ отвечает на вопрос «кому это
+          принадлежит». Пока вверх и вниз от вкладок стояли одинаковые 32,
+          переключатель одинаково относился и к модулю цели над ним, которым
+          не управляет, и ко дню под ним, которым управляет.
+
+          Тот же порядок в рельсе: 32 между секциями, 16 от заголовка секции
+          к содержимому, 12 между карточками.
         */}
         <main className="order-first flex min-w-0 flex-1 flex-col gap-8 lg:order-none">
           {/*
@@ -171,80 +180,79 @@ export default function StudySurface() {
 
           {/*
             Next Goal стоит выше переключателя видов, хотя PRD кладёт его
-            внутрь day timeline. Он не меняется ни от выбранного дня, ни от
-            выбранного вида: это цель из лестницы плана. Всё, что переживает
-            переключение вкладок, должно жить над вкладками, иначе таб-бар
-            обещает то, чего не делает.
+            внутрь day timeline. Он не относится к планированию внутри дня:
+            не меняется ни от выбранного дня, ни от выбранного вида, — а
+            значит, не может стоять под тем же заголовком и в той же рамке,
+            что элементы дня.
           */}
           <NextGoal />
-          <ViewTabs />
 
-          {/* день: шапка, тело, конец — одна группа */}
-          <div className="flex flex-col gap-4">
-            <DateRow
-              date={date}
-              today={TODAY}
-              prev={day?.prev}
-              next={day?.next}
-              done={done}
-              progress={progress}
-              onJumpToDate={setDate}
-            />
+          {/* вид: переключатель и то, чем он переключает */}
+          <div className="flex flex-col gap-6">
+            <ViewTabs />
 
-            {day ? (
-              <>
-              <div className="flex flex-col gap-3">
-                {day.groups.map((group) => {
-                  const key = `${date}:${group.id}`;
-                  const gp = groupProgress(group, done);
-                  return (
-                    <TaskGroup
-                      key={group.id}
-                      group={group}
-                      done={gp.done}
-                      open={!collapsed.has(key)}
-                      onToggle={() => toggleGroup(key)}
-                    >
-                      {group.tasks.map((task) => {
-                        const isDone = done.has(task.id);
-                        return (
-                          <TaskRow
-                            key={task.id}
-                            task={task}
-                            n={numbers.get(task.id) ?? 0}
-                            done={isDone}
-                            onToggle={() => toggleTask(task.id, date, group)}
-                            onLaunch={() =>
-                              say(`“${task.title}” opens in focus mode — out of scope for this build`)
-                            }
-                            isBookmarked={isBookmarked}
-                            onToggleBookmark={toggleBookmark}
-                          />
-                        );
-                      })}
-                    </TaskGroup>
-                  );
-                })}
-              </div>
-
-              <DayPager
-                prev={day.prev}
-                next={day.next}
+            {/* день: шапка, тело, конец — одна группа */}
+            <div className="flex flex-col gap-4">
+              <DateRow
+                date={date}
+                today={TODAY}
+                prev={day?.prev}
+                next={day?.next}
+                done={done}
+                progress={progress}
                 onJumpToDate={setDate}
-                className="mt-2"
               />
-              </>
-            ) : (
-            <Card className="flex flex-col items-center gap-4 px-8 py-14 text-center">
-              <span className="text-body-small font-extrabold">{formatLong(date)}</span>
-              <span className="text-body-s text-pewter-hc">
-                Demo data covers Jul 14 – Jul 16.
-              </span>
-              <Button variant="secondary" onClick={() => setDate(TODAY)}>
-                Back to today
-              </Button>
-            </Card>
-            )}
+
+              {day ? (
+                <>
+                  <div className="flex flex-col gap-3">
+                    {day.groups.map((group) => {
+                      const key = `${date}:${group.id}`;
+                      const gp = groupProgress(group, done);
+                      return (
+                        <TaskGroup
+                          key={group.id}
+                          group={group}
+                          done={gp.done}
+                          open={!collapsed.has(key)}
+                          onToggle={() => toggleGroup(key)}
+                        >
+                          {group.tasks.map((task) => {
+                            const isDone = done.has(task.id);
+                            return (
+                              <TaskRow
+                                key={task.id}
+                                task={task}
+                                n={numbers.get(task.id) ?? 0}
+                                done={isDone}
+                                onToggle={() => toggleTask(task.id, date, group)}
+                                onLaunch={() =>
+                                  say(`“${task.title}” opens in focus mode — out of scope for this build`)
+                                }
+                                isBookmarked={isBookmarked}
+                                onToggleBookmark={toggleBookmark}
+                              />
+                            );
+                          })}
+                        </TaskGroup>
+                      );
+                    })}
+                  </div>
+
+                  <DayPager prev={day.prev} next={day.next} onJumpToDate={setDate} />
+                </>
+              ) : (
+                <Card className="flex flex-col items-center gap-4 px-8 py-14 text-center">
+                  <span className="text-body-small font-extrabold">{formatLong(date)}</span>
+                  <span className="text-body-s text-pewter-hc">
+                    Demo data covers Jul 14 – Jul 16.
+                  </span>
+                  <Button variant="secondary" onClick={() => setDate(TODAY)}>
+                    Back to today
+                  </Button>
+                </Card>
+              )}
+            </div>
           </div>
         </main>
       </div>

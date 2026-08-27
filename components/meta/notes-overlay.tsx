@@ -206,7 +206,15 @@ function Pin({
               <X aria-hidden className="size-[16px]" strokeWidth={2.5} />
             </button>
           </div>
-          <p className="mt-2 text-body-s text-pewter-hc">{anchor.note.body}</p>
+          {/* Абзацы в каталоге разделены пустой строкой. Один `<p>` склеил бы
+              их в полотно: в HTML перевод строки — это пробел. */}
+          <div className="mt-2 flex flex-col gap-2">
+            {anchor.note.body.split("\n\n").map((para) => (
+              <p key={para.slice(0, 32)} className="text-body-s text-pewter-hc">
+                {para}
+              </p>
+            ))}
+          </div>
         </div>
       ) : null}
     </div>
