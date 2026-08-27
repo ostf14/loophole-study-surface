@@ -39,12 +39,40 @@ type StatPointProps = {
    */
   eyebrow?: ReactNode;
   hover?: boolean;
-  /** Гэп между статой и подписью. 13 у Visual Gauge, 6 у Compare. */
+  /**
+   * Гэп между статой и подписью: 6 у Compare, 13 у Visual Gauge.
+   *
+   * Величины не декоративные. В компоненте карточка любого типа содержит
+   * фрейм ровно 100 в высоту, и внутри него подпись стоит на 72 у Compare
+   * и на 70.5 у Visual Gauge — то есть гэпы подобраны так, чтобы подпись
+   * села на одну высоту при статах разной высоты, 62 и 50.
+   */
   gap?: number;
+  /**
+   * Отступ статы от верха её фрейма: 4 у Compare, 7.5 у Visual Gauge.
+   *
+   * Вторая половина той же компенсации. Разница высот статы 12, гэпы её
+   * гасят на 7, оставшиеся 5 гасит этот отступ — 3.5 разницы плюс округление.
+   * Я его сначала не перенёс и применял `gap` к обоим стыкам сразу: тег
+   * оказывался в 6 от статы в одной карточке и в 13 в другой, стата начиналась
+   * на 59 и 66, и две карточки рядом читались несобранными.
+   *
+   * Заодно у Compare это ровно 4 — та же величина, которую дают `Objective`
+   * и `Onboarding list item` для стыка «метка → то, что она подписывает».
+   */
+  inset?: number;
   className?: string;
 };
 
-export function StatPoint({ label, children, eyebrow, hover = false, gap = 13, className }: StatPointProps) {
+export function StatPoint({
+  label,
+  children,
+  eyebrow,
+  hover = false,
+  gap = 13,
+  inset = 7.5,
+  className,
+}: StatPointProps) {
   return (
     <div
       className={cn(
@@ -54,10 +82,12 @@ export function StatPoint({ label, children, eyebrow, hover = false, gap = 13, c
         className,
       )}
     >
-      <div className="flex flex-col" style={{ gap }}>
+      <div className="flex flex-col">
         {eyebrow}
-        {children}
-        <p className="text-body-small text-pewter-hc">{label}</p>
+        <div className="flex flex-col" style={{ marginTop: eyebrow ? inset : 0, gap }}>
+          {children}
+          <p className="text-body-small text-pewter-hc">{label}</p>
+        </div>
       </div>
     </div>
   );

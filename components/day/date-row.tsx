@@ -12,10 +12,15 @@ import { ALL_DAYS } from "@/lib/plan-data";
 import { allTasks, formatLong } from "@/lib/plan";
 
 /**
- * Строка дня: слева идентичность — пилюля даты с дропдауном и пейджинг
- * ‹ Today › сразу за ней, справа донат прогресса. PRD требует дату и донат
- * парой («paired with a progress donut»), и парой они остаются: это два конца
- * одной строки.
+ * Строка дня — две группы, а не пять объектов россыпью. Слева пара «какой
+ * день и сколько в нём сделано»: пилюля даты и донат вплотную, гэп 12. Справа
+ * управление: ‹ Today ›.
+ *
+ * Раньше пилюля и донат стояли на противоположных концах строки, а между ними
+ * лежали три чужих контрола и 171 пиксель пустоты. PRD говорит буквально:
+ * «a **date pill** … **paired with a progress donut**». Парой они не читались —
+ * читались двумя концами. Теперь пара действительно пара, а четыре обведённых
+ * объекта подряд распались на две группы по близости.
  *
  * Пейджинг PRD описывает частью переключателя видов. Он здесь потому, что
  * меняет день, а не вид, и стоять должен вплотную к тому, что меняет.
@@ -71,9 +76,14 @@ export function DateRow({
 }: DateRowProps) {
   return (
     <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-4">
+      {/* Пара: какой день и сколько в нём сделано. */}
       <div className="flex items-center gap-3">
         <DayPicker date={date} done={done} onJumpToDate={onJumpToDate} />
+        <ProgressDonut done={progress.done} total={progress.total} />
+      </div>
 
+      {/* Управление: сменить день. */}
+      <div className="flex items-center gap-3">
         <IconButton
           label="Previous day"
           disabled={!prev}
@@ -84,7 +94,6 @@ export function DateRow({
           variant="secondary"
           disabled={date === today}
           onClick={() => onJumpToDate(today)}
-          className="px-4"
         >
           Today
         </Button>
@@ -95,8 +104,6 @@ export function DateRow({
           icon={<ChevronRight strokeWidth={2.5} />}
         />
       </div>
-
-      <ProgressDonut done={progress.done} total={progress.total} />
     </div>
   );
 }
