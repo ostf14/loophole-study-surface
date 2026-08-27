@@ -1,7 +1,6 @@
 import {
+  ALL_DAYS,
   DAYS,
-  DAY_ORDER,
-  PHASES,
   PLAN,
   type Day,
   type Group,
@@ -33,10 +32,6 @@ export function planFraction(iso: string) {
 export function phaseWidth(start: string, end: string) {
   const span = at(PLAN.end) - at(PLAN.start) + DAY_MS;
   return ((at(end) - at(start) + DAY_MS) / span) * 100;
-}
-
-export function phaseAt(iso: string) {
-  return PHASES.find((p) => iso >= p.start && iso <= p.end) ?? PHASES[0];
 }
 
 export const allTasks = (day: Day): Task[] => day.groups.flatMap((g) => g.tasks);
@@ -73,9 +68,9 @@ export function earliestIncomplete(
     return task ? { task, date: today } : null;
   }
 
-  for (const date of DAY_ORDER.filter((d) => d > today)) {
-    const task = allTasks(DAYS[date]).find((t) => !done.has(t.id));
-    if (task) return { task, date };
+  for (const day of ALL_DAYS.filter((d) => d.date > today)) {
+    const task = allTasks(day).find((t) => !done.has(t.id));
+    if (task) return { task, date: day.date };
   }
   return null;
 }
@@ -84,17 +79,21 @@ export function earliestIncomplete(
  * Первый день плана. PRD для стрипа: «jumps to that plan's first day».
  * Если на стартовую дату расписания в моке нет, берётся ближайший день плана,
  * для которого оно есть, — иначе клик по четырём планам из пяти приводил бы
- * на заглушку.
+ * на заглушку. Когда расписания нет на весь план целиком, возвращается его
+ * стартовая дата: экран покажет её пустой карточкой, а не упадёт.
  */
-export function firstDayOfPhase(phase: Phase) {
+function firstDayOfPhase(phase: Phase) {
   if (DAYS[phase.start]) return phase.start;
-  return DAY_ORDER.find((d) => d >= phase.start && d <= phase.end) ?? phase.start;
+  return inPhase(phase)[0]?.date ?? phase.start;
 }
 
 /** Первый невыполненный день плана. PRD для рельса: «first incomplete day». */
 export function firstIncompleteDayOfPhase(phase: Phase, done: ReadonlySet<string>) {
-  const day = DAY_ORDER.find(
-    (d) => d >= phase.start && d <= phase.end && allTasks(DAYS[d]).some((t) => !done.has(t.id)),
-  );
-  return day ?? firstDayOfPhase(phase);
+  const day = inPhase(phase).find((d) => allTasks(d).some((t) => !done.has(t.id)));
+  return day?.date ?? firstDayOfPhase(phase);
+}
+
+/** Дни, попадающие в план, по возрастанию даты. */
+function inPhase(phase: Phase) {
+  return ALL_DAYS.filter((d) => d.date >= phase.start && d.date <= phase.end);
 }

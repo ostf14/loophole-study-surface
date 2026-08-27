@@ -8,7 +8,7 @@ import { IconButton } from "@/components/ui/icon-button";
 import { Card } from "@/components/ui/card";
 import { ProgressDonut } from "@/components/ui/progress-donut";
 import { cn } from "@/lib/cn";
-import { DAYS, DAY_ORDER } from "@/lib/plan-data";
+import { ALL_DAYS } from "@/lib/plan-data";
 import { allTasks, formatLong } from "@/lib/plan";
 
 /**
@@ -150,18 +150,18 @@ function DayPicker({
           role="listbox"
           className="absolute top-[calc(100%+10px)] left-0 z-20 flex w-[300px] flex-col gap-1 p-2 shadow-[4px_4px_0_0_var(--color-soft-black)]"
         >
-          {DAY_ORDER.map((d) => {
-            const tasks = allTasks(DAYS[d]);
+          {ALL_DAYS.map((day) => {
+            const tasks = allTasks(day);
             const dn = tasks.filter((t) => done.has(t.id)).length;
-            const active = d === date;
+            const active = day.date === date;
             return (
               <button
-                key={d}
+                key={day.date}
                 type="button"
                 role="option"
                 aria-selected={active}
                 onClick={() => {
-                  onJumpToDate(d);
+                  onJumpToDate(day.date);
                   setOpen(false);
                 }}
                 className={cn(
@@ -170,7 +170,9 @@ function DayPicker({
                 )}
               >
                 <ProgressDonut done={dn} total={tasks.length} size={22} />
-                <span className={cn("text-body-s", active && "font-semibold")}>{formatLong(d)}</span>
+                <span className={cn("text-body-s", active && "font-semibold")}>
+                  {formatLong(day.date)}
+                </span>
               </button>
             );
           })}

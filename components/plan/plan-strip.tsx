@@ -51,10 +51,12 @@ export function PlanStrip({ today, onJumpToPhase, className }: PlanStripProps) {
   const todayPct = planFraction(today);
 
   /** Границы фаз в долях: накопленная ширина каждой, кроме последней. */
-  const boundaries = PHASES.slice(0, -1).reduce<number[]>((acc, phase) => {
-    const prev = acc.length ? acc[acc.length - 1] : 0;
-    return [...acc, prev + phaseWidth(phase.start, phase.end) / 100];
-  }, []);
+  const boundaries: number[] = [];
+  let acc = 0;
+  for (const phase of PHASES.slice(0, -1)) {
+    acc += phaseWidth(phase.start, phase.end) / 100;
+    boundaries.push(acc);
+  }
 
   return (
     <div className={cn("flex flex-col", className)}>

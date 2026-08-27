@@ -13,11 +13,12 @@ import { PlanHeader } from "@/components/plan/plan-header";
 import { PlanStrip } from "@/components/plan/plan-strip";
 import { LeftRail } from "@/components/rail/left-rail";
 import {
+  ALL_DAYS,
   DAYS,
-  DAY_ORDER,
   INITIAL_BOOKMARKS,
   TODAY,
   type Embed,
+  type Group,
   type Phase,
 } from "@/lib/plan-data";
 import {
@@ -34,7 +35,7 @@ export default function StudySurface() {
   /* Закладки разрешаются из самих данных плана, а не дублируются: так карточка
      на полке и карточка в заметках не разъедутся при правке текста. */
   const [bookmarks, setBookmarks] = useState<Embed[]>(() =>
-    DAY_ORDER.flatMap((d) => allTasks(DAYS[d]).flatMap((t) => t.embeds ?? [])).filter((e) =>
+    ALL_DAYS.flatMap((d) => allTasks(d).flatMap((t) => t.embeds ?? [])).filter((e) =>
       INITIAL_BOOKMARKS.includes(e.id),
     ),
   );
@@ -43,16 +44,16 @@ export default function StudySurface() {
 
   const [done, setDone] = useState<Set<string>>(() => {
     const s = new Set<string>();
-    for (const d of DAY_ORDER) for (const t of allTasks(DAYS[d])) if (t.done) s.add(t.id);
+    for (const d of ALL_DAYS) for (const t of allTasks(d)) if (t.done) s.add(t.id);
     return s;
   });
 
   /** Свёрнутые группы. PRD держит активную развёрнутой и сворачивает выполненные. */
   const [collapsed, setCollapsed] = useState<Set<string>>(() => {
     const s = new Set<string>();
-    for (const d of DAY_ORDER) {
-      for (const g of DAYS[d].groups) {
-        if (g.tasks.every((t) => t.done)) s.add(`${d}:${g.id}`);
+    for (const d of ALL_DAYS) {
+      for (const g of d.groups) {
+        if (g.tasks.every((t) => t.done)) s.add(`${d.date}:${g.id}`);
       }
     }
     return s;
@@ -78,15 +79,13 @@ export default function StudySurface() {
     toastTimer.current = window.setTimeout(() => setToast(null), 2400);
   }, []);
 
-  const toggleTask = (taskId: string, dayKey: string, groupId: string) => {
+  const toggleTask = (taskId: string, dayKey: string, group: Group) => {
     const next = new Set(done);
     if (next.has(taskId)) next.delete(taskId);
     else next.add(taskId);
     setDone(next);
 
-    const group = DAYS[dayKey].groups.find((g) => g.id === groupId);
-    if (!group) return;
-    const key = `${dayKey}:${groupId}`;
+    const key = `${dayKey}:${group.id}`;
     const whole = group.tasks.every((t) => next.has(t.id));
     setCollapsed((prev) => {
       const set = new Set(prev);
@@ -204,7 +203,7 @@ export default function StudySurface() {
                             task={task}
                             n={numbers.get(task.id) ?? 0}
                             done={isDone}
-                            onToggle={() => toggleTask(task.id, date, group.id)}
+                            onToggle={() => toggleTask(task.id, date, group)}
                             onLaunch={() =>
                               say(`“${task.title}” opens in focus mode — out of scope for this build`)
                             }
