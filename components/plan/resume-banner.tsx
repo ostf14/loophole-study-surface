@@ -2,7 +2,6 @@
 
 import { ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ProgressDonut } from "@/components/ui/progress-donut";
 import { TaskIcon } from "@/components/day/task-icon";
 import { formatShort } from "@/lib/plan";
 import type { Task } from "@/lib/plan-data";
@@ -34,6 +33,13 @@ import type { Task } from "@/lib/plan-data";
  * подпись, а сама задача шла мелко под ней. Теперь наоборот: подпись мелким
  * капсом, заголовок задачи крупно.
  *
+ * В слоте слева — иконка типа задачи, та же, что в строках списка: баннер
+ * отвечает на вопрос «что делать дальше», и первое, что нужно знать про
+ * задачу, — какого она рода. Донат прогресса там стоял раньше и был хуже
+ * дважды: у неначатой задачи ему нечего показывать, а у начатой то же самое
+ * уже сказано словами — «12m left» справа от названия. Плюс он считал минуты
+ * и подписывался читалке задачами.
+ *
  * Компонентами `Alert/Alert Bar` и `Action Bar` баннер не собран сознательно.
  * Первый — уведомление о проблеме с кнопкой отката и крестиком закрытия,
  * второй — футер потока с горячей клавишей. Обоим здесь не место: баннер
@@ -47,25 +53,8 @@ type ResumeBannerProps = {
   onStart: () => void;
 };
 
-/**
- * Доля пройденного у начатой задачи: из «25m» и «12m left». Возвращает null,
- * когда считать нечего, — тогда донат не рисуется вовсе.
- *
- * Раньше в этом случае он рисовался пустым кольцом: задача одна, закрашивать
- * нечего, и элемент занимал место, ничего не сообщая. Теперь в слоте стоит
- * иконка типа задачи — та же, что в строках списка. Слот говорит либо
- * «ты прошёл столько-то», либо «вот что это за задача», но не молчит.
- */
-function progress(task: Task) {
-  const total = Number.parseInt(task.duration, 10);
-  const left = task.remaining ? Number.parseInt(task.remaining, 10) : Number.NaN;
-  if (!task.started || Number.isNaN(total) || Number.isNaN(left) || total <= 0) return null;
-  return { done: total - left, total };
-}
-
 export function ResumeBanner({ task, date, today, onStart }: ResumeBannerProps) {
   const later = date > today;
-  const p = progress(task);
 
   return (
     <div className="flex flex-wrap items-center gap-6 rounded-3xl border-[2px] border-soft-black bg-soft-white px-6 py-6">
@@ -81,21 +70,15 @@ export function ResumeBanner({ task, date, today, onStart }: ResumeBannerProps) 
        * названной задачи.
        */}
       <div className="grid min-w-0 flex-1 basis-[280px] grid-cols-[auto_1fr] items-start gap-x-4 gap-y-2">
-        <span className="col-start-2 text-caption-medium uppercase text-pewter-hc">
+        <span className="col-span-2 col-start-1 text-caption-medium uppercase text-pewter-hc">
           Jump back in!
         </span>
 
-        <span className="col-start-1 row-start-2 flex">
-          {p ? (
-            <ProgressDonut
-              done={p.done}
-              total={p.total}
-              size={32}
-              label={`${p.done} of ${p.total} minutes done`}
-            />
-          ) : (
-            <TaskIcon type={task.type} className="size-[28px] shrink-0 text-soft-black" />
-          )}
+        {/* Высота слота равна строке заголовка (34), чтобы иконка встала по её
+            середине; по горизонтали она прижата к левому краю колонки, и
+            подпись «Jump back in!» над ней начинается ровно оттуда же. */}
+        <span className="col-start-1 row-start-2 flex h-[34px] items-center">
+          <TaskIcon type={task.type} className="size-[28px] shrink-0 text-soft-black" />
         </span>
 
         {/* Пока строка помещается, длительность стоит справа от названия
