@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Chip } from "@/components/ui/chip";
-import { PageControl } from "@/components/ui/page-control";
+import { IconButton } from "@/components/ui/icon-button";
 import { Card } from "@/components/ui/card";
 import { ProgressDonut } from "@/components/ui/progress-donut";
 import { cn } from "@/lib/cn";
@@ -19,6 +19,14 @@ import { allTasks, formatLong } from "@/lib/plan";
  *
  * Пейджинг PRD описывает частью переключателя видов. Он здесь потому, что
  * меняет день, а не вид, и стоять должен вплотную к тому, что меняет.
+ *
+ * Стрелки собраны на `Icon Button` 38×38, а не на `Page control`. Имя второго
+ * обманывает: в файле он встречается только внутри `Carousels` и
+ * `.Page Horizontal Scroll` — это стрелки карусели, потому и 44 с постоянной
+ * тенью, чтобы читаться поверх картинки. Пейджер у них собран в компоненте
+ * `Pagination`, и там ровно `Icon Button` 38 по краям и `Button` размера Small
+ * между ними. Отсюда и ряд перестал быть рваным: было 44 / 38 / 44 вокруг
+ * кнопки Today, стало 38 / 38 / 38.
  *
  * Hide completed отсюда убран. Он не из PRD, его роль дублировало
  * авто-сворачивание выполненной группы, а стоял он ровно там, где по проду
@@ -66,9 +74,12 @@ export function DateRow({
       <div className="flex items-center gap-3">
         <DayPicker date={date} done={done} onJumpToDate={onJumpToDate} />
 
-        <PageControl label="Previous day" disabled={!prev} onClick={() => prev && onJumpToDate(prev)}>
-          <ChevronLeft className="size-[24px]" strokeWidth={2.5} />
-        </PageControl>
+        <IconButton
+          label="Previous day"
+          disabled={!prev}
+          onClick={() => prev && onJumpToDate(prev)}
+          icon={<ChevronLeft strokeWidth={2.5} />}
+        />
         <Button
           variant="secondary"
           disabled={date === today}
@@ -77,9 +88,12 @@ export function DateRow({
         >
           Today
         </Button>
-        <PageControl label="Next day" disabled={!next} onClick={() => next && onJumpToDate(next)}>
-          <ChevronRight className="size-[24px]" strokeWidth={2.5} />
-        </PageControl>
+        <IconButton
+          label="Next day"
+          disabled={!next}
+          onClick={() => next && onJumpToDate(next)}
+          icon={<ChevronRight strokeWidth={2.5} />}
+        />
       </div>
 
       <ProgressDonut done={progress.done} total={progress.total} />

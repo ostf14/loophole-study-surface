@@ -2,27 +2,31 @@ import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
 /**
- * Круглая кнопка-иконка справа в строке задачи и в элементах подменю.
+ * `Icon Button` со страницы Buttons.
  *
- * Размер default 32×32: полный круг, обводка 2px, паддинг 4px, фон surface,
- * иконка ровно 20×20.
+ * Собственных размеров у компонента два: Default 38×38 с иконкой 24 и обводкой
+ * 2px, Large 80×80 с иконкой 40 и обводкой 3px. Всё остальное, что встречается
+ * в файле, — ужатые инстансы того же компонента: 32 в `Label_Submenu_Item`,
+ * 24 в `Tandem_Plan_Item`. Они здесь и названы ужатыми, а не отдельными
+ * размерами системы.
  *
- * Размер small 24×24 снят с правого контейнера `Tandem_Plan_Item` — там кнопка
- * ровно 24. Паддинг уменьшен пропорционально, иконке остаётся 16.
- *
- * Ховер сделан фирменным жестом минимального размера: это самый мелкий шаг
- * системы и единственный, который помещается внутри строки, не задевая соседей.
+ * Состояния сняты по смещению вложенного слоя IconButtonFrame относительно
+ * компонента: в покое тени нет вовсе, Hover уводит кнопку на −2/−2 и кладёт
+ * жёсткую тень 2/2, Active — на −1/−1 с тенью 1/1. То есть нажатие не гасит
+ * жест, а укорачивает его вдвое.
  */
 
 type IconButtonProps = ComponentPropsWithoutRef<"button"> & {
   icon: ReactNode;
   label: string;
-  size?: "default" | "small";
+  /** `default` — собственный размер компонента; остальные — ужатые инстансы. */
+  size?: "default" | "sm" | "xs";
 };
 
 const sizes = {
-  default: "size-[32px] p-[4px] [&>svg]:size-[20px]",
-  small: "size-[24px] p-[3px] [&>svg]:size-[16px]",
+  default: "size-[38px] border-[2px] [&>svg]:size-[24px]",
+  sm: "size-[32px] border-[2px] [&>svg]:size-[20px]",
+  xs: "size-[24px] border-[2px] [&>svg]:size-[16px]",
 } as const;
 
 export function IconButton({ icon, label, size = "default", className, ...props }: IconButtonProps) {
@@ -31,8 +35,11 @@ export function IconButton({ icon, label, size = "default", className, ...props 
       type="button"
       aria-label={label}
       className={cn(
-        "lh-card-hover-xs lh-outline inline-flex shrink-0 cursor-pointer items-center justify-center",
-        "rounded-full border-[2px] border-soft-black bg-soft-white text-soft-black",
+        "lh-outline inline-flex shrink-0 cursor-pointer items-center justify-center",
+        "rounded-full border-soft-black bg-soft-white text-soft-black",
+        "[transition:box-shadow_.15s_cubic-bezier(.4,0,.2,1),translate_.15s_cubic-bezier(.4,0,.2,1)]",
+        "not-disabled:hover:[translate:-2px_-2px] not-disabled:hover:shadow-[2px_2px_0_0_var(--color-soft-black)]",
+        "not-disabled:active:[translate:-1px_-1px] not-disabled:active:shadow-[1px_1px_0_0_var(--color-soft-black)]",
         sizes[size],
         "disabled:cursor-not-allowed disabled:opacity-50",
         className,

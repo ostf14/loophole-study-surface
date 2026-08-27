@@ -20,8 +20,12 @@ import { EmbedCard } from "./embed-card";
  * времени, а между иконкой типа 16×16 и заголовком — гэп 8. Правый блок с
  * гэпом 20 держит слот тега и кнопку запуска.
  *
- * Время залито `#aaaaaa` прямо в компоненте, мимо токенов. Это та же
- * непривязанная конвенция, что и у семейства Label; воспроизведено как есть.
+ * Время в компоненте залито сырым `#aaaaaa`: ни переменной, ни стиля за ним
+ * нет — во всём файле этот хекс стоит на двух слоях, здесь и в
+ * `Label_Submenu_Item`, и оба раза несвязанным. Это обрыв привязки в их файле,
+ * а не решение. Взят `text-secondary` из их же семантического слоя, то есть
+ * pewter-hc: 7.02:1 против 2.24:1, которые не проходят AA даже для крупного
+ * кегля.
  *
  * Заголовок: Inter 500, 14px, трекинг -1.8%, цвет soft-black. Это токен
  * `body-s`. Интерлиньяж взят из CSS (20px), а не из Figma (160% = 22.4) —
@@ -96,20 +100,11 @@ export function TaskRow({
         <span className="flex shrink-0 items-center gap-5">
           {task.optional ? <Tag>(optional)</Tag> : null}
 
-          {/* Время: цвет #aaaaaa задан в компоненте напрямую, мимо токенов —
-              та же непривязанная конвенция, что у семейства Label. Через
-              style, а не классом: tailwind-merge считает произвольный
-              text-[...] той же группой, что размерный токен, и выбрасывает
-              один из двух.
-
-              Фиксированная ширина с выключкой вправо: в компоненте время
+          {/* Фиксированная ширина с выключкой вправо: в компоненте время
               держится за конец заголовка, а заголовки у нас разной длины —
               шесть значений расползались на 162px. Порядок PRD при этом цел:
               «checkbox, type icon, title, start time, and a launch arrow». */}
-          <span
-            className="w-[var(--task-time-width)] shrink-0 text-right text-body-xs whitespace-nowrap tabular-nums"
-            style={{ color: "#aaaaaa" }}
-          >
+          <span className="w-[var(--task-time-width)] shrink-0 text-right text-body-xs whitespace-nowrap tabular-nums text-pewter-hc">
             {task.time}
           </span>
 

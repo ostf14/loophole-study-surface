@@ -63,10 +63,12 @@ export default function KitchenSink() {
         <PositionIcon n={6} state="complete" size="small" />
       </Row>
 
-      <Row title="IconButton — 32×32, иконка 20×20">
+      <Row title="IconButton — 38×38 с иконкой 24, плюс ужатые инстансы 32 и 24">
         <IconButton icon={<ArrowRight />} label="Запустить" />
         <IconButton icon={<ChevronDown />} label="Развернуть" />
         <IconButton icon={<Play />} label="Играть" />
+        <IconButton size="sm" icon={<ArrowRight />} label="Запустить, 32" />
+        <IconButton size="xs" icon={<ArrowRight />} label="Запустить, 24" />
       </Row>
 
       <Row title="ProgressBar — правый край прямой до ста процентов">
