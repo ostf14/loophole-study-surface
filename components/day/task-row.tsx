@@ -27,9 +27,17 @@ import { EmbedCard } from "./embed-card";
  * pewter-hc: 7.02:1 против 2.24:1, которые не проходят AA даже для крупного
  * кегля.
  *
- * Заголовок: Inter 500, 14px, трекинг -1.8%, цвет soft-black. Это токен
- * `body-s`. Интерлиньяж взят из CSS (20px), а не из Figma (160% = 22.4) —
- * расхождение шкалы v2.0 задокументировано, прод важнее макета.
+ * Заголовок: 14px, трекинг −1.8%, интерлиньяж 20 — взят из CSS, а не из Figma
+ * (160% = 22.4): расхождение шкалы v2.0 задокументировано, прод важнее макета.
+ * Вес 600, то есть токен `caption-large` = `Body type/Caption 1`, а не `body-s`
+ * с его пятисотым. Опора — `checkbox-list-item`, их собственная строка чеклиста:
+ * заголовок первого уровня там Semi Bold (`Body 1`), второго — Medium
+ * (`Body 2`). Строка задачи внутри группы — первый уровень.
+ *
+ * На пятисотом заголовок оказывался легче, чем лид-ины его же заметки
+ * (`LOOKS LIKE:` и соседи идут шестисотым): подпись весила больше того, что
+ * подписывает. Теперь заголовок — самое тяжёлое почти чёрное в строке, а
+ * заметка вся уходит в pewter-hc.
  *
  * Свойства компонента: State (Default / Checked), Text, Show Time,
  * Show optional, Subtext, Show Subtitle. Состояний два, и Checked приглушает
@@ -91,7 +99,7 @@ export function TaskRow({
               {n}.
             </span>
             <TaskIcon type={task.type} className="size-[16px] shrink-0 text-soft-black" />
-            <span className={cn("truncate text-body-s", done && "line-through decoration-[2px]")}>
+            <span className={cn("truncate text-caption-large", done && "line-through decoration-[2px]")}>
               {task.title}
             </span>
           </span>

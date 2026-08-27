@@ -28,10 +28,19 @@ import { GOALS, type Goal } from "@/lib/plan-data";
  * неверно.
  *
  * Подпись карточки расширена до трёх уровней по образцу `Onboarding list
- * item` со страницы Lists, где та же задача решена так же: метка, название
- * жирно, объяснение приглушённо и мельче. В компоненте слот подписи один
- * и рассчитан на короткую строку вроде «Metric being measured»; название
- * и критерий одним кеглем читались полотном из четырёх строк.
+ * item` со страницы Lists, где та же задача решена так же. Там это ровно
+ * три стиля: метка `All Caps/Caption 2` (12/18 Extra Bold, акцентным цветом),
+ * название `Emphasis/Body 1` (20/30 Extra Bold, soft-black), пояснение
+ * `Body 3` (16/24 **Medium**, pewter-hc). Здесь та же лестница на шаг ниже
+ * по кеглю: тег, название `body-small` восьмисотым, критерий `body-s`
+ * пятисотым.
+ *
+ * Критерий именно пятисотым: шестисотый спорил с названием, а в их образце
+ * пояснение всегда Medium — вес там падает сверху вниз без исключений.
+ *
+ * В компоненте слот подписи один и рассчитан на короткую строку вроде
+ * «Metric being measured»; название и критерий одним кеглем читались полотном
+ * из четырёх строк.
  *
  * Метка секции — компонент `tag` со страницы Tags в варианте Green. Он назван
  * под эту задачу и содержит ровно такие значения: LR, RC, TRANSLATION,
@@ -61,7 +70,7 @@ export function NextGoal() {
                 <span className="block text-body-small font-extrabold text-soft-black">
                   {goal.name}
                 </span>
-                <span className="mt-1 block text-caption-large text-pewter-hc">
+                <span className="mt-1 block text-body-s text-pewter-hc">
                   {goal.criterion}
                 </span>
               </>
