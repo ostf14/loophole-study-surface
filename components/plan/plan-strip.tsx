@@ -16,27 +16,26 @@ import { formatShort, phaseWidth, planFraction } from "@/lib/plan";
  * sized by its date range»), чтобы было видно, что Tandem марафон, а Perform
  * спринт. Разделители в компоненте позиционные, так что это одна пропорция.
  *
- * Дорожка не заливается вовсе, хотя компонент — шкала прогресса и заливка
- * у него по замыслу. Мы берём у него дорожку, разделители и геометрию, но не
- * заполнение: у нас ось, а не шкала.
+ * Дорожка залита от начала плана до сегодня, и правый край заливки — это
+ * и есть маркер сегодня: у заполнения своя обводка, так что край даёт ровно
+ * ту вертикальную линию, которую до этого рисовала отдельная засечка.
+ * Отдельной больше нет — две вещи на одном месте.
  *
- * Заливка шла сплошной от начала плана до сегодня, то есть кодировала
- * **прошедшее календарное время**. Студент, не сделавший ничего, и студент,
- * сделавший всё, получали одинаковую полосу. Элемент выглядел индикатором
- * прогресса и мерил календарь. PRD его таким и не просит: «with a today
- * marker», маркер, а не заливка.
+ * Заливка кодирует прошедшее календарное время, а не сделанную работу. Это
+ * стоит держать в голове при передаче: `turquoise` тем же цветом залита
+ * заработанная ячейка Prep Map, и на одном экране он теперь значит и
+ * «заработано усилием», и «прошло само». Компонент заливает именно так,
+ * поэтому взято как есть, но если их команда захочет развести смыслы —
+ * менять надо цвет заливки, а не убирать её.
  *
- * Второй довод сильнее первого. Заливка была `turquoise` — ровно тот цвет,
- * которым в Prep Map залита **заработанная** ячейка. После переезда стрипа
- * в колонку они оказались в тридцати сантиметрах друг от друга, и бирюзовый
- * стал означать две разные вещи одновременно: «заработано усилием» и
- * «прошло само». Та же болезнь, которую мы лечили у chartreuse.
+ * Вехи — `button.tool-btn` из `Toolbar_Movable`: круг 24 с обводкой 2, у них
+ * он залит цветом пометки, у нас stark-white. Стоят прямо на дорожке. До
+ * этого были засечки 2×9 над ней — я их и придумал, и в системе такой формы
+ * нет. Бусина на линии заодно кодирует пройденность сама: та, что слева от
+ * края заливки, лежит на бирюзовом, та, что справа, — на песочном.
  *
- * Где студент находится, читается двумя способами и без заливки: позицией
- * маркера на оси и единственной тёмной подписью фазы снизу.
- *
- * Вехи вынесены наружу, засечками над дорожкой. Внутри полосы они читались
- * как мусор в пустых секциях.
+ * Высота дорожки 36 — собственная высота компонента. Была 28, и бусина 24
+ * на неё не вставала.
  */
 
 type PlanStripProps = {
@@ -45,7 +44,7 @@ type PlanStripProps = {
   className?: string;
 };
 
-const STRIP_HEIGHT = 28;
+const STRIP_HEIGHT = 36;
 
 export function PlanStrip({ today, onJumpToPhase, className }: PlanStripProps) {
   const todayPct = planFraction(today);
@@ -76,21 +75,19 @@ export function PlanStrip({ today, onJumpToPhase, className }: PlanStripProps) {
           Test day
         </span>
 
-        {MILE_MARKERS.map((m) => (
-          <MileTick key={m.id} label={m.label} date={m.date} passed={m.date <= today} />
-        ))}
       </div>
 
       <div className="relative">
         <ProgressBarLong
-          /* Ноль: дорожка не заливается. Стрип — ось, а не шкала. */
-          value={0}
+          /* Заливка до сегодня. Её правый край и есть маркер сегодня.
+             Без подъёма: у нас сплошной отрезок, а не ряд слотов. */
+          value={todayPct / 100}
+          raised={false}
           separators={boundaries}
           height={STRIP_HEIGHT}
-          /* В компоненте разделители #d9d9d9, но там дорожка 36 и они 14
-             в высоту. На нашей 28 они становятся 11 и тонут в песочной
-             заливке: 217 против 241 по светлоте. sand-hc — токен той же
-             семьи, что и заливка, и на ней читается. */
+          /* В компоненте разделители #d9d9d9 — фигмовский серый по умолчанию,
+             ни переменной, ни стиля за ним нет. sand-hc из той же семьи, что
+             и заливка дорожки, и читается на ней. */
           separatorColor="var(--color-sand-hc)"
           label={`Plan timeline, ${formatShort(PLAN.start)} to ${formatShort(PLAN.end)}. Today is ${Math.round(todayPct)}% through.`}
         />
@@ -110,26 +107,13 @@ export function PlanStrip({ today, onJumpToPhase, className }: PlanStripProps) {
           ))}
         </div>
 
-        {/* Маркер сегодня: чёрная засечка внутри дорожки, не касаясь рамки.
-            От разделителей фаз отличается тремя признаками сразу — те
-            `sand-hc`, 2px и 14 в высоту, этот soft-black, 3px и 18.
-
-            Во всю высоту он не идёт намеренно: тогда он срастается с рамкой,
-            дорожка перестаёт читаться непрерывной осью, а её левый конец при
-            раннем «сегодня» превращается в коробку. Вид получался зависящим
-            от данных — при «сегодня» посередине выглядел иначе, чем в начале
-            плана. */}
-        <span
-          className="pointer-events-none absolute bg-soft-black"
-          style={{
-            left: `${todayPct}%`,
-            top: (STRIP_HEIGHT - 18) / 2,
-            width: 3,
-            height: 18,
-            borderRadius: 48,
-            transform: "translateX(-50%)",
-          }}
-        />
+        {/* Вехи бусинами на дорожке. Стоят выше прозрачных кнопок фаз,
+            иначе кнопка перехватывала бы наведение и подсказка не всплывала.
+            Клик по бусине ничего не делает намеренно: веха — отметка на оси,
+            а не место, куда можно уйти. */}
+        {MILE_MARKERS.map((m) => (
+          <MileBead key={m.id} label={m.label} date={m.date} passed={m.date <= today} />
+        ))}
 
         {/* Граничные даты прямо на дорожке. soft-black читается и на заливке
             (6.8:1), и на пустой части (15.9:1) — поэтому цвет один, и подпись
@@ -167,34 +151,32 @@ export function PlanStrip({ today, onJumpToPhase, className }: PlanStripProps) {
 }
 
 /**
- * Веха: короткая засечка над дорожкой, имя и дата по наведению. PRD требует
- * их отдельно от сегментов: «small markers at the dates the plan reaches its
- * landmarks… hovering shows its name and date».
+ * Веха на дорожке. PRD требует их отдельно от сегментов: «small markers at the
+ * dates the plan reaches its landmarks… hovering shows its name and date».
  *
- * Наклон 8° — не украшение, а различение. На дорожке живут три вида отметок
- * сразу: границы планов, маркер сегодня и вехи. Все три вертикальные засечки
- * шириной два-три пикселя, и пройденная веха soft-black отличалась от маркера
- * сегодня только высотой. Наклон — собственный мотив системы, тот же, что у
- * чекбокса и галочки в `PositionIcon`, — снимает совпадение мгновенно:
- * вертикальное это ось, наклонное это событие.
+ * Форма — `button.tool-btn` из `Toolbar_Movable`: круг 24 с обводкой 2
+ * soft-black. В компоненте он залит цветом пометки — розовым, оранжевым,
+ * жёлтым; у нас stark-white, потому что бусина ничего не категоризует,
+ * а отмечает точку.
+ *
+ * Пройденность бусина кодирует положением, а не собственным цветом: слева от
+ * края заливки она лежит на бирюзовом, справа — на песочном. Отдельного
+ * признака ей не нужно.
  */
-function MileTick({ label, date, passed }: { label: string; date: string; passed: boolean }) {
+function MileBead({ label, date, passed }: { label: string; date: string; passed: boolean }) {
   return (
     <span
-      className="group/mile absolute bottom-0 -translate-x-1/2"
-      style={{ left: `${planFraction(date)}%` }}
+      className="group/mile absolute top-1/2 -translate-x-1/2 -translate-y-1/2"
+      style={{ left: `${planFraction(date)}%`, height: 24 }}
     >
       <span
         role="img"
-        aria-label={`${label} · ${formatShort(date)}`}
-        className={cn(
-          "block h-[9px] w-[2px] rotate-[8deg] rounded-full",
-          passed ? "bg-soft-black" : "bg-pewter",
-        )}
+        aria-label={`${label} · ${formatShort(date)}${passed ? " · passed" : ""}`}
+        className="block size-6 rounded-full border-[2px] border-soft-black bg-stark-white"
       />
       <span
         className={cn(
-          "pointer-events-none absolute bottom-[calc(100%+6px)] left-1/2 z-10 -translate-x-1/2",
+          "pointer-events-none absolute bottom-[calc(100%+8px)] left-1/2 z-10 -translate-x-1/2",
           "whitespace-nowrap rounded-lg bg-soft-black px-2 py-1",
           "text-body-xs text-soft-white opacity-0 transition-opacity",
           "group-hover/mile:opacity-100",

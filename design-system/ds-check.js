@@ -84,6 +84,7 @@
     },
     primaryButton: () => [...document.querySelectorAll("button")].find((b) => /START|CONTINUE/i.test(b.innerText)),
     pagerArrow: () => document.querySelector('button[aria-label="Previous day"]'),
+    mileBead: () => document.querySelector('main [role=img][aria-label*="Translation starts"]'),
     launch: () => document.querySelector('main button[aria-label^="Start"]'),
     dayPagerPrev: () => [...document.querySelectorAll("main button")].find((b) => /^JUL \d/i.test(b.innerText.trim())),
     dayPagerNext: () => [...document.querySelectorAll("main button")].filter((b) => /^JUL \d/i.test(b.innerText.trim())).pop(),
@@ -158,6 +159,11 @@
     /* Сегменты в рельсе масштабированы: семь штук по 34 туда не влезают.
        Пропорции компонента при этом сохраняются, поэтому ожидаемое
        считается от отрисованной ширины. */
+    /* Веха на стрипе — `button.tool-btn` из `Toolbar_Movable`, размер 24
+       с обводкой 2. Заливка у них цветная, у нас stark-white. */
+    ["button.tool-btn · Toolbar_Movable", "габарит вехи", () => `${box(find.mileBead()).w}×${box(find.mileBead()).h}`, "24×24"],
+    ["button.tool-btn · Toolbar_Movable", "рамка вехи", () => box(find.mileBead()).border, 2],
+
     ["Progress bar/Ticks · Progress", "радиус", () => box(find.segment()).radius, () => round2((6 * box(find.segment()).w) / 34)],
     ["Progress bar/Ticks · Progress", "тень залитого", () => box(find.segment()).shadow, () => {
       /* Округляем и ожидаемое, и отрисованное: браузер печатает тень

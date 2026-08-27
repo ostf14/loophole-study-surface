@@ -40,6 +40,11 @@ type ProgressBarLongProps = {
   /** Высота дорожки. В компоненте 36, всё остальное считается от неё. */
   height?: number;
   /**
+   * Поднимать ли заполнение тенью, как это делает компонент. Верно, когда
+   * заполнение идёт слотами; для сплошного отрезка выключается.
+   */
+  raised?: boolean;
+  /**
    * Цвет разделителей. В компоненте стоит сырой `#d9d9d9` — во всём файле он
    * ни разу не переменная и ни разу не стиль, это фигмовский серый по
    * умолчанию, тот же класс, что `#aaaaaa` у времени задачи. По умолчанию
@@ -57,6 +62,7 @@ export function ProgressBarLong({
   separators,
   counter,
   height = 36,
+  raised = true,
   separatorColor = "var(--color-pewter)",
   className,
   label,
@@ -108,17 +114,41 @@ export function ProgressBarLong({
         ))}
       </div>
 
-      {/* заполнение */}
+      {/*
+        Заполнение. В компоненте это `Items completed` — ряд приподнятых
+        ячеек: у каждой своя обводка и своя тень 3/3, потому что заполненный
+        слот там объект, а не отрезок. Сплошная заливка приподнятой быть не
+        может: одна плашка с тенью на всю пройденную часть читается не
+        заполнением дорожки, а чужим элементом, положенным сверху.
+
+        Поэтому `raised` включает подъём только там, где заполнение идёт
+        слотами. Сплошное садится внутрь дорожки: обводки нет вовсе — её роль
+        уже играет обводка самой дорожки, — а скругление левого края повторяет
+        внутренний радиус дорожки, правый край остаётся почти прямым, чтобы
+        было видно, что это край заполнения, а не край объекта.
+      */}
       {pct > 0 ? (
         <div
-          className="absolute top-0 left-0 bg-turquoise"
-          style={{
-            width: `${pct}%`,
-            height,
-            borderRadius: fillRadius,
-            border: `${stroke}px solid var(--color-soft-black)`,
-            boxShadow: `${fillLift}px ${fillLift}px 0 0 var(--color-soft-black)`,
-          }}
+          className="absolute bg-turquoise"
+          style={
+            raised
+              ? {
+                  top: 0,
+                  left: 0,
+                  width: `${pct}%`,
+                  height,
+                  borderRadius: fillRadius,
+                  border: `${stroke}px solid var(--color-soft-black)`,
+                  boxShadow: `${fillLift}px ${fillLift}px 0 0 var(--color-soft-black)`,
+                }
+              : {
+                  top: stroke,
+                  left: stroke,
+                  width: `calc(${pct}% - ${stroke}px)`,
+                  height: height - stroke * 2,
+                  borderRadius: `${trackRadius - stroke}px ${2 * k}px ${2 * k}px ${trackRadius - stroke}px`,
+                }
+          }
         >
           {counter !== undefined ? (
             <span
