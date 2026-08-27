@@ -122,14 +122,24 @@ Working rules in this repo:
 ### Checking it
 
 Three scripts in `design-system/` verify the claim that the screen is built on
-the system. Paste any of them into the browser console with the screen open;
-each prints a table and a one-line verdict.
+the system. Run all three at once against a running dev server:
+
+```bash
+npm run dev      # in one terminal
+npm run audit    # in another
+```
+
+The runner exits non-zero if any check fails, so it works in CI. It needs a
+Chrome or Chromium on the machine — `playwright-core` does not download one;
+set `CHROME_PATH` if it lives somewhere unusual. Without a browser, paste any
+of the three scripts into the browser console with the screen open; each
+prints a table and a one-line verdict.
 
 | Скрипт | Что проверяет | Текущий результат |
 |---|---|---|
 | `ds-check.js` | 36 конкретных значений против снятых из Figma: габариты, паддинги, рамки, тени, типографика | все сходятся |
 | `token-audit.js` | каждый текстовый узел экрана против типографической шкалы | 114 из 114 на токенах |
-| `paint-audit.js` | цвет текста, фон, рамки, заливку SVG и тени каждого видимого элемента против палитры | 446 из 446 |
+| `paint-audit.js` |  все 448 | 446 из 446 |
 
 `ds-check.js` ловит регрессии в известных местах, два других — самодеятельность
 в неизвестных. Оба сплошных скрипта проверены подсадкой нарушений: они их
