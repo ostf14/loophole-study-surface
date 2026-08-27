@@ -12,7 +12,12 @@ import { PositionIcon } from "@/components/ui/position-icon";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { ProgressBarLong } from "@/components/ui/progress-bar-long";
 
-/** Служебная страница для сверки примитивов с системой. В выдачу не входит. */
+/**
+ * Галерея примитивов: каждый компонент во всех состояниях, которые он умеет,
+ * рядом друг с другом. Экран показывает их по одному в работе, здесь они
+ * видны разом — так проще сверить их с файлом Figma и заметить состояние,
+ * которое на экране не встречается.
+ */
 
 export default function KitchenSink() {
   const [a, setA] = useState(false);
@@ -21,18 +26,18 @@ export default function KitchenSink() {
 
   return (
     <main className="mx-auto flex w-full max-w-[900px] flex-col gap-10 p-14">
-      <h1 className="text-display-m">Примитивы</h1>
+      <h1 className="text-display-m">Primitives</h1>
 
-      <Row title="Checkbox — дефолт без наклона, размеры default и small">
-        <Checkbox checked={a} onChange={(e) => setA(e.target.checked)} aria-label="Первая" />
-        <Checkbox checked={b} onChange={(e) => setB(e.target.checked)} aria-label="Вторая" />
-        <Checkbox checked={false} onChange={() => {}} disabled aria-label="Выключен" />
-        <Checkbox checked={false} onChange={() => {}} indeterminate aria-label="Частично" />
-        <Checkbox size="small" checked={b} onChange={(e) => setB(e.target.checked)} aria-label="Маленький" />
+      <Row title="Checkbox — no tilt, sizes default and small">
+        <Checkbox checked={a} onChange={(e) => setA(e.target.checked)} aria-label="First" />
+        <Checkbox checked={b} onChange={(e) => setB(e.target.checked)} aria-label="Second" />
+        <Checkbox checked={false} onChange={() => {}} disabled aria-label="Disabled" />
+        <Checkbox checked={false} onChange={() => {}} indeterminate aria-label="Indeterminate" />
+        <Checkbox size="small" checked={b} onChange={(e) => setB(e.target.checked)} aria-label="Small" />
         <Checkbox color="seafoam" checked={b} onChange={(e) => setB(e.target.checked)} aria-label="Seafoam" />
       </Row>
 
-      <Row title="Checkbox — пять вариантов наклона из CHECKBOX_ROTATIONS">
+      <Row title="Checkbox — the five tilts in CHECKBOX_ROTATIONS">
         {CHECKBOX_ROTATIONS.map((r) => (
           <span key={r} className="flex flex-col items-center gap-2">
             <Checkbox
@@ -46,7 +51,7 @@ export default function KitchenSink() {
         ))}
       </Row>
 
-      <Row title="Checkbox со слотом лейбла, gap-5">
+      <Row title="Checkbox with a label slot, gap 20">
         <Checkbox
           checked={a}
           onChange={(e) => setA(e.target.checked)}
@@ -54,7 +59,7 @@ export default function KitchenSink() {
         />
       </Row>
 
-      <Row title="PositionIcon — Default / During / Complete, 30 и 24">
+      <Row title="PositionIcon — Default / During / Complete, 30 and 24">
         <PositionIcon n={1} state="default" />
         <PositionIcon n={2} state="during" />
         <PositionIcon n={3} state="complete" />
@@ -63,15 +68,15 @@ export default function KitchenSink() {
         <PositionIcon n={6} state="complete" size="small" />
       </Row>
 
-      <Row title="IconButton — 38×38 с иконкой 24, плюс ужатые инстансы 32 и 24">
-        <IconButton icon={<ArrowRight />} label="Запустить" />
-        <IconButton icon={<ChevronDown />} label="Развернуть" />
-        <IconButton icon={<Play />} label="Играть" />
-        <IconButton size="sm" icon={<ArrowRight />} label="Запустить, 32" />
-        <IconButton size="xs" icon={<ArrowRight />} label="Запустить, 24" />
+      <Row title="IconButton — 38×38 with a 24 icon, plus the 32 and 24 instances">
+        <IconButton icon={<ArrowRight />} label="Launch" />
+        <IconButton icon={<ChevronDown />} label="Expand" />
+        <IconButton icon={<Play />} label="Play" />
+        <IconButton size="sm" icon={<ArrowRight />} label="Launch, 32" />
+        <IconButton size="xs" icon={<ArrowRight />} label="Launch, 24" />
       </Row>
 
-      <Row title="ProgressBar — правый край прямой до ста процентов">
+      <Row title="ProgressBar — the right edge stays square until a hundred per cent">
         <ProgressBar value={0} max={9} />
         <ProgressBar value={3} max={9} />
         <ProgressBar value={9} max={9} />
@@ -83,7 +88,7 @@ export default function KitchenSink() {
           Adjust Plan
         </Button>
         <Button variant="secondary" iconSide="leading" icon={<Play className="size-4" />}>
-          Ведущая
+          Leading
         </Button>
         <Button variant="ghost">Lookup</Button>
         <Button variant="primary" disabled>
@@ -91,7 +96,7 @@ export default function KitchenSink() {
         </Button>
       </Row>
 
-      <Row title="Card — фирменное движение, sm / md / lg">
+      <Row title="Card — the house hover, sm / md / lg">
         <Card hover="sm" className="px-5 py-3 text-body-small font-extrabold">
           hover sm
         </Card>
@@ -103,16 +108,16 @@ export default function KitchenSink() {
         </Card>
       </Row>
 
-      <Row title="Progress bar/long-bar — дорожка, разделители слотов, заполнение, счётчик">
+      <Row title="Progress bar/long-bar — track, slot separators, fill, counter">
         <div className="flex w-full max-w-[420px] flex-col gap-6">
-          <ProgressBarLong value={0.42} slots={8} label="42% пройдено" />
-          <ProgressBarLong value={0.42} slots={8} counter={3} label="3 из 8" />
-          <ProgressBarLong value={1} slots={8} counter={8} label="всё пройдено" />
-          <ProgressBarLong value={0} slots={8} label="ничего не пройдено" />
+          <ProgressBarLong value={0.42} slots={8} label="42% complete" />
+          <ProgressBarLong value={0.42} slots={8} counter={3} label="3 of 8" />
+          <ProgressBarLong value={1} slots={8} counter={8} label="all complete" />
+          <ProgressBarLong value={0} slots={8} label="nothing complete" />
         </div>
       </Row>
 
-      <Row title="stat-point/time-range — Default с дельтами, No Deltas, регрессия">
+      <Row title="stat-point/time-range — Default with deltas, No Deltas, regression">
         <div className="flex w-full max-w-[420px] flex-col gap-6">
           <TimeRange
             start="38:10"
@@ -133,7 +138,7 @@ export default function KitchenSink() {
         </div>
       </Row>
 
-      <Row title="Stat point — карточка 300×156, рамка 1.5px, hover 6px">
+      <Row title="Stat point — 300×156 card, 1.5px border, 6px hover">
         <StatPoint label="Translation + CLIR, RC" hover>
           <TimeRange
             start="38:10"
@@ -145,14 +150,14 @@ export default function KitchenSink() {
         </StatPoint>
       </Row>
 
-      <Row title="Типографика — шкала v2.0, трекинг отрицательный везде">
+      <Row title="Type — the v2.0 scale; tracking is negative throughout">
         <div className="flex flex-col gap-1">
           <span className="text-display-m">Display M 32/800</span>
           <span className="text-title-medium">Title Medium 24/700</span>
-          <span className="text-body-xl font-extrabold">Body XL 20 Bold — заголовок группы</span>
-          <span className="text-body-small font-extrabold">Body 3 · 16/24 · 800 — заголовок задачи</span>
-          <span className="text-body-s">Body S 14 — подменю</span>
-          <span className="text-body-xs text-pewter-hc">Body XS 12 — время и подписи</span>
+          <span className="text-body-xl font-extrabold">Body XL 20 Bold — group header</span>
+          <span className="text-body-small font-extrabold">Body 3 · 16/24 · 800 — task title</span>
+          <span className="text-body-s">Body S 14 — submenu</span>
+          <span className="text-body-xs text-pewter-hc">Body XS 12 — time and captions</span>
           <span className="text-caption-medium">Caption Medium 12/600</span>
           <span className="text-tag">TAG 12/800</span>
         </div>

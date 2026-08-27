@@ -55,15 +55,15 @@ const box = (el: Element): Box => {
        перед началом следующей тени. */
     shadow:
       s.boxShadow === "none"
-        ? "нет"
+        ? "none"
         : s.boxShadow
             .split(/,\s(?=rgba?\()/)
             .filter((x) => !/rgba\(0,\s*0,\s*0,\s*0\)/.test(x))
-            .join(" + ") || "нет",
+            .join(" + ") || "none",
   };
 };
 
-/** Бросает, если элемента нет: строка проверки честно станет «НЕ НАЙДЕН». */
+/** Бросает, если элемента нет: строка проверки честно станет «NOT FOUND». */
 function must(el: Element | null | undefined): Element {
   if (!el) throw new Error("not found");
   return el;
@@ -149,7 +149,7 @@ const CHECKS: Check[] = [
      Default. В покое тени у него нет — она приходит на ховер. */
   ["Icon Button · Buttons", "size", () => `${box(find.pagerArrow()).w}×${box(find.pagerArrow()).h}`, "38×38"],
   ["Icon Button · Buttons", "border", () => box(find.pagerArrow()).border, 2],
-  ["Icon Button · Buttons", "shadow at rest", () => box(find.pagerArrow()).shadow, "нет"],
+  ["Icon Button · Buttons", "shadow at rest", () => box(find.pagerArrow()).shadow, "none"],
   ["Icon Button · Buttons", "icon", () => svgWidth(find.pagerArrow()), 24],
 
   ["Section Collapse · Buttons", "expanded size", () => `${box(find.chevronOpen()).w}×${box(find.chevronOpen()).h}`, "46×32"],
@@ -221,7 +221,7 @@ export function figma(): AuditResult {
     try {
       got = actual();
     } catch {
-      got = "НЕ НАЙДЕН";
+      got = "NOT FOUND";
     }
     const want = typeof expected === "function" ? (expected as () => unknown)() : expected;
     const norm = (v: unknown) => String(v).replace(/(\d+\.\d{2})\d+/g, "$1");

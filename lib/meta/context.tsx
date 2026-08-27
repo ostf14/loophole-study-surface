@@ -36,6 +36,6 @@ export function MetaProvider({ children }: { children: React.ReactNode }) {
 
 export function useMeta() {
   const ctx = useContext(MetaContext);
-  if (!ctx) throw new Error("useMeta вызван вне MetaProvider");
+  if (!ctx) throw new Error("useMeta was called outside MetaProvider");
   return ctx;
 }
