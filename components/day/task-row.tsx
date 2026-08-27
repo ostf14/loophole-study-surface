@@ -95,7 +95,6 @@ export function TaskRow({
          * а под ним 4.
          */
         "flex flex-col border-b-[2px] border-soft-black py-1 last:border-b-0",
-        done && "opacity-50",
       )}
     >
       <div className="flex h-8 items-center justify-between px-5 py-1" data-note="task-row">
@@ -114,8 +113,16 @@ export function TaskRow({
             <span className="w-5 shrink-0 text-right text-body-xs tabular-nums text-pewter-hc">
               {n}.
             </span>
-            <TaskIcon type={task.type} className="size-[16px] shrink-0 text-soft-black" />
-            <span className={cn("truncate text-caption-large", done && "line-through decoration-[2px]")}>
+            <TaskIcon
+              type={task.type}
+              className={cn("size-[16px] shrink-0", done ? "text-pewter-hc" : "text-soft-black")}
+            />
+            <span
+              className={cn(
+                "truncate text-caption-large",
+                done && "text-pewter-hc line-through decoration-[2px]",
+              )}
+            >
               {task.title}
             </span>
           </span>

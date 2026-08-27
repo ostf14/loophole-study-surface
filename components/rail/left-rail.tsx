@@ -60,13 +60,18 @@ export function LeftRail({ workouts, routines }: LeftRailProps) {
           ней даёт гэп рельса, так что черта стоит по центру разрыва. */}
       <Section title="Video Course Review" className="border-t-[2px] border-soft-black pt-8">
         <ul className="flex flex-col gap-2 text-body-s">
+          {/* py-1 растит цель нажатия с 17 до 25 и удовлетворяет WCAG 2.5.8
+              (24×24). У строчного элемента вертикальный паддинг не двигает
+              строку — он только расширяет область попадания, так что ритм
+              списка остаётся прежним. Ссылка внутри заметки этого не требует:
+              там действует исключение для ссылок внутри текста. */}
           <li>
-            <a href="#" className="lh-link font-semibold">
+            <a href="#" className="lh-link py-1 font-semibold">
               My Saved Videos
             </a>
           </li>
           <li>
-            <a href="#" className="lh-link font-semibold">
+            <a href="#" className="lh-link py-1 font-semibold">
               My History
             </a>
           </li>

@@ -1,12 +1,17 @@
 /*
  * Все три проверки одной командой: `npm run audit`.
  *
- * Скрипты в этой папке написаны так, чтобы их можно было просто вставить
- * в консоль браузера на живом экране — это остаётся самым коротким путём,
- * ничего ставить не нужно. Этот файл делает то же самое без рук: поднимает
- * headless-Chromium, открывает экран, выполняет в нём каждый скрипт и
- * печатает отчёт. Код возврата ненулевой, если хоть одна проверка не сошлась,
- * поэтому его можно повесить в CI.
+ * Проверки живут в бандле, в `lib/diagnostics/`, и экран сам выставляет их
+ * на `window.__lo`. Значит самый короткий путь — открыть страницу и набрать
+ * в консоли браузера `__lo.check()`; ставить ничего не нужно. Этот файл
+ * делает то же самое без рук: поднимает headless-Chromium, открывает экран
+ * и зовёт ту же функцию. Код возврата ненулевой, если хоть одна проверка не
+ * сошлась, поэтому его можно повесить в CI.
+ *
+ * Одна реализация на оба пути. Раньше проверки лежали здесь отдельными
+ * скриптами и исполнялись в странице через `new Function`; после переезда в
+ * бандл они типизированы, линтуются вместе с экраном и не могут разойтись с
+ * тем, что видит рецензент.
  *
  * Браузер не входит в зависимости: `playwright-core` их не тянет. Нужен любой
  * установленный Chrome или Chromium; путь берётся из `CHROME_PATH`, иначе
@@ -15,18 +20,9 @@
  * Адрес экрана — `AUDIT_URL`, по умолчанию http://localhost:3000.
  */
 import { chromium } from "playwright-core";
-import { readFileSync, existsSync } from "node:fs";
-import { fileURLToPath } from "node:url";
-import { dirname, join } from "node:path";
+import { existsSync } from "node:fs";
 
-const HERE = dirname(fileURLToPath(import.meta.url));
 const URL = process.env.AUDIT_URL ?? "http://localhost:3000";
-
-const CHECKS = [
-  ["ds-check.js", "Figma reconciliation", "named values against what was read out of the file"],
-  ["token-audit.js", "Type scale", "every text node against the token table"],
-  ["paint-audit.js", "Paint and shadow", "every visible element against the palette"],
-];
 
 const CANDIDATES = [
   process.env.CHROME_PATH,
@@ -47,7 +43,7 @@ function launchOptions() {
 const browser = await chromium.launch(launchOptions()).catch((err) => {
   console.error(
     "Не удалось запустить браузер. Укажите путь к Chrome через CHROME_PATH,\n" +
-      "или вставьте скрипты из design-system/ в консоль браузера вручную.\n\n" +
+      "или откройте экран и наберите `__lo.check()` в консоли браузера.\n\n" +
       err.message,
   );
   process.exit(2);
@@ -63,10 +59,21 @@ try {
   process.exit(2);
 }
 
+const ready = await page
+  .waitForFunction(() => Boolean(window.__lo), null, { timeout: 10000 })
+  .then(() => true)
+  .catch(() => false);
+
+if (!ready) {
+  console.error("`window.__lo` не появился: страница загрузилась, но клиентский слой не смонтировался.");
+  await browser.close();
+  process.exit(2);
+}
+
+const results = await page.evaluate(() => window.__lo.check().results);
+
 let failed = 0;
-for (const [file, title, what] of CHECKS) {
-  const source = readFileSync(join(HERE, file), "utf8");
-  const { ok, verdict, failures } = await page.evaluate(source + ";");
+for (const { ok, title, what, verdict, failures } of results) {
   if (!ok) failed++;
   console.log(`\n${ok ? "✓" : "✗"} ${title} — ${what}`);
   console.log(`  ${verdict}`);
@@ -74,7 +81,5 @@ for (const [file, title, what] of CHECKS) {
 }
 
 await browser.close();
-console.log(
-  failed ? `\n${failed} of ${CHECKS.length} checks failed.` : `\nAll ${CHECKS.length} checks passed.`,
-);
+console.log(failed ? `\n${failed} of ${results.length} checks failed.` : `\nAll ${results.length} checks passed.`);
 process.exit(failed ? 1 : 0);

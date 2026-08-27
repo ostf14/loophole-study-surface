@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Diagnostics } from "@/components/meta/diagnostics";
 import { MetaBar } from "@/components/meta/meta-bar";
 import { NotesOverlay } from "@/components/meta/notes-overlay";
 import { SystemPanel } from "@/components/meta/system-panel";
@@ -23,6 +24,10 @@ export const metadata: Metadata = {
  *
  * Оба переключателя выключены по умолчанию, так что по умолчанию это просто
  * экран.
+ *
+ * `Diagnostics` не рендерит ничего: он ставит `window.__lo` и один раз пишет
+ * в консоль, что с ним делать. Проверки нужны рецензенту, у которого есть
+ * только адрес страницы.
  */
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
@@ -31,6 +36,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <MetaProvider>
           <MetaBar />
           {children}
+          <Diagnostics />
           <NotesOverlay />
           <SystemPanel />
         </MetaProvider>

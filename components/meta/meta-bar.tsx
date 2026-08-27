@@ -20,7 +20,10 @@ export function MetaBar() {
 
   return (
     <div
-      role="banner"
+      /* Не `banner`: banner на странице уже есть — шапка плана, — и второй
+         ломает навигацию по лендмаркам (axe: landmark-no-duplicate-banner).
+         Названный `region` рядом с ним законен. */
+      role="region"
       data-meta=""
       aria-label="How this screen was built"
       /* Не липкая: полоса стоит перед экраном, а не поверх него. Липкой она

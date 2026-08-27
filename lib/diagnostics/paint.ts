@@ -1,10 +1,11 @@
-/*
+import type { AuditResult, Row } from "./types";
+
+/**
  * Сплошная проверка цвета и теней: каждый видимый элемент экрана против
- * палитры. Вставить в консоль браузера на живом экране.
+ * палитры.
  *
- * Третий скрипт в паре к двум существующим. `ds-check.js` сверяет двадцать
- * с лишним конкретных значений со снятыми из Figma, `token-audit.js` — весь
- * текст против типографической шкалы. Этот отвечает на вопрос «нет ли на
+ * `figma.ts` сверяет конкретные значения со снятыми из файла, `typeScale.ts` —
+ * весь текст против типографической шкалы. Этот отвечает на вопрос «нет ли на
  * экране краски мимо палитры»: сырой хекс, чужой серый, тень не из системы.
  *
  * Что считается своим:
@@ -19,78 +20,91 @@
  * размытие в системе есть ровно в одном месте, в `Section Collapse` размера
  * Default, и появление второго — повод посмотреть, откуда оно взялось.
  */
-(() => {
-  const root = getComputedStyle(document.documentElement);
 
-  /** Палитра: имя → «r,g,b». Альфа отбрасывается, сравнение по тройке. */
+/** Фигуры SVG: только у них заливка и обводка что-то значат. */
+const SHAPES = new Set(["path", "circle", "ellipse", "rect", "line", "polygon", "polyline"]);
+
+const SHADOW_RE = /(rgba?\([^)]+\))\s+(-?[\d.]+)px\s+(-?[\d.]+)px\s+(-?[\d.]+)px\s+(-?[\d.]+)px/g;
+
+type Triple = { key: string; a: number };
+
+function triple(v: string | null | undefined): Triple | null {
+  const m = /rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?/.exec(v ?? "");
+  if (!m) return null;
+  return { key: `${m[1]},${m[2]},${m[3]}`, a: m[4] === undefined ? 1 : Number(m[4]) };
+}
+
+/** Палитра живого `:root`: «r,g,b» → имя токена. */
+function readPalette(): Map<string, string> {
+  const root = getComputedStyle(document.documentElement);
   const probe = document.createElement("span");
   probe.style.display = "none";
   document.body.append(probe);
-  const rgbOf = (value) => {
+
+  const rgbOf = (value: string) => {
     probe.style.color = "";
     probe.style.color = value;
-    const c = getComputedStyle(probe).color;
-    const m = /rgba?\((\d+),\s*(\d+),\s*(\d+)/.exec(c);
-    return m ? `${m[1]},${m[2]},${m[3]}` : null;
+    const t = triple(getComputedStyle(probe).color);
+    return t ? t.key : null;
   };
 
-  const palette = new Map();
-  for (let i = 0; i < root.length; i++) {
+  const palette = new Map<string, string>();
+  for (let i = 0; i < root.length; i += 1) {
     const name = root[i];
-    if (!name.startsWith("--color-")) continue;
+    if (!name || !name.startsWith("--color-")) continue;
     const key = rgbOf(root.getPropertyValue(name).trim());
     if (key && !palette.has(key)) palette.set(key, name.slice(8));
   }
   probe.remove();
+  return palette;
+}
 
-  const triple = (v) => {
-    const m = /rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?/.exec(v || "");
-    return m ? { key: `${m[1]},${m[2]},${m[3]}`, a: m[4] === undefined ? 1 : +m[4] } : null;
-  };
-  const known = (v) => {
+function label(n: Element): string {
+  const cls = typeof n.className === "string" ? n.className : "";
+  return `${n.tagName.toLowerCase()}${cls ? "." + cls.split(" ").slice(0, 2).join(".") : ""}`;
+}
+
+export function paint(): AuditResult {
+  const palette = readPalette();
+
+  const known = (v: string | null | undefined) => {
     const t = triple(v);
-    if (!t) return true;          /* none, transparent, currentcolor */
-    if (t.a === 0) return true;   /* полностью прозрачное — не краска */
+    if (!t) return true; /* none, transparent, currentcolor */
+    if (t.a === 0) return true; /* полностью прозрачное — не краска */
     return palette.has(t.key);
   };
 
-  /** Тени системы, как они стоят в `--shadow-*`, нормализованные к тройкам. */
-  const SHADOW_RE = /(rgba?\([^)]+\))\s+(-?[\d.]+)px\s+(-?[\d.]+)px\s+(-?[\d.]+)px\s+(-?[\d.]+)px/g;
-  const shadowOk = (v) => {
+  const shadowOk = (v: string) => {
     if (!v || v === "none") return true;
     const parts = [...v.matchAll(SHADOW_RE)];
     if (!parts.length) return false;
-    return parts.every(([, color, x, y, blur]) => {
+    return parts.every((m) => {
+      const [, color, x, y, blur] = m;
       const t = triple(color);
-      if (t && t.a === 0) return true;                       /* пустой слой Tailwind */
+      if (t && t.a === 0) return true; /* пустой слой Tailwind */
       if (!known(color)) return false;
-      if (+blur === 0) return Math.abs(+x - +y) < 0.01;      /* жёсткая, равный сдвиг */
-      return +blur === 10 && +x === 0 && +y === 1;           /* мягкая пара из lift-4 */
+      if (Number(blur) === 0) return Math.abs(Number(x) - Number(y)) < 0.01;
+      return Number(blur) === 10 && Number(x) === 0 && Number(y) === 1; /* мягкая пара из lift-4 */
     });
   };
 
-  /** Фигуры SVG: только у них заливка и обводка что-то значат. */
-  const SHAPES = new Set(["path", "circle", "ellipse", "rect", "line", "polygon", "polyline"]);
-
-  const bad = [];
-  const label = (n) =>
-    `${n.tagName.toLowerCase()}${n.className && typeof n.className === "string" ? "." + n.className.split(" ").slice(0, 2).join(".") : ""}`;
-
+  const bad: Row[] = [];
   let checked = 0;
+
   for (const n of document.querySelectorAll("body *")) {
     /* Мета-слой — леса вокруг работы, а не работа. Проверки меряют экран. */
     if (n.closest("script,style,noscript,[data-meta]")) continue;
     const r = n.getBoundingClientRect();
     if (!r.width && !r.height) continue;
-    checked++;
+    checked += 1;
     const s = getComputedStyle(n);
 
-    const claims = [
+    const claims: [string, string][] = [
       ["text colour", s.color],
       ["background", s.backgroundColor],
     ];
-    for (const side of ["Top", "Right", "Bottom", "Left"]) {
-      if (parseFloat(s[`border${side}Width`]) > 0) {
+    for (const side of ["Top", "Right", "Bottom", "Left"] as const) {
+      if (Number.parseFloat(s[`border${side}Width`]) > 0) {
         claims.push([`border ${side.toLowerCase()}`, s[`border${side}Color`]]);
       }
     }
@@ -107,17 +121,26 @@
      * текста, второй раз его смотреть нечего.
      */
     if (SHAPES.has(n.tagName)) {
-      for (const [what, value] of [["fill", s.fill], ["stroke", s.stroke]]) {
+      for (const [what, value] of [
+        ["fill", s.fill],
+        ["stroke", s.stroke],
+      ] as const) {
         if (!value || value === "none" || value === s.color) continue;
         if (!known(value)) bad.push({ element: label(n), property: what, value });
       }
     }
   }
 
-  console.table(bad);
-  const verdict = bad.length
-    ? `${bad.length} of ${checked} elements paint outside the palette`
-    : `All ${checked} elements paint from the palette; no shadow outside the system`;
-  console.log(verdict);
-  return { ok: bad.length === 0, verdict, total: checked, failures: bad, rows: bad };
-})();
+  return {
+    id: "paint",
+    title: "Paint and shadow",
+    what: "Text colour, background, borders, SVG fills and shadows of every visible element against the palette.",
+    ok: bad.length === 0,
+    verdict: bad.length
+      ? `${bad.length} of ${checked} elements paint outside the palette`
+      : `All ${checked} elements paint from the palette; no shadow outside the system`,
+    total: checked,
+    failures: bad,
+    rows: bad,
+  };
+}

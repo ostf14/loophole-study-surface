@@ -121,33 +121,44 @@ Working rules in this repo:
 
 ### Checking it
 
-Three scripts in `design-system/` verify the claim that the screen is built on
-the system. Run all three at once against a running dev server:
+The screen carries its own conformance checks and hands them to whoever opens
+the console. Open the page, open devtools, and it says so:
+
+```
+__lo.check()      run the three checks against what is on screen
+__lo.trace($0)    which tokens the element you inspected resolves to
+__lo.tokens()     every colour token that reached the built CSS
+```
+
+`__lo.trace($0)` is the handoff answer in one line: select any node in the
+elements panel, run it, and get back the token behind every colour it paints,
+the type token it is set in, its box, and the design note that explains it —
+or `off palette` / `off scale` where a value has no token behind it.
+
+| Check | What it looks at | Result |
+|---|---|---|
+| Figma reconciliation | 38 named values against what was read out of the file: sizes, paddings, borders, shadows, type | all match |
+| Type scale | every text node on the screen against the type scale | 114 of 114 on tokens |
+| Paint and shadow | text colour, background, borders, SVG fills and shadows of every visible element against the palette | 450 of 450 |
+
+The first catches regressions where a value is known and recorded; the other
+two catch improvisation where nobody is looking. All three were verified by
+planting violations — an off-palette colour, a blurred shadow, an off-scale
+size, an off-component padding — and each was caught by the right check.
+
+The same code runs headless for CI:
 
 ```bash
 npm run dev      # in one terminal
 npm run audit    # in another
 ```
 
-The runner exits non-zero if any check fails, so it works in CI. It needs a
-Chrome or Chromium on the machine — `playwright-core` does not download one;
-set `CHROME_PATH` if it lives somewhere unusual. Without a browser, paste any
-of the three scripts into the browser console with the screen open; each
-prints a table and a one-line verdict.
-
-| Script | What it checks | Result |
-|---|---|---|
-| `ds-check.js` | 38 named values against what was read out of Figma: sizes, paddings, borders, shadows, type | all match |
-| `token-audit.js` | every text node on the screen against the type scale | 114 of 114 on tokens |
-| `paint-audit.js` | text colour, background, borders, SVG fills and shadows of every visible element against the palette | 449 of 449 |
-
-`ds-check.js` catches regressions where a value is known and recorded; the other
-two catch improvisation where nobody is looking. Both sweeps were verified by
-planting violations — they find them, rather than only printing "all good".
-
-The same three files back both routes: `npm run audit` in a terminal and a
-paste into the browser console. One source, nothing to drift — and the console
-route needs no repository, only the deployed screen.
+The runner opens the page and calls `window.__lo.check()`, so the terminal and
+the console cannot disagree — there is one implementation, in
+`lib/diagnostics/`, typechecked and linted with the rest of the screen. It
+exits non-zero if any check fails. It needs a Chrome or Chromium on the
+machine; `playwright-core` does not download one, so set `CHROME_PATH` if it
+lives somewhere unusual.
 
 ### The meta layer
 
