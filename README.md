@@ -81,11 +81,6 @@ Other scripts: `npm run build`, `npm run start`, `npm run lint`.
 
 - `/` — the Study Surface screen. Demo data covers Jul 14 – Jul 16, 2026, with
   Jul 15 as "today"; other dates render a fallback card.
-- `/kitchen-sink` — an internal page that lays out every design-system primitive
-  side by side (checkbox rotations, position icon states, buttons, cards,
-  time-range variants, the type scale) for comparison against the source system.
-  It is a verification tool and not part of the deliverable.
-
 Stack: Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS v4, and
 `lucide-react` for icons. No component library, no state management library.
 
@@ -189,7 +184,6 @@ app/
                        widths, the hover/link/lock utility classes
   layout.tsx           Inter via next/font, html/body shell
   page.tsx             the screen; owns all interactive state
-  kitchen-sink/        primitive comparison page
 components/
   ui/                  design-system primitives: button, card, checkbox,
                        icon-button, position-icon, progress-bar,

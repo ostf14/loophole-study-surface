@@ -163,10 +163,13 @@ export function install() {
   if (typeof window === "undefined" || window.__lo) return;
   window.__lo = { check, trace, tokens };
   console.info(
-    "%cLoophole · Study Surface%c\nThis screen checks itself against the design system it was built from.\n\n" +
-      "  __lo.check()      run the three conformance checks against what is on screen\n" +
-      "  __lo.trace($0)    which tokens the element you inspected resolves to\n" +
-      "  __lo.tokens()     every colour token that reached the built CSS\n",
+    "%cLoophole · Study Surface%c\n" +
+      "Every value on this screen came out of your Figma file. You can check that from here,\n" +
+      "without the repository — three commands, they read the page you are looking at:\n\n" +
+      "  __lo.check()      compares the screen to the file and to the token scale, prints what disagrees\n" +
+      "  __lo.trace($0)    select an element in the Elements panel, then run this: it names the token\n" +
+      "                    behind every colour and size it uses, or says the value has no token\n" +
+      "  __lo.tokens()     the palette this screen actually uses\n",
     "font-weight:800;background:#171712;color:#eaf84f;padding:2px 6px;border-radius:4px",
     "color:inherit",
   );

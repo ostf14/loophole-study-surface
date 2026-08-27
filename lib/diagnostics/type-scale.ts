@@ -65,6 +65,10 @@ export function typeScale(): AuditResult {
   for (const n of document.querySelectorAll("body *")) {
     /* Мета-слой — леса вокруг работы, а не работа. Проверки меряют экран. */
     if (n.closest("script,style,noscript,[data-meta]")) continue;
+    /* Неотрисованное на экране не стоит: узкая заглушка спрятана на широком
+       окне, и считать её текст сплошной проверкой экрана было бы неверно. */
+    const r = n.getBoundingClientRect();
+    if (!r.width && !r.height) continue;
     const own = [...n.childNodes]
       .filter((c) => c.nodeType === 3 && c.nodeValue?.trim())
       .map((c) => c.nodeValue?.trim() ?? "")

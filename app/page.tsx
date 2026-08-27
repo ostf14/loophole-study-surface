@@ -1,5 +1,7 @@
 "use client";
 
+import { Monitor } from "lucide-react";
+
 import { useCallback, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -170,6 +172,19 @@ export default function StudySurface() {
           к содержимому, 12 между карточками.
         */}
         <main className="order-first flex min-w-0 flex-1 flex-col gap-8 lg:order-none">
+          {/*
+            Честная строка вместо заглушки. Совсем закрывать экран на узком
+            окне неправильно: смотреть его будут и с ноутбука в половину
+            экрана, и с телефона, и заглушка там оставит человека ни с чем.
+            А молчать тоже неправильно: рецензент, открывший экран узко,
+            должен знать, что одноколоночная раскладка — запасное поведение,
+            а не то, что проектировалось.
+          */}
+          <p className="flex items-center gap-2 text-body-xs text-pewter-hc lg:hidden">
+            <Monitor aria-hidden className="size-[14px] shrink-0" strokeWidth={2.5} />
+            Designed for a desktop workspace. Below 1024px the plan rail stacks under the day.
+          </p>
+
           {/*
             Спуск по масштабу: где я в программе, что доказываю следующим,
             какой вид, какой день, какие задачи. Стрип открывает колонку —
