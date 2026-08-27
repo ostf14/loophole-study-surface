@@ -23,7 +23,6 @@ type TagProps = {
   /** Заливка по свойству `Property 1` компонента. */
   tone?: "white" | "green";
   /** `default` — геометрия компонента, `row` — как он стоит в строке задачи. */
-  size?: "default" | "row";
   className?: string;
 };
 
@@ -32,12 +31,17 @@ const tones = {
   green: "bg-seafoam-lc",
 } as const;
 
-const sizes = {
-  default: "h-6 rounded-lg px-3 py-1 text-tag-s font-extrabold",
-  row: "rounded-[4px] px-1 py-[2px] text-tag-s font-extrabold",
-} as const;
+/*
+ * Один размер, ровно как в компоненте: 24 в высоту, радиус 8, паддинг 4/12,
+ * обводка 2, текст 10 весом 800.
+ *
+ * Был второй, `row`, с радиусом 4 и паддингом 4/2 — выдуманный, чтобы тег
+ * поместился в строку задачи. Он там и не нужен: строка 32 в высоту, тег 24
+ * входит с запасом 4 сверху и снизу.
+ */
+const SIZE = "h-6 rounded-lg px-3 py-1 text-tag-s font-extrabold";
 
-export function Tag({ children, tone = "white", size = "default", className }: TagProps) {
+export function Tag({ children, tone = "white", className }: TagProps) {
   return (
     <span
       className={cn(
@@ -45,7 +49,7 @@ export function Tag({ children, tone = "white", size = "default", className }: T
            stretch, и тег растягивался бы на всю ширину родителя. shrink-0
            держит только главную ось. */
         "inline-flex w-fit shrink-0 items-center border-[2px] border-soft-black uppercase text-soft-black",
-        sizes[size],
+        SIZE,
         tones[tone],
         className,
       )}

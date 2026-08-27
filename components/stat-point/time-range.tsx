@@ -85,16 +85,25 @@ export function TimeRange({
         </span>
       </div>
 
-      <div className="flex h-6 items-center justify-between rounded-full border-[2px] border-soft-black px-px py-1">
-        <span className="px-2 py-1 text-caption-medium font-semibold text-soft-black">{start}</span>
+      {/* Трек: 290×24, радиус полный, обводка 2, заливка sand — как в
+          компоненте. Раньше был прозрачным. */}
+      <div className="flex h-6 items-center justify-between rounded-full border-[2px] border-soft-black bg-sand px-px py-1">
+        {/* Start и Goal — не голый текст, а пилюли `number-of-items`:
+            64×24, радиус полный, обводка 2, паддинг 4/8, заливки нет. */}
+        <span className="flex h-6 items-center rounded-full border-[2px] border-soft-black px-2 text-caption-medium font-semibold text-soft-black">
+          {start}
+        </span>
 
         <span className="flex h-8 items-stretch overflow-hidden rounded-full border-[2px] border-soft-black bg-soft-white">
           {withDeltas ? (
             <Delta value={deltaToStart!} side="start" sign={regressed ? "plus" : "minus"} />
           ) : null}
+          {/* Current залит turquoise-hc, как в компоненте, а не мятой.
+              Текст на нём stark-white: 5.05:1, проходит AA, тогда как
+              soft-black дал бы 3.56:1 и провалил. */}
           <span
             className={cn(
-              "flex items-center self-stretch bg-seafoam-lc px-2 text-caption-medium font-extrabold text-soft-black",
+              "flex items-center self-stretch bg-turquoise-hc px-2 text-caption-medium font-extrabold text-stark-white",
               !withDeltas && "rounded-full",
             )}
           >
@@ -103,7 +112,9 @@ export function TimeRange({
           {withDeltas ? <Delta value={deltaToGoal!} side="goal" sign="minus" /> : null}
         </span>
 
-        <span className="px-2 py-1 text-caption-medium font-semibold text-soft-black">{goal}</span>
+        <span className="flex h-6 items-center rounded-full border-[2px] border-soft-black px-2 text-caption-medium font-semibold text-soft-black">
+          {goal}
+        </span>
       </div>
     </div>
   );

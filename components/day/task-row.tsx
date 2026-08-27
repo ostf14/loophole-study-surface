@@ -94,7 +94,7 @@ export function TaskRow({
         </span>
 
         <span className="flex shrink-0 items-center gap-5">
-          {task.optional ? <Tag size="row">(optional)</Tag> : null}
+          {task.optional ? <Tag>(optional)</Tag> : null}
 
           {/* Время: цвет #aaaaaa задан в компоненте напрямую, мимо токенов —
               та же непривязанная конвенция, что у семейства Label. Через
