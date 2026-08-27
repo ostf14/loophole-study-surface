@@ -88,9 +88,11 @@ export function TimeRange({
       {/* Трек: 290×24, радиус полный, обводка 2, заливка sand — как в
           компоненте. Раньше был прозрачным. */}
       <div className="flex h-6 items-center justify-between rounded-full border-[2px] border-soft-black bg-sand px-px py-1">
-        {/* Start и Goal — не голый текст, а пилюли `number-of-items`:
-            64×24, радиус полный, обводка 2, паддинг 4/8, заливки нет. */}
-        <span className="flex h-6 items-center rounded-full border-[2px] border-soft-black px-2 text-caption-medium font-semibold text-soft-black">
+        {/* Start и Goal лежат прямо на треке: у `number-of-items` в компоненте
+            задан strokeWeight 2, но краски обводки нет и заливки нет — то есть
+            ни рамки, ни фона, только паддинг 4/8. Число без проверки того,
+            есть ли чем его отрисовать, ничего не значит. */}
+        <span className="flex h-6 items-center px-2 text-caption-medium font-semibold text-soft-black">
           {start}
         </span>
 
@@ -112,7 +114,7 @@ export function TimeRange({
           {withDeltas ? <Delta value={deltaToGoal!} side="goal" sign="minus" /> : null}
         </span>
 
-        <span className="flex h-6 items-center rounded-full border-[2px] border-soft-black px-2 text-caption-medium font-semibold text-soft-black">
+        <span className="flex h-6 items-center px-2 text-caption-medium font-semibold text-soft-black">
           {goal}
         </span>
       </div>
