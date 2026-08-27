@@ -114,10 +114,9 @@
   }
 
   console.table(bad);
-  console.log(
-    bad.length
-      ? `Мимо палитры: ${bad.length} из ${checked} элементов`
-      : `Все ${checked} элементов красятся палитрой; теней вне системы нет`,
-  );
-  return bad;
+  const verdict = bad.length
+    ? `Мимо палитры: ${bad.length} из ${checked} элементов`
+    : `Все ${checked} элементов красятся палитрой; теней вне системы нет`;
+  console.log(verdict);
+  return { ok: bad.length === 0, verdict, total: checked, failures: bad, rows: bad };
 })();

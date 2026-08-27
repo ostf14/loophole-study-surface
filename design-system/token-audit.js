@@ -86,11 +86,10 @@
   const bad = rows.filter((r) => r[""] === "✗");
   const exc = rows.filter((r) => r[""] === "≈").length;
   console.table(bad.length ? bad : rows);
-  console.log(
-    bad.length
-      ? `Мимо токенов: ${bad.length} из ${rows.length}`
-      : `Все ${rows.length} текстовых узлов на токенах` +
-          (exc ? `, из них ${exc} с кнопочным трекингом — законное исключение` : ""),
-  );
-  return rows;
+  const verdict = bad.length
+    ? `Мимо токенов: ${bad.length} из ${rows.length}`
+    : `Все ${rows.length} текстовых узлов на токенах` +
+      (exc ? `, из них ${exc} с кнопочным трекингом — законное исключение` : "");
+  console.log(verdict);
+  return { ok: bad.length === 0, verdict, total: rows.length, failures: bad, rows };
 })();

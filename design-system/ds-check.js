@@ -186,6 +186,11 @@
 
   console.table(rows);
   const bad = rows.filter((r) => r[""] === "✗");
-  console.log(bad.length ? `Расхождений: ${bad.length} из ${rows.length}` : `Все ${rows.length} проверок сошлись`);
-  return rows;
+  const verdict = bad.length
+    ? `Расхождений: ${bad.length} из ${rows.length}`
+    : `Все ${rows.length} проверок сошлись`;
+  console.log(verdict);
+  /* Единый конверт на все три скрипта: `design-system/audit.mjs` читает его,
+     а в консоли браузера таблица уже напечатана выше. */
+  return { ok: bad.length === 0, verdict, total: rows.length, failures: bad, rows };
 })();
