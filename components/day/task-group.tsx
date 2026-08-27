@@ -23,6 +23,14 @@ import type { Group } from "@/lib/plan-data";
  *
  * Статус словами вместо счётчика — как на живом экране: Completed, Not Started.
  *
+ * Кружка с инициалами тьютора здесь больше нет. Я его выдумал: в системе такого
+ * элемента нет, стоял он `aria-hidden`, то есть читалке не доставался, повторял
+ * то, что и так написано в названии группы, и бирюза с soft-white давала 2.55:1
+ * — мимо AA. PRD же требует ровно обратного: «scheduled tutor assignments render
+ * as **ordinary rows**, grouped under a header **named for the tutor\'s business
+ * name**». Название группы и есть атрибуция; принадлежность тьютору несёт
+ * иконка типа у задач.
+ *
  * Шеврон — компонент `Section Collapse` размера Small. Тенью он помечает
  * раскрытость: в варианте Expanded у него жёсткая тень 2/2, в Collapsed её
  * нет. Строка выросла до 48, чтобы кнопка 32 с тенью 2 не упиралась в край.
@@ -44,15 +52,6 @@ export function TaskGroup({ group, done, open, onToggle, children }: TaskGroupPr
   return (
     <Card className="flex flex-col">
       <div className="flex h-12 shrink-0 items-center gap-3 pr-3 pl-5">
-        {group.tutor ? (
-          <span
-            aria-hidden
-            className="flex size-6 shrink-0 items-center justify-center rounded-full border-[2px] border-soft-black bg-turquoise text-tag-s font-extrabold text-soft-white"
-          >
-            {group.tutor.initials}
-          </span>
-        ) : null}
-
         <button
           type="button"
           onClick={onToggle}

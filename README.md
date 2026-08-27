@@ -158,14 +158,15 @@ plausibly be shaped:
   (a run of binary attempts) or `clock` (start / current / target seconds).
 - `PREP_MAP` — rail stages with a metric and a done/total count; a stage that has
   not started carries `startsOn` instead.
-- `DAYS` — a record keyed by ISO date. Each day has `prev`/`next` and a list of
-  groups; each group has a name, an optional `tutor`, and tasks. A task carries
+- `DAYS` — a record keyed by ISO date, and `ALL_DAYS`, the same days in order.
+  Each day has `prev`/`next` and a list of groups; each group has a name and
+  tasks. A task carries
   type, title, start time, duration, done/launchable flags, and optionally
   `notes` (rich text as blocks of runs, supporting bold and links), an `intro`
   (the four Prep Map Point Intro fields), or `embeds` — workout and routine cards.
 
 `lib/plan.ts` derives everything else, so no computed value is stored twice:
-date formatting, `planFraction` / `phaseWidth` / `phaseAt` for the strip,
+date formatting, `planFraction` / `phaseWidth` for the strip,
 `dayProgress` / `groupProgress` for the counters, `earliestIncomplete` for the
 resume banner, and `firstDayOfPhase` / `firstIncompleteDayOfPhase`. The PRD gives
 the strip and the rail selector different jump targets ("that plan's first day"

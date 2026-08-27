@@ -29,7 +29,7 @@ type ChipProps = {
   counter?: ReactNode;
   onClick?: () => void;
   className?: string;
-} & Omit<React.ComponentPropsWithoutRef<"button">, "children" | "onClick" | "className">;
+} & Omit<React.ComponentProps<"button">, "children" | "onClick" | "className">;
 
 export function Chip({ children, selected = false, counter, onClick, className, ...props }: ChipProps) {
   return (

@@ -113,13 +113,25 @@ function DayPicker({
 }) {
   const [open, setOpen] = useState(false);
   const box = useRef<HTMLDivElement>(null);
+  const trigger = useRef<HTMLButtonElement>(null);
+
+  /* Закрытие с клавиатуры возвращает фокус на пилюлю: иначе он оставался на
+     исчезнувшей кнопке и уезжал в начало документа. */
+  const close = (focusTrigger: boolean) => {
+    setOpen(false);
+    if (focusTrigger) trigger.current?.focus();
+  };
 
   useEffect(() => {
     if (!open) return;
     const onDocDown = (e: MouseEvent) => {
       if (box.current && !box.current.contains(e.target as Node)) setOpen(false);
     };
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      setOpen(false);
+      trigger.current?.focus();
+    };
     document.addEventListener("mousedown", onDocDown);
     document.addEventListener("keydown", onKey);
     return () => {
@@ -131,8 +143,9 @@ function DayPicker({
   return (
     <div ref={box} className="relative">
       <Chip
+        ref={trigger}
         aria-expanded={open}
-        aria-haspopup="listbox"
+        aria-haspopup="menu"
         onClick={() => setOpen((v) => !v)}
         counter={
           <ChevronDown
@@ -145,9 +158,12 @@ function DayPicker({
         {formatLong(date)}
       </Chip>
 
+      {/* Меню, а не listbox: пункты здесь — кнопки, они выполняют действие,
+          а не выбираются. У роли `option` интерактивных потомков быть не
+          должно, а `menuitem` на кнопке — ровно её случай. */}
       {open ? (
         <Card
-          role="listbox"
+          role="menu"
           className="absolute top-[calc(100%+10px)] left-0 z-20 flex w-[300px] flex-col gap-1 p-2 shadow-hard-4"
         >
           {ALL_DAYS.map((day) => {
@@ -158,11 +174,11 @@ function DayPicker({
               <button
                 key={day.date}
                 type="button"
-                role="option"
-                aria-selected={active}
+                role="menuitem"
+                aria-current={active ? "date" : undefined}
                 onClick={() => {
                   onJumpToDate(day.date);
-                  setOpen(false);
+                  close(true);
                 }}
                 className={cn(
                   "lh-card-hover-xs flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors",
