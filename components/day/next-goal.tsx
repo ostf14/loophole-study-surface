@@ -58,7 +58,7 @@ export function NextGoal() {
     <section className="flex flex-col gap-4">
       <h2 className="text-body-small font-extrabold text-soft-black">Next Goal</h2>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {GOALS.map((goal) => (
           <StatPoint
             key={goal.section}

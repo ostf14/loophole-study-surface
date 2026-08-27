@@ -34,7 +34,7 @@ type LeftRailProps = {
 
 export function LeftRail({ workouts, routines }: LeftRailProps) {
   return (
-    <aside className="flex w-[var(--study-rail-width)] shrink-0 flex-col gap-8">
+    <aside className="flex w-full shrink-0 flex-col gap-8 lg:w-[var(--study-rail-width)]">
       <PrepMap />
       <Section title="My Workouts">
         <Bookmarked

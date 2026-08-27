@@ -32,18 +32,20 @@ export function EmbedCard({ embed, bookmarked, onToggle }: EmbedCardProps) {
         <span className="text-body-xs text-pewter-hc">{meta}</span>
       </span>
       <span className="flex-1" />
-      <Button variant="secondary" onClick={onToggle} aria-pressed={bookmarked}>
-        {bookmarked ? (
-          <>
+      <Button
+        variant="secondary"
+        onClick={onToggle}
+        aria-pressed={bookmarked}
+        iconSide="leading"
+        icon={
+          bookmarked ? (
             <BookmarkCheck className="size-[14px]" strokeWidth={2.5} />
-            Bookmarked
-          </>
-        ) : (
-          <>
+          ) : (
             <Bookmark className="size-[14px]" strokeWidth={2.5} />
-            Bookmark
-          </>
-        )}
+          )
+        }
+      >
+        {bookmarked ? "Bookmarked" : "Bookmark"}
       </Button>
     </Card>
   );

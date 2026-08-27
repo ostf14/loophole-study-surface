@@ -42,13 +42,17 @@ type PlanHeaderProps = {
  */
 export function PlanHeader({ today, resume, onAdjustPlan, onStart }: PlanHeaderProps) {
   return (
-    <header className="border-b-[2px] border-soft-black bg-turquoise-lc px-14 pt-12 pb-8">
+    <header className="border-b-[2px] border-soft-black bg-turquoise-lc px-5 pt-12 pb-8 lg:px-14">
       <div className="mx-auto flex w-full max-w-[var(--study-surface-width)] flex-col gap-8">
         <div className="flex items-center justify-between gap-6">
           <h1 className="text-display-xl font-black">{PLAN.studentFirstName}&apos;s Plan</h1>
-          <Button variant="secondary" onClick={onAdjustPlan} className="shrink-0">
+          <Button
+            variant="secondary"
+            onClick={onAdjustPlan}
+            className="shrink-0"
+            icon={<SlidersHorizontal className="size-[16px]" strokeWidth={2.5} />}
+          >
             Adjust Plan
-            <SlidersHorizontal className="size-[16px]" strokeWidth={2.5} />
           </Button>
         </div>
 

@@ -68,8 +68,8 @@ export function ResumeBanner({ task, date, today, onStart }: ResumeBannerProps) 
   const p = progress(task);
 
   return (
-    <div className="flex items-center gap-6 rounded-3xl border-[2px] border-soft-black bg-soft-white px-6 py-6">
-      <div className="flex min-w-0 flex-1 items-center gap-4">
+    <div className="flex flex-wrap items-center gap-6 rounded-3xl border-[2px] border-soft-black bg-soft-white px-6 py-6">
+      <div className="flex min-w-0 flex-1 basis-[280px] items-center gap-4">
         {p ? (
           <ProgressDonut done={p.done} total={p.total} size={32} />
         ) : (
@@ -79,7 +79,11 @@ export function ResumeBanner({ task, date, today, onStart }: ResumeBannerProps) 
         <div className="flex min-w-0 flex-col gap-2">
           <span className="text-caption-medium uppercase text-pewter-hc">Jump back in!</span>
 
-          <span className="flex min-w-0 items-baseline gap-3">
+          {/* Пока строка помещается, длительность стоит справа от названия
+              на общей базовой линии; когда перестаёт — уходит под него.
+              Иначе `truncate` отдавал всю ширину неразрывной длительности
+              и съедал название целиком. */}
+          <span className="flex min-w-0 flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-3">
             <span className="truncate text-title-medium font-extrabold">{task.title}</span>
             <span className="shrink-0 text-body-s text-pewter-hc">
               {task.started ? task.remaining : task.duration}
@@ -89,9 +93,13 @@ export function ResumeBanner({ task, date, today, onStart }: ResumeBannerProps) 
         </div>
       </div>
 
-      <Button variant="primary" onClick={onStart} className="shrink-0 pr-[18px] pl-[22px]">
+      <Button
+        variant="primary"
+        onClick={onStart}
+        className="shrink-0"
+        icon={<ArrowUpRight className="size-[28px]" strokeWidth={2.5} />}
+      >
         {task.started ? "Continue" : "Start"}
-        <ArrowUpRight className="size-[28px]" strokeWidth={2.5} />
       </Button>
     </div>
   );

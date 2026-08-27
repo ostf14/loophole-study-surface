@@ -79,8 +79,11 @@ export default function KitchenSink() {
 
       <Row title="Button — primary / secondary / ghost">
         <Button variant="primary">Start</Button>
-        <Button variant="secondary">
-          Adjust Plan <ChevronDown className="size-4" />
+        <Button variant="secondary" icon={<ChevronDown className="size-4" />}>
+          Adjust Plan
+        </Button>
+        <Button variant="secondary" iconSide="leading" icon={<Play className="size-4" />}>
+          Ведущая
         </Button>
         <Button variant="ghost">Lookup</Button>
         <Button variant="primary" disabled>

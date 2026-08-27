@@ -133,7 +133,17 @@ export default function StudySurface() {
         onStart={() => say("Start launches focus mode — out of scope for this build")}
       />
 
-      <div className="mx-auto flex w-full max-w-[var(--study-surface-width)] flex-1 gap-10 px-10 py-8">
+      {/*
+        Экран десктопный: PRD описывает рабочее место за столом, и рельс с
+        Prep Map рассчитан на две колонки. Ниже 900 колонки не помещаются —
+        рельс 220, колонка дня от 320, гэп 40 и поля 80 дают 660 минимума, —
+        и до правки страница уезжала в горизонтальную прокрутку. Теперь
+        колонки складываются в одну, а рельс уходит под день: сначала то, что
+        делаешь сегодня, потом карта программы. Полноценной мобильной раскладки
+        здесь нет и по ТЗ не требуется — это защита от сломанного состояния,
+        а не второй макет.
+      */}
+      <div className="mx-auto flex w-full max-w-[var(--study-surface-width)] flex-1 flex-col gap-10 px-5 py-8 lg:flex-row lg:px-10">
         <LeftRail
           workouts={bookmarks.filter((b) => b.kind === "workout")}
           routines={bookmarks.filter((b) => b.kind === "routine")}
@@ -150,7 +160,7 @@ export default function StudySurface() {
           они принадлежат друг другу. Между карточками групп 12. Нижний пейджер
           отходит на 24, как `ob` отделяет шапку секции от списка.
         */}
-        <main className="flex min-w-0 flex-1 flex-col gap-8">
+        <main className="order-first flex min-w-0 flex-1 flex-col gap-8 lg:order-none">
           {/*
             Спуск по масштабу: где я в программе, что доказываю следующим,
             какой вид, какой день, какие задачи. Стрип открывает колонку —
