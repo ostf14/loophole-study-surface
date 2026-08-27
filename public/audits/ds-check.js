@@ -161,12 +161,11 @@
     /* Сегменты в рельсе масштабированы: семь штук по 34 туда не влезают.
        Пропорции компонента при этом сохраняются, поэтому ожидаемое
        считается от отрисованной ширины. */
-    /* Веха на стрипе — `button.tool-btn` из `Toolbar_Movable`, обводка 2,
-       заливка у них цветная, у нас stark-white. Размер 16 — ужатый инстанс:
-       собственные у компонента 28, 24 и 20, и на 24 шесть бусин подряд
-       читались рядом кнопок, а не отметками на оси. */
-    ["button.tool-btn · Toolbar_Movable", "milestone size", () => `${box(find.mileBead()).w}×${box(find.mileBead()).h}`, "16×16"],
-    ["button.tool-btn · Toolbar_Movable", "milestone border", () => box(find.mileBead()).border, 2],
+    /* Веха на стрипе — `button.tool-btn`, вариант `Property 1=Default`:
+       8×8, радиус полный, обводки нет. Цвет свой: soft-black читается и на
+       бирюзовой части дорожки, и на песочной. */
+    ["button.tool-btn · Toolbar_Movable", "milestone size", () => `${box(find.mileBead()).w}×${box(find.mileBead()).h}`, "8×8"],
+    ["button.tool-btn · Toolbar_Movable", "milestone border", () => box(find.mileBead()).border, 0],
 
     ["Progress bar/Ticks · Progress", "radius", () => box(find.segment()).radius, () => round2((6 * box(find.segment()).w) / 34)],
     ["Progress bar/Ticks · Progress", "filled cell shadow", () => box(find.segment()).shadow, () => {

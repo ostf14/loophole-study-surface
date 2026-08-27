@@ -23,7 +23,9 @@ export function MetaBar() {
       role="banner"
       data-meta=""
       aria-label="How this screen was built"
-      className="sticky top-0 z-50 w-full border-b-[2px] border-soft-black bg-soft-black"
+      /* Не липкая: полоса стоит перед экраном, а не поверх него. Липкой она
+         наезжала на мятную шапку при прокрутке и срезала ей верх. */
+      className="relative z-50 w-full border-b-[2px] border-soft-black bg-soft-black"
     >
       <div className="mx-auto flex h-10 w-full max-w-[var(--study-surface-width)] items-center gap-3 px-5 lg:px-10">
         <span className="text-tag-s font-extrabold tracking-[0.14em] text-pewter uppercase">

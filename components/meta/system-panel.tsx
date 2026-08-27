@@ -48,9 +48,10 @@ export function SystemPanel() {
       data-meta=""
       aria-label="Design system"
       className={cn(
-        /* Выше пинов: открытая панель — сфокусированная поверхность, и номера,
-           всплывающие поверх неё, читались бы мусором. */
-        "fixed top-10 right-0 bottom-0 z-[70] flex w-[420px] max-w-full flex-col",
+        /* Во всю высоту окна и выше пинов: мета-полоса уезжает при прокрутке,
+           и привязка к её низу оставляла бы над панелью щель. Номера, всплывающие
+           поверх открытой панели, читались бы мусором. */
+        "fixed inset-y-0 right-0 z-[70] flex w-[420px] max-w-full flex-col",
         "border-l-[2px] border-soft-black bg-soft-white",
       )}
     >

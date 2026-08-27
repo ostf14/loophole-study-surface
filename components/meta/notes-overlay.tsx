@@ -26,9 +26,9 @@ type Anchor = { note: DesignNote; number: number; x: number; y: number };
 /** Один и тот же пустой массив, чтобы выключенный оверлей не рендерился заново. */
 const EMPTY: Anchor[] = [];
 
-/** Пин не должен уезжать под мета-полосу или за правый край окна. */
+/** Пин не должен уезжать за край окна. */
 function clamp(x: number, y: number, vw: number) {
-  return { x: Math.max(16, Math.min(x, vw - 24)), y: Math.max(56, y) };
+  return { x: Math.max(16, Math.min(x, vw - 24)), y: Math.max(16, y) };
 }
 
 function useAnchors(enabled: boolean): Anchor[] {
@@ -162,7 +162,9 @@ function Pin({
   return (
     <div
       ref={box}
-      className="pointer-events-auto absolute"
+      /* Открытый пин поднимается над соседними: иначе их номера всплывают
+         поверх его карточки и читаются мусором на тексте. */
+      className={cn("pointer-events-auto absolute", open ? "z-20" : "z-10")}
       style={{ left: anchor.x, top: anchor.y, transform: "translate(-50%, -50%)" }}
     >
       <button

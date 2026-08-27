@@ -34,9 +34,9 @@ export const DESIGN_NOTES: DesignNote[] = [
   },
   {
     id: "view-tabs",
-    title: "The tabs keep the component's own width",
+    title: "The tabs span the column",
     body:
-      "`Tabs` is 452 wide in the file. Stretched to the column's 600 it weighed as much as a section heading, and the chartreuse pill came out wider than Continue. Chartreuse is `action-primary` in their semantic layer; a selected view is a state, not an action.",
+      "`Tabs` is drawn 452 wide in the file, and it spent a while at that width here: the chartreuse pill comes out 155 instead of 205 and stops competing with Continue, which carries the same colour and the primary role. But a row of three ending two thirds across read as cut off — the view switcher heads everything below it and should not stop short of it. The width is set at the point of use; the component is not tied to 452.",
   },
   {
     id: "date-row",

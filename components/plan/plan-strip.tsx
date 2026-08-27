@@ -154,16 +154,17 @@ export function PlanStrip({ today, onJumpToPhase, className }: PlanStripProps) {
  * Веха на дорожке. PRD требует их отдельно от сегментов: «small markers at the
  * dates the plan reaches its landmarks… hovering shows its name and date».
  *
- * Форма — `button.tool-btn` из `Toolbar_Movable`: круг с обводкой 2
- * soft-black. В компоненте он залит цветом пометки — розовым, оранжевым,
- * жёлтым; у нас stark-white, потому что бусина ничего не категоризует,
- * а отмечает точку.
+ * Форма — `button.tool-btn`, вариант `Property 1=Default`: круг 8×8,
+ * радиус полный, обводки нет. Отмечает точку на оси, поэтому и выглядит
+ * точкой, а не кнопкой.
  *
- * Размер 16, ужатый инстанс. Собственные у компонента 28, 24 и 20, и на 24
- * шесть бусин подряд читались не отметками на оси, а рядом кнопок: у них
- * этот круг встречается поштучно, а не россыпью. Шестнадцать — чуть больше
- * разделителя фаз (14), поэтому бусина остаётся заметнее его, но перестаёт
- * спорить с самой дорожкой.
+ * Цвет soft-black, а не заливка пометки из компонента: точка ложится и на
+ * бирюзовую часть дорожки, и на песочную, а soft-black читается на обеих —
+ * 7:1 и 15.9:1. Chartreuse читался бы хуже и, главное, значит на этом экране
+ * действие: им залиты Continue и выбранный вид.
+ *
+ * От разделителей фаз точка отличается формой и цветом сразу: те — палочки
+ * 2×14 в sand-hc.
  *
  * Пройденность бусина кодирует положением, а не собственным цветом: слева от
  * края заливки она лежит на бирюзовом, справа — на песочном. Отдельного
@@ -173,12 +174,12 @@ function MileBead({ label, date, passed }: { label: string; date: string; passed
   return (
     <span
       className="group/mile absolute top-1/2 -translate-x-1/2 -translate-y-1/2"
-      style={{ left: `${planFraction(date)}%`, height: 16 }}
+      style={{ left: `${planFraction(date)}%`, height: 8 }}
     >
       <span
         role="img"
         aria-label={`${label} · ${formatShort(date)}${passed ? " · passed" : ""}`}
-        className="block size-4 rounded-full border-[2px] border-soft-black bg-stark-white"
+        className="block size-2 rounded-full bg-soft-black"
       />
       <span
         className={cn(
