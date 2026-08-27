@@ -32,7 +32,7 @@ export function ProgressBar({ value, max, className }: ProgressBarProps) {
     >
       <span
         className={cn(
-          "block h-full transition-[width] duration-150 ease-[cubic-bezier(.4,0,.2,1)]",
+          "block h-full transition-[width]",
           complete ? "rounded-full bg-turquoise" : "rounded-l-full bg-chartreuse",
           frac === 0 && "bg-transparent",
         )}

@@ -80,7 +80,7 @@ export function ProgressDonut({ done, total, size = 40, className }: ProgressDon
           <path
             d={wedge(frac)}
             fill="var(--color-turquoise)"
-            className="transition-[d] duration-150 ease-[cubic-bezier(.4,0,.2,1)]"
+            className="transition-[d]"
           />
         ) : null}
       </svg>

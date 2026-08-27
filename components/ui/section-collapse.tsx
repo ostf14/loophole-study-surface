@@ -49,12 +49,12 @@ export function SectionCollapse({
       className={cn(
         "lh-outline inline-flex shrink-0 cursor-pointer items-center justify-center rounded-full",
         "border-soft-black bg-stark-white text-soft-black hover:bg-turquoise-lc",
-        "[transition:background-color_.15s_cubic-bezier(.4,0,.2,1),box-shadow_.15s_cubic-bezier(.4,0,.2,1)]",
+        "transition-[background-color,box-shadow]",
         small ? "h-8 w-[46px] border-[2px] px-3 py-[5px]" : "h-11 w-[62px] border-[3px] px-5 py-[10px]",
         open &&
           (small
-            ? "shadow-[2px_2px_0_0_var(--color-soft-black)]"
-            : "shadow-[4px_4px_0_0_var(--color-soft-black),0_1px_10px_0_rgba(0,0,0,.06)]"),
+            ? "shadow-hard-2"
+            : "shadow-lift-4"),
         className,
       )}
     >
@@ -62,7 +62,7 @@ export function SectionCollapse({
         aria-hidden
         strokeWidth={2.5}
         className={cn(
-          "transition-transform duration-150",
+          "transition-transform",
           small ? "size-[22px]" : "size-[28px]",
           open && "rotate-180",
         )}

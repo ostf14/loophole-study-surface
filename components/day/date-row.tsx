@@ -137,7 +137,7 @@ function DayPicker({
         counter={
           <ChevronDown
             aria-hidden
-            className={cn("size-[16px] transition-transform duration-150", open && "rotate-180")}
+            className={cn("size-[16px] transition-transform", open && "rotate-180")}
             strokeWidth={3}
           />
         }
@@ -148,7 +148,7 @@ function DayPicker({
       {open ? (
         <Card
           role="listbox"
-          className="absolute top-[calc(100%+10px)] left-0 z-20 flex w-[300px] flex-col gap-1 p-2 shadow-[4px_4px_0_0_var(--color-soft-black)]"
+          className="absolute top-[calc(100%+10px)] left-0 z-20 flex w-[300px] flex-col gap-1 p-2 shadow-hard-4"
         >
           {ALL_DAYS.map((day) => {
             const tasks = allTasks(day);
@@ -165,7 +165,7 @@ function DayPicker({
                   setOpen(false);
                 }}
                 className={cn(
-                  "lh-card-hover-xs flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors duration-150",
+                  "lh-card-hover-xs flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors",
                   active ? "bg-turquoise-lc" : "hover:bg-seafoam-lc",
                 )}
               >

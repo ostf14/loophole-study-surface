@@ -37,9 +37,9 @@ export function IconButton({ icon, label, size = "default", className, ...props 
       className={cn(
         "lh-outline inline-flex shrink-0 cursor-pointer items-center justify-center",
         "rounded-full border-soft-black bg-soft-white text-soft-black",
-        "[transition:box-shadow_.15s_cubic-bezier(.4,0,.2,1),translate_.15s_cubic-bezier(.4,0,.2,1)]",
-        "not-disabled:hover:[translate:-2px_-2px] not-disabled:hover:shadow-[2px_2px_0_0_var(--color-soft-black)]",
-        "not-disabled:active:[translate:-1px_-1px] not-disabled:active:shadow-[1px_1px_0_0_var(--color-soft-black)]",
+        "transition-[box-shadow,translate]",
+        "not-disabled:hover:[translate:-2px_-2px] not-disabled:hover:shadow-hard-2",
+        "not-disabled:active:[translate:-1px_-1px] not-disabled:active:shadow-hard-1",
         sizes[size],
         "disabled:cursor-not-allowed disabled:opacity-50",
         className,

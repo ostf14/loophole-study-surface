@@ -30,7 +30,7 @@ const boxBase = `
   box-border inline-flex cursor-pointer items-center justify-center
   rounded-[35%] border-[2px] border-solid border-soft-black font-black
   uppercase duration-[200ms]
-  [transition:background-color_0.15s_cubic-bezier(0.4,0,0.2,1),translate_0.15s_cubic-bezier(0.4,0,0.2,1)]
+  transition-[background-color,translate]
   disabled:cursor-not-allowed disabled:border-pewter-hc
 `;
 
@@ -96,6 +96,11 @@ const markRotation: Record<CheckboxRotation, string> = {
   strongLeft: "peer-checked:rotate-[-19deg] peer-hover:not-disabled:rotate-[-19deg]",
 };
 
+/*
+ * 200ms и ease-in-out, а не системные 150 и фирменная кривая: чекбокс
+ * восстановлен по продакшн-бандлу, и там у него собственный тайминг.
+ * Оставлен как есть — это его поведение, а не наш недосмотр.
+ */
 const markBase = `
   pointer-events-none absolute scale-0 opacity-0 transition-all
   duration-200 ease-in-out

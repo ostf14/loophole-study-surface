@@ -71,7 +71,7 @@ export function Tabs({ items, selected, onSelect, className }: TabsProps) {
             className={cn(
               "lh-outline flex h-10 flex-1 cursor-pointer items-center justify-center gap-2 rounded-full whitespace-nowrap",
               "text-caption-large font-extrabold uppercase text-soft-black",
-              "[transition:background-color_.15s_cubic-bezier(.4,0,.2,1)]",
+              "transition-colors",
               active
                 ? "border-[2px] border-soft-black bg-chartreuse px-6"
                 : "border-[2px] border-transparent px-4 hover:bg-seafoam-lc",

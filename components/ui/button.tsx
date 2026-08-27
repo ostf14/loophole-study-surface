@@ -40,15 +40,15 @@ import { cn } from "@/lib/cn";
 const base = `
   inline-flex cursor-pointer items-center justify-center rounded-full lh-outline
   font-black tracking-normal uppercase
-  [transition:background-color_0.15s_cubic-bezier(0.4,0,0.2,1),border-color_0.15s_cubic-bezier(0.4,0,0.2,1),box-shadow_0.15s_cubic-bezier(0.4,0,0.2,1),translate_0.15s_cubic-bezier(0.4,0,0.2,1)]
+  transition-[background-color,border-color,box-shadow,translate]
   disabled:cursor-not-allowed disabled:opacity-50
 `;
 
 const motion = `
   hover:not-disabled:-translate-x-[3px] hover:not-disabled:-translate-y-[3px]
-  hover:not-disabled:shadow-[3px_3px_0_0_var(--color-soft-black)]
+  hover:not-disabled:shadow-hard-3
   active:not-disabled:-translate-x-[1px] active:not-disabled:-translate-y-[1px]
-  active:not-disabled:shadow-[1px_1px_0_0_var(--color-soft-black)]
+  active:not-disabled:shadow-hard-1
 `;
 
 const variants = {

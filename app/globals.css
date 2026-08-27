@@ -56,6 +56,30 @@
   --radius-xs:.125rem; --radius-sm:.25rem; --radius-md:.375rem; --radius-lg:.5rem;
   --radius-xl:.75rem;  --radius-2xl:1rem;  --radius-3xl:1.5rem; --radius-4xl:2rem;
 
+  /* Жёсткая тень необрутализма: равный сдвиг по обеим осям, нулевое размытие,
+     всегда soft-black. Шаг совпадает с величиной, на которую элемент уезжает
+     вверх-влево на ховере, — тень и сдвиг в системе зеркальны, и число в имени
+     это число. Ступени взяты из компонентов: 1 у нажатия, 2 у `Icon Button`
+     и `Section Collapse` размера Small, 3 у кнопок, 4 у крупных карточек,
+     6 у `Stat point`.
+
+     `lift-4` — пара из `Section Collapse` размера Default: там к жёсткой тени
+     добавлена мягкая, чёрным на шести процентах. Единственное место в системе,
+     где размытие вообще есть, потому и отдельным токеном. */
+  --shadow-hard-1: 1px 1px 0 0 var(--color-soft-black);
+  --shadow-hard-2: 2px 2px 0 0 var(--color-soft-black);
+  --shadow-hard-3: 3px 3px 0 0 var(--color-soft-black);
+  --shadow-hard-4: 4px 4px 0 0 var(--color-soft-black);
+  --shadow-hard-6: 6px 6px 0 0 var(--color-soft-black);
+  --shadow-lift-4: 4px 4px 0 0 var(--color-soft-black), 0 1px 10px 0 rgb(0 0 0 / .06);
+
+  /* Движение системы: 150ms и одна кривая на всё. Заданы дефолтами Tailwind,
+     поэтому голое `transition` уже попадает в систему и в разметке не нужно
+     повторять ни длительность, ни кривую. */
+  --default-transition-duration: 150ms;
+  --default-transition-timing-function: cubic-bezier(.4,0,.2,1);
+  --ease-lh: cubic-bezier(.4,0,.2,1);
+
   --font-inter: var(--font-inter-next), "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 
@@ -103,12 +127,13 @@ body {
 /* Фирменное движение: элемент уезжает вверх-влево, тень вырастает под ним
    на ту же величину. Тень и сдвиг всегда зеркальны. */
 .lh-card-hover-lg,.lh-card-hover-md,.lh-card-hover-sm,.lh-card-hover-xs {
-  transition: box-shadow .15s cubic-bezier(.4,0,.2,1), translate .15s cubic-bezier(.4,0,.2,1);
+  transition: box-shadow var(--default-transition-duration) var(--ease-lh),
+              translate  var(--default-transition-duration) var(--ease-lh);
 }
-.lh-card-hover-lg:hover,.lh-card-hover-lg:active{box-shadow:6px 6px 0 0 var(--color-soft-black);translate:-6px -6px}
-.lh-card-hover-md:hover,.lh-card-hover-md:active{box-shadow:4px 4px 0 0 var(--color-soft-black);translate:-4px -4px}
-.lh-card-hover-sm:hover,.lh-card-hover-sm:active{box-shadow:2px 2px 0 0 var(--color-soft-black);translate:-2px -2px}
-.lh-card-hover-xs:hover,.lh-card-hover-xs:active{box-shadow:1px 1px 0 0 var(--color-soft-black);translate:-1px -1px}
+.lh-card-hover-lg:hover,.lh-card-hover-lg:active{box-shadow:var(--shadow-hard-6);translate:-6px -6px}
+.lh-card-hover-md:hover,.lh-card-hover-md:active{box-shadow:var(--shadow-hard-4);translate:-4px -4px}
+.lh-card-hover-sm:hover,.lh-card-hover-sm:active{box-shadow:var(--shadow-hard-2);translate:-2px -2px}
+.lh-card-hover-xs:hover,.lh-card-hover-xs:active{box-shadow:var(--shadow-hard-1);translate:-1px -1px}
 
 /* Подчёркивание стоит всегда, ховер только меняет цвет — снято с живого
    theloophole.com. Раньше здесь было наоборот. */

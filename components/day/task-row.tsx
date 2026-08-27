@@ -121,7 +121,7 @@ export function TaskRow({
               type="button"
               aria-label={`Start ${task.title}`}
               onClick={onLaunch}
-              className="inline-flex size-[24px] cursor-pointer items-center justify-center text-soft-black transition-transform duration-150 hover:-translate-x-[1px] hover:-translate-y-[1px]"
+              className="inline-flex size-[24px] cursor-pointer items-center justify-center text-soft-black transition-transform hover:-translate-x-[1px] hover:-translate-y-[1px]"
             >
               <ArrowUpRight aria-hidden className="size-[18px]" strokeWidth={2.5} />
             </button>

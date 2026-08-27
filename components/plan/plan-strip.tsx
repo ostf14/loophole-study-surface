@@ -185,7 +185,7 @@ function MileTick({ label, date, passed }: { label: string; date: string; passed
         className={cn(
           "pointer-events-none absolute bottom-[calc(100%+6px)] left-1/2 z-10 -translate-x-1/2",
           "whitespace-nowrap rounded-lg bg-soft-black px-2 py-1",
-          "text-body-xs text-soft-white opacity-0 transition-opacity duration-150",
+          "text-body-xs text-soft-white opacity-0 transition-opacity",
           "group-hover/mile:opacity-100",
         )}
       >
