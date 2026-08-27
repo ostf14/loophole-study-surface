@@ -161,11 +161,11 @@
     /* Сегменты в рельсе масштабированы: семь штук по 34 туда не влезают.
        Пропорции компонента при этом сохраняются, поэтому ожидаемое
        считается от отрисованной ширины. */
-    /* Веха на стрипе — `button.tool-btn`, вариант `Property 1=Default`:
-       8×8, радиус полный, обводки нет. Цвет свой: soft-black читается и на
-       бирюзовой части дорожки, и на песочной. */
+    /* Веха на стрипе — `button.tool-btn` из `Toolbar_Movable`: круг с полным
+       радиусом, заливка-пометка в кольце soft-black. Габарит 8, обводка из
+       свойства инстанса — `stroke weight/2`, то есть 1. */
     ["button.tool-btn · Toolbar_Movable", "milestone size", () => `${box(find.mileBead()).w}×${box(find.mileBead()).h}`, "8×8"],
-    ["button.tool-btn · Toolbar_Movable", "milestone border", () => box(find.mileBead()).border, 0],
+    ["button.tool-btn · Toolbar_Movable", "milestone border", () => box(find.mileBead()).border, 1],
 
     ["Progress bar/Ticks · Progress", "radius", () => box(find.segment()).radius, () => round2((6 * box(find.segment()).w) / 34)],
     ["Progress bar/Ticks · Progress", "filled cell shadow", () => box(find.segment()).shadow, () => {

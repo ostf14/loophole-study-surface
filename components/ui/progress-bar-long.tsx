@@ -11,7 +11,9 @@ import { cn } from "@/lib/cn";
  *   2. Разделители — прямоугольники 2×14, радиус 48, разложены по ширине
  *      с равным шагом. Цвет в компоненте сырой `#d9d9d9`, ни переменной,
  *      ни стиля за ним нет; по умолчанию взят pewter, ближайший токен. По краям стоят ещё два нулевой
- *      прозрачности, они держат раскладку `space-between`.
+ *      прозрачности, они держат раскладку `space-between`. Есть второй режим,
+ *      `separatorSpan="full"`: та же палочка во всю внутреннюю высоту дорожки
+ *      и без скругления — тогда она читается границей, а не засечкой.
  *   3. Заполнение — растянутый `Progress bar/Ticks`: радиус 6, обводка 2.647,
  *      заливка turquoise поверх sand, собственная тень 3/3. Незаполненные
  *      слоты в макете лежат прозрачными заглушками, сквозь них видны
@@ -52,6 +54,13 @@ type ProgressBarLongProps = {
    * в песочной заливке, поэтому задаётся на месте использования.
    */
   separatorColor?: string;
+  /**
+   * Насколько высок разделитель. `component` — 14 при высоте дорожки 36, как
+   * в файле. `full` — от обводки до обводки, встык, и без скругления концов:
+   * засечка посередине читается меткой на дорожке и сталкивается со всем, что
+   * на дорожке стоит, а линия во всю высоту читается границей.
+   */
+  separatorSpan?: "component" | "full";
   className?: string;
   label?: string;
 };
@@ -64,6 +73,7 @@ export function ProgressBarLong({
   height = 36,
   raised = true,
   separatorColor = "var(--color-pewter)",
+  separatorSpan = "component",
   className,
   label,
 }: ProgressBarLongProps) {
@@ -74,7 +84,9 @@ export function ProgressBarLong({
   const trackLift = 3.97 * k;
   const fillLift = 3 * k;
   const counterSize = 24 * k;
-  const separatorH = 14 * k;
+  const full = separatorSpan === "full";
+  const separatorH = full ? height - stroke * 2 : 14 * k;
+  const separatorRadius = full ? 0 : 48 * k;
 
   const pct = Math.min(Math.max(value, 0), 1) * 100;
 
@@ -107,7 +119,7 @@ export function ProgressBarLong({
               left: `${at * 100}%`,
               width: 2 * k,
               height: separatorH,
-              borderRadius: 48 * k,
+              borderRadius: separatorRadius,
               transform: "translateX(-50%)",
             }}
           />
