@@ -83,6 +83,7 @@
       return meter && meter.firstElementChild.firstElementChild;
     },
     primaryButton: () => [...document.querySelectorAll("button")].find((b) => /START|CONTINUE/i.test(b.innerText)),
+    pagerArrow: () => document.querySelector('button[aria-label="Previous day"]'),
   };
 
   /* Ожидаемое. Источник указан у каждой строки. */
@@ -106,14 +107,37 @@
 
     ["Progress · Progress", "габарит с тенью", () => Math.round(find.donut().getBoundingClientRect().width), 42],
 
+    /* Стрелки пейджинга. Не `Page control`, хотя имя зовёт: тот встречается
+       только внутри `Carousels` и `.Page Horizontal Scroll`. Пейджер собран
+       компонентом `Pagination`, и там по краям стоит `Icon Button` размера
+       Default. В покое тени у него нет — она приходит на ховер. */
+    ["Icon Button · Buttons", "габарит", () => `${box(find.pagerArrow()).w}×${box(find.pagerArrow()).h}`, "38×38"],
+    ["Icon Button · Buttons", "рамка", () => box(find.pagerArrow()).border, 2],
+    ["Icon Button · Buttons", "тень в покое", () => box(find.pagerArrow()).shadow, "нет"],
+    ["Icon Button · Buttons", "иконка", () => Math.round(find.pagerArrow().querySelector("svg").getBoundingClientRect().width), 24],
+
     ["Section Collapse · Buttons", "габарит раскрытого", () => `${box(find.chevronOpen()).w}×${box(find.chevronOpen()).h}`, "46×32"],
     ["Section Collapse · Buttons", "рамка", () => box(find.chevronOpen()).border, 2],
     ["Section Collapse · Buttons", "тень раскрытого", () => box(find.chevronOpen()).shadow, "rgb(23, 23, 18) 2px 2px 0px 0px"],
 
     ["Tandem_Plan_Item · Tandem_Plan", "высота строки", () => box(find.taskRow()).h, 32],
     ["Tandem_Plan_Item · Tandem_Plan", "паддинг строки", () => box(find.taskRow()).pad, "4/20/4/20"],
-    ["Tandem_Plan_Item · Tandem_Plan", "заголовок", () => text(find.taskTitle()), "14/20 w500 ls -0.25"],
-    ["Tandem_Plan_Item · Tandem_Plan", "цвет времени", () => rgb(getComputedStyle(find.taskTime()).color), "#aaaaaa"],
+    /* Два осознанных расхождения с компонентом, оба записаны здесь ожидаемым
+       значением, а не спрятаны.
+
+       Заголовок в компоненте не увидеть: единственный видимый текстовый слой
+       строки — время, а заголовок выключен и лежит внутри свёрнутого
+       контейнера. Опорой взят `checkbox-list-item`, их же строка чеклиста:
+       первый уровень там Semi Bold, второй Medium. Строка задачи внутри
+       группы — первый уровень, отсюда w600 вместо w500. На пятисотом
+       заголовок оказывался легче лид-инов собственной заметки.
+
+       Время в компоненте залито сырым `#aaaaaa`: во всём файле этот хекс
+       стоит на двух слоях и оба раза без переменной и без стиля. Это обрыв
+       привязки, а не решение, и стоил он 2.24:1 — мимо AA при любом кегле.
+       Взят `text-secondary` из их семантического слоя, то есть pewter-hc. */
+    ["Tandem_Plan_Item · Tandem_Plan", "заголовок", () => text(find.taskTitle()), "14/20 w600 ls -0.25"],
+    ["Tandem_Plan_Item · Tandem_Plan", "цвет времени", () => rgb(getComputedStyle(find.taskTime()).color), "#575752"],
 
     /* Сегменты в рельсе масштабированы: семь штук по 34 туда не влезают.
        Пропорции компонента при этом сохраняются, поэтому ожидаемое
