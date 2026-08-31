@@ -1,15 +1,15 @@
 import { cn } from "@/lib/cn";
 
 /**
- * `Stat point` в варианте `Type = Compare` — дробь «сделано из всего».
- * Снят из Figma.
+ * `Stat point` in its `Type = Compare` variant — a "done out of total" fraction.
+ * Read from Figma.
  *
- * Ряд 94×62 с гэпом 2. Числитель, слэш и знаменатель — три отдельных
- * текстовых слоя одним стилем: `Display 3`, то есть Inter 48/62, вес 800,
- * трекинг -1.4%, цвет soft-black.
+ * A 94x62 row at gap 2. Numerator, slash and denominator are three separate text
+ * layers in one style: `Display 3`, that is Inter 48/62, weight 800, tracking
+ * -1.4%, soft-black.
  *
- * Внутренний гэп карточки у этого типа 6, а не 13 как у Visual Gauge —
- * у каждого типа статы он свой.
+ * The card's inner gap for this type is 6 rather than the 13 of Visual Gauge —
+ * every stat type has its own.
  */
 
 type CompareProps = {

@@ -2,27 +2,26 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
 /**
- * `tag` со страницы Tags. Метка секции или стадии: LR, RC, TRANSLATION,
- * ACCURACY, TOUGH CONDITIONALS. Рядом в наборе лежит `tab_section_tag`
- * с тем же содержимым.
+ * `tag` from the Tags page. A section or stage label: LR, RC, TRANSLATION,
+ * ACCURACY, TOUGH CONDITIONALS. `tab_section_tag` sits beside it in the set with
+ * the same content.
  *
- * Собственная геометрия компонента: 24 в высоту, радиус 8, паддинг 4 сверху
- * и снизу, 12 по бокам, обводка 2px soft-black. Текст Inter 800, 10px,
- * интерлиньяж 160%, трекинг -1.8%, капсом, цвет soft-black.
+ * The component's own geometry: 24 tall, radius 8, padding 4 top and bottom, 12
+ * at the sides, a 2px soft-black border. Text Inter 800, 10px, line height 160%,
+ * tracking -1.8%, upper case, soft-black.
  *
- * Свойство `Property 1` задаёт заливку: White — soft-white, Green —
- * seafoam-lc.
+ * `Property 1` sets the fill: White for soft-white, Green for
  *
- * Размер `row` — тот же компонент, как он переопределён внутри
- * `Tandem_Plan_Item`: радиус 4, паддинг 2 и 4, гэп 1. Там он сидит в строке
- * 32 в высоту, и полная геометрия в неё не влезает.
+ * Size `row` is the same component as it is overridden inside
+ * `Tandem_Plan_Item`: radius 4, padding 2 and 4, gap 1. It sits in a 32-tall row
+ * there, and the full geometry does not fit.
  */
 
 type TagProps = {
   children: ReactNode;
-  /** Заливка по свойству `Property 1` компонента. */
+  /** Fill, from the component's `Property 1`. */
   tone?: "white" | "green";
-  /** `default` — геометрия компонента, `row` — как он стоит в строке задачи. */
+  /** `default` is the component's geometry, `row` is how it sits in a task row. */
   className?: string;
 };
 
@@ -32,12 +31,11 @@ const tones = {
 } as const;
 
 /*
- * Один размер, ровно как в компоненте: 24 в высоту, радиус 8, паддинг 4/12,
- * обводка 2, текст 10 весом 800.
+ * One size, exactly as in the component: 24 tall, radius 8, padding 4/12,
+ * border 2, text 10 at weight 800.
  *
- * Был второй, `row`, с радиусом 4 и паддингом 4/2 — выдуманный, чтобы тег
- * поместился в строку задачи. Он там и не нужен: строка 32 в высоту, тег 24
- * входит с запасом 4 сверху и снизу.
+ * A second size with radius 4 and padding 4/2 is not needed: the row is 32 tall
+ * and a 24 tag fits with 4 to spare above and below.
  */
 const SIZE = "h-6 rounded-lg px-3 py-1 text-tag-s font-extrabold";
 
@@ -45,9 +43,9 @@ export function Tag({ children, tone = "white", className }: TagProps) {
   return (
     <span
       className={cn(
-        /* w-fit обязателен: в колоночном флексе align-items по умолчанию
-           stretch, и тег растягивался бы на всю ширину родителя. shrink-0
-           держит только главную ось. */
+        /* w-fit is required: in a column flex, align-items defaults to stretch
+           and the tag would span the parent's full width. shrink-0 only holds
+           the main axis. */
         "inline-flex w-fit shrink-0 items-center border-[2px] border-soft-black uppercase text-soft-black",
         SIZE,
         tones[tone],

@@ -4,11 +4,11 @@ import { useEffect } from "react";
 import { install } from "@/lib/diagnostics";
 
 /**
- * Ставит `window.__lo` и печатает в консоль, что с ним делать.
+ * Puts `window.__lo` on the page and prints to the console what to do with it.
  *
- * Ничего не рендерит: это не элемент экрана, а то, что рецензент находит,
- * когда открывает девтулзы. Проверки нужны на живом DOM, поэтому ставятся
- * после монтирования — на сервере их звать не по чему.
+ * Renders nothing: this is not an element of the screen but what a reviewer
+ * finds on opening devtools. The checks need a live DOM, so they are installed
+ * after mount — on the server there is nothing to call them against.
  */
 export function Diagnostics() {
   useEffect(install, []);

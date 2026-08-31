@@ -4,28 +4,28 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
 /**
- * `Chips` со страницы Buttons, снят через Figma REST.
+ * `Chips` from the Buttons page, read through the Figma REST API.
  *
- * Габарит 75×42 без счётчика и 105×42 со счётчиком. Паддинг 6/18/6/18, а со
- * счётчиком правый паддинг падает до 6, чтобы кружок встал вплотную. Гэп 12,
- * радиус 1000, обводка **3px** soft-black внутрь.
+ * The gauge is 75x42 without a counter and 105x42 with one. Padding 6/18/6/18,
+ * and with a counter the right padding drops to 6 so the circle sits flush. Gap
+ * 12, radius 1000, a **3px** soft-black inside border.
  *
- * Свойство Selected: True заливает chartreuse, False оставляет прозрачным.
- * Обводка в обоих случаях одна и та же.
+ * The Selected property: True fills chartreuse, False leaves it transparent. The
+ * border is the same either way.
  *
- * Лейбл: `Misc type/Buttons/Button 2` — Inter **1000**, 12/18, трекинг
- * **+0.06**, капсом. Это единственный положительный трекинг во всём файле:
- * везде он отрицательный, а на мелком капсе они его раскрывают. Inter через
- * next/font тянется до 900, поэтому вес зажимается туда.
+ * The label: `Misc type/Buttons/Button 2` — Inter **1000**, 12/18, tracking
+ * **+0.06**, upper case. That is the only positive tracking in the whole file:
+ * everywhere else it is negative, and on small caps they open it up. Inter
+ * through next/font goes to 900, so the weight is clamped there.
  *
- * Слот Counter: кружок 30×30, паддинг 8, радиус 1000, заливка soft-white,
- * обводка 3px; внутри Inter 800 11/13.31. В строке дня в него садится шеврон.
+ * The Counter slot: a 30x30 circle, padding 8, radius 1000, soft-white fill, 3px
+ * border; Inter 800 11/13.31 inside. In the day row a chevron sits in it.
  */
 
 type ChipProps = {
   children: ReactNode;
   selected?: boolean;
-  /** Содержимое кружка справа — счётчик по компоненту, у нас шеврон. */
+  /** The contents of the circle on the right — a counter in the component, a chevron here. */
   counter?: ReactNode;
   onClick?: () => void;
   className?: string;

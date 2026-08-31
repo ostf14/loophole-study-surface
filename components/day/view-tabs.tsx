@@ -3,29 +3,29 @@
 import { Tabs } from "@/components/ui/tabs";
 
 /**
- * Переключатель видов на компоненте `Tabs` со страницы Navigation — сегментная
- * пилюля с залитым chartreuse активным элементом.
+ * The view switcher, built on `Tabs` from the Navigation page — a segmented pill
+ * with the active item filled chartreuse.
  *
- * PRD даёт три вида: Day timeline, Weekly, Full Plan; Day timeline по умолчанию.
- * Weekly и Full Plan вне скоупа и выключены явно — выключенного состояния
- * в компоненте нет, оно добавлено сверх него.
+ * The PRD gives three views: Day timeline, Weekly, Full Plan; Day timeline by
+ * default. Weekly and Full Plan are out of scope and explicitly disabled — the
+ * component has no disabled state, so it is added over it.
  *
- * Пейджинг ‹ Today › отсюда убран, хотя PRD описывает его частью переключателя.
- * Он меняет день, а не вид, и стоять должен рядом с тем, что меняет, — в строке
- * дня, у самой даты. Full Plan к тому же листать нечем: это весь диапазон одним
- * скроллом. Заодно ряд перестал делить ширину и вернулся к штатному поведению
- * компонента, где кнопки делят фрейм поровну.
+ * The paging controls are not here, though the PRD describes them as part of the
+ * switcher. They change the day, not the view, and belong beside what they
+ * change — in the day row, next to the date itself. Full Plan has nothing to page
+ * through either: it is the whole range in one scroll.
  *
- * Ширина — вся колонка. Компонент нарисован на 452, и какое-то время он здесь
- * столько и занимал: на своей ширине активная жёлтая пилюля выходит 155 вместо
- * 205 и не спорит с кнопкой Continue, у которой тот же цвет и та же роль
- * главного действия. Но ряд из трёх вкладок, кончающийся на двух третях
- * колонки, читался обрубленным — переключатель вида это шапка всего, что под
- * ним, и обрываться раньше него он не должен.
+ * The width is the whole column. The component is drawn at 452, and at that
+ * width the active yellow pill comes out 155 rather than 205 and does not
+ * compete with the Continue button, which carries the same colour and the same
+ * primary role. But a row of three tabs ending two thirds across the column read
+ * as cut off — the view switcher heads everything below it and should not stop
+ * short of it.
  *
- * Спор с Continue снимается разницей высот и положением: кнопка 48 в мятной
- * шапке, пилюля 40 в колонке, между ними больше двухсот пикселей. Ширина
- * компонента задаётся на месте использования — сам он к 452 не привязан.
+ * The competition with Continue is settled by height and position instead: a 48
+ * button in the mint header, a 40 pill in the column, more than two hundred
+ * pixels between them. The component's width is set at the point of use — it is
+ * not tied to 452.
  */
 
 const VIEWS = [

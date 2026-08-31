@@ -5,15 +5,15 @@ import { Check, Minus } from "lucide-react";
 import { cn } from "@/lib/cn";
 
 /**
- * Чекбокс Loophole. Восстановлен по фактическому исходнику из продакшн-бандла
- * (чанк 41fc1fe1bd30758c.js), а не по классам одного отрендеренного элемента.
+ * The Loophole checkbox. Reconstructed from the actual source in the production
+ * bundle (chunk 41fc1fe1bd30758c.js) rather than from the classes of one
+ * rendered element.
  *
- * Наклон — опция, не закон: дефолт прописан явным нулём, а четыре именованных
- * варианта дают ±8° и ±19°. Оригинал экспортирует их списком
+ * The tilt is an option, not a law: the default is an explicit zero, and four
  * CHECKBOX_ROTATIONS = default | strongRight | strongLeft | gentleRight | gentleLeft.
  *
- * Галочка и минус лежат соседями поверх инпута и всплывают масштабом с нуля,
- * повторяя наклон через peer-checked.
+ * The tick and the minus sit as siblings over the input and scale up from zero,
+ * repeating the tilt through peer-checked.
  */
 
 export const CHECKBOX_ROTATIONS = [
@@ -87,7 +87,7 @@ const boxRotation: Record<CheckboxRotation, string> = {
   `,
 };
 
-/** Наклон соседних иконок повторяет наклон коробки через peer-состояния. */
+/** The sibling icons repeat the box's tilt through peer states. */
 const markRotation: Record<CheckboxRotation, string> = {
   default: "",
   gentleRight: "peer-checked:rotate-[8deg] peer-hover:not-disabled:rotate-[8deg]",
@@ -97,9 +97,9 @@ const markRotation: Record<CheckboxRotation, string> = {
 };
 
 /*
- * 200ms и ease-in-out, а не системные 150 и фирменная кривая: чекбокс
- * восстановлен по продакшн-бандлу, и там у него собственный тайминг.
- * Оставлен как есть — это его поведение, а не наш недосмотр.
+ * 200ms and ease-in-out rather than the system's 150 and its house curve: the
+ * checkbox is reconstructed from the production bundle, and there it has a
+ * timing of its own. Left as it stands — that is its behaviour.
  */
 const markBase = `
   pointer-events-none absolute scale-0 opacity-0 transition-all

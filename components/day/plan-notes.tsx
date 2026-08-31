@@ -1,23 +1,22 @@
 import type { NoteBlock, Run, Task } from "@/lib/plan-data";
 
 /**
- * Инлайновые заметки под строкой задачи. PRD требует рендерить их богатым
- * текстом прямо в списке, без поповера: «Plan Notes render inline beneath its
+ * Inline notes beneath a task row. The PRD asks for them rendered as rich text
+ * in the list itself, with no popover: "Plan Notes render inline beneath its
  * row as rich text (bold, links, personality intact)».
  *
- * Поля Prep Map Point Intro (Overview, What This Looks Like, Goals, How to
- * Move On) идут тем же блоком. Overview ведёт абзацем без метки, остальные
- * поля — вторичными строками с короткими лид-инами: четыре равновесных
- * подписи капсом читались как каша.
+ * The Prep Map Point Intro fields (Overview, What This Looks Like, Goals, How to
+ * Move On) come through the same block. Overview leads as a paragraph with no
+ * label, the rest are secondary lines with short lead-ins: four labels of equal
+ * weight in caps read as a mess.
  *
- * Весь блок идёт цветом pewter-hc. Заголовок задачи остаётся единственной
- * почти чёрной вещью в строке: раньше заметка шла тем же soft-black тем же
- * кеглем и весом, то есть подпорка звучала ровно так же громко, как то, что
- * она подпирает.
+ * The whole block is pewter-hc. That leaves the task title as the only near-black
+ * thing in the row; in soft-black at the same size and weight, the supporting
+ * text spoke exactly as loudly as what it supports.
  *
- * Вертикальной линии слева нет. Рамок тоньше двух пикселей и серых линий в
- * системе не существует, а границы блока и так заданы разделителями строк
- * сверху и снизу.
+ * There is no vertical rule down the left. The system has no border thinner than
+ * two pixels and no grey lines, and the block's bounds are already set by the
+ * row dividers above and below.
  */
 
 export function PlanNotes({ task }: { task: Task }) {
@@ -85,14 +84,14 @@ function Runs({ runs }: { runs: Run[] }) {
 }
 
 /*
- * Поле Prep Map Point Intro. Тело заметки — одна роль, поэтому и свободный
- * текст, и эти поля идут одним кеглем: раньше абзац шёл четырнадцатым, а поля
- * двенадцатым, и одно и то же — описание задачи — читалось двумя размерами
- * просто потому, что данные разной формы.
+ * A Prep Map Point Intro field. The body of a note is one role, so free text and
+ * these fields run at one size: at 14 for the paragraph and 12 for the fields,
+ * the same thing — a description of the task — read at two sizes purely because
+ * the data has two shapes.
  *
- * Различает их вес, а не размер: на четырнадцати `caption-large` (w600) —
- * подпись, `body-s` (w500) — текст. Та же пара работает в карточке цели, где
- * критерий набран caption-large.
+ * Weight tells them apart rather than size: at 14, `caption-large` (w600) is a
+ * label and `body-s` (w500) is text. The same pair works in the goal card, where
+ * the criterion is set in caption-large.
  */
 function Field({ label, value }: { label: string; value: string }) {
   return (

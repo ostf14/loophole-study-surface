@@ -5,23 +5,23 @@ import { typeScale } from "./type-scale";
 import type { AuditResult } from "./types";
 
 /**
- * Диагностика экрана, доступная из консоли браузера.
+ * Screen diagnostics, reachable from the browser console.
  *
- * Зачем она в бандле, а не отдельным файлом: рецензенту, у которого есть
- * только адрес развёрнутой страницы, нужно проверить утверждение «собрано на
- * вашей системе» самому, а не поверить на слово. Открыть девтулзы он и так
- * откроет — там его и встречает `__lo`.
+ * Why they live in the bundle rather than in a separate file: a reviewer holding
+ * only the address of the deployed page needs to check the claim "built on your
+ * system" for themselves rather than take it on trust. They will open devtools
+ * anyway — `__lo` is waiting there.
  *
- * Тот же код исполняет `npm run audit`: раннер открывает страницу и зовёт
- * `window.__lo.check()`. Одна реализация на терминал и на консоль — расходиться
- * нечему, и она типизирована и линтуется вместе с экраном.
+ * `npm run audit` runs the same code: the runner opens the page and calls
+ * `window.__lo.check()`. One implementation for the terminal and the console,
+ * with nothing to drift, typechecked and linted with the rest of the screen.
  */
 
 export type { AuditResult } from "./types";
 
 export const AUDITS = [figma, typeScale, paint] as const;
 
-/** Все три проверки подряд. В консоли печатает таблицы, наружу отдаёт конверты. */
+/** All three checks in a row. Prints tables in the console, returns the envelopes. */
 export function check(): { ok: boolean; results: AuditResult[] } {
   const results = AUDITS.map((run) => {
     const r = run();
@@ -35,7 +35,7 @@ export function check(): { ok: boolean; results: AuditResult[] } {
   return { ok, results };
 }
 
-/** Токены, дожившие до собранного CSS, — то есть ровно те, что экран использует. */
+/** The tokens that reached the built CSS — that is, exactly the ones the screen uses. */
 export function tokens(prefix = "--color-"): Record<string, string> {
   const cs = getComputedStyle(document.documentElement);
   const out: Record<string, string> = {};
@@ -56,11 +56,11 @@ type Trace = {
 };
 
 /**
- * Что вот этот элемент берёт из системы. В девтулзах: выбрать узел, затем
+ * What this element takes from the system. In devtools: select a node, then run
  * `__lo.trace($0)`.
  *
- * Каждое цветовое свойство разрешается обратно в имя токена — или помечается
- * `off palette`, если такого цвета в палитре нет. Так же с типографикой.
+ * Every colour property resolves back to a token name, or is marked
+ * `off palette` when the palette holds no such colour. Same for the type.
  */
 export function trace(el: Element | null = null): Trace | string {
   const node = el ?? document.activeElement;
@@ -104,10 +104,10 @@ export function trace(el: Element | null = null): Trace | string {
     ls: px(scale[`${k}--letter-spacing`]),
     w: px(scale[`${k}--font-weight`]),
   });
-  /* Кегль и интерлиньяж совпадают у нескольких токенов сразу: `body-s` и
-     `caption-large` оба 14/20 с одним трекингом и различаются только весом.
-     Поэтому сначала совпадение по метрикам, потом уточнение по весу — иначе
-     элементу выпадает имя соседнего токена. */
+  /* Several tokens share a size and line height: `body-s` and `caption-large`
+     are both 14/20 at the same tracking and differ only in weight. So match on
+     metrics first, then narrow by weight — otherwise an element is reported
+     under a neighbouring token's name. */
   const byMetrics = names.filter((k) => {
     const m = metrics(k);
     return near(m.size, size) && near(m.lh, lh);
@@ -115,15 +115,15 @@ export function trace(el: Element | null = null): Trace | string {
   const exact = byMetrics.filter((k) => near(metrics(k).ls, ls));
   const weight = Number.parseFloat(s.fontWeight);
   const pick = exact.find((k) => metrics(k).w === weight) ?? exact[0];
-  /* Трекинг ноль и плюс полпроцента — исключение самой системы: так набраны
-     `Misc type/Buttons/Button 1` и `Button 2`. Это не промах. */
+  /* Zero tracking and plus half a per cent are the system's own exception: that
+     is how `Misc type/Buttons/Button 1` and `Button 2` are set. Not a miss. */
   const buttonTracking = !exact.length && byMetrics.length > 0 && (near(ls, 0) || near(ls, size * 0.005));
 
   const cls = typeof node.className === "string" ? node.className : "";
   const noteId = node.closest("[data-note]")?.getAttribute("data-note") ?? null;
   const noteIndex = noteId ? DESIGN_NOTES.findIndex((n) => n.id === noteId) : -1;
   const set = `${size}/${lh} w${s.fontWeight} ls ${ls}`;
-  /* Полный радиус браузер печатает не «full», а исполинским числом. */
+  /* A full radius prints not as "full" but as a colossal number. */
   const radius = Number.parseFloat(s.borderTopLeftRadius) > Math.max(r.width, r.height) ? "full" : s.borderTopLeftRadius;
 
   return {
@@ -158,7 +158,7 @@ declare global {
   var __lo: { check: typeof check; trace: typeof trace; tokens: typeof tokens } | undefined;
 }
 
-/** Ставит `__lo` на window и один раз печатает, что с ним делать. */
+/** Puts `__lo` on window and prints once what to do with it. */
 export function install() {
   if (typeof window === "undefined" || window.__lo) return;
   window.__lo = { check, trace, tokens };

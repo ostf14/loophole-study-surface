@@ -3,9 +3,9 @@
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
 
 /**
- * Состояние метаслоя. Две независимые вещи: пины с решениями и панель
- * дизайн-системы. Обе выключены по умолчанию — экран должен открываться
- * продуктом, а не разбором продукта.
+ * The meta layer's state. Two independent things: the decision pins and the
+ * design system panel. Both off by default — the screen should open as the
+ * product, not as a commentary on the product.
  */
 
 type MetaState = {

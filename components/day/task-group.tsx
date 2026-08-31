@@ -7,33 +7,32 @@ import { cn } from "@/lib/cn";
 import type { Group } from "@/lib/plan-data";
 
 /**
- * Группа задач. Собрана по тому, как это устроено на текущей странице My Plan:
- * группа — это одна карточка, а не шапка над карточками задач. Свёрнутая она
- * тонкая строка: название слева, статус словами справа, круглый шеврон.
- * Раскрытая вырастает вниз, и задачи появляются внутри неё.
+ * A task group, built the way the live My Plan page does it: a group is one
+ * card, not a header over task cards. Collapsed it is a thin row — name on the
+ * left, status in words on the right, a round chevron. Expanded it grows
+ * downward and the tasks appear inside it.
  *
- * Отсюда один уровень рамки на группу вместо двух. Раньше заголовок 64px и
- * строка задачи 52px были двумя одинаковыми по весу объектами подряд, и список
- * читался как россыпь коробок.
+ * Hence one level of border per group rather than two. A 64px header above 52px
+ * task rows puts two objects of equal weight in a row, and the list reads as a
+ * scatter of boxes.
  *
- * Подъёма у активной группы нет. Такое правило я вводил сам — ни PRD, ни их
- * макет о нём не просят, — а платой была постоянно тяжёлая карточка: активной
- * всегда оказывалась одна и та же группа, пока день не закрыт. С чего начать,
- * и так говорит resume-баннер.
+ * The active group is not raised. Nothing in the PRD or in their file asks for
+ * it, and the cost is a permanently heavy card: the same group stays active
+ * until the day is closed. Where to start is already answered by the resume
+ * banner.
  *
- * Статус словами вместо счётчика — как на живом экране: Completed, Not Started.
+ * Status in words rather than a counter, as on the live screen: Completed, Not
+ * Started.
  *
- * Кружка с инициалами тьютора здесь больше нет. Я его выдумал: в системе такого
- * элемента нет, стоял он `aria-hidden`, то есть читалке не доставался, повторял
- * то, что и так написано в названии группы, и бирюза с soft-white давала 2.55:1
- * — мимо AA. PRD же требует ровно обратного: «scheduled tutor assignments render
- * as **ordinary rows**, grouped under a header **named for the tutor\'s business
- * name**». Название группы и есть атрибуция; принадлежность тьютору несёт
- * иконка типа у задач.
+ * Attribution to a tutor is carried by the group name and by the task type
+ * icons, with no extra badge. The PRD is explicit: "scheduled tutor assignments
+ * render as **ordinary rows**, grouped under a header **named for the tutor's
+ * business name**".
  *
- * Шеврон — компонент `Section Collapse` размера Small. Тенью он помечает
- * раскрытость: в варианте Expanded у него жёсткая тень 2/2, в Collapsed её
- * нет. Строка выросла до 48, чтобы кнопка 32 с тенью 2 не упиралась в край.
+ * The chevron is `Section Collapse` at size Small. It marks openness with a
+ * shadow: the Expanded variant carries a hard 2/2 shadow, Collapsed carries
+ * none. The row is 48 tall so that a 32 button with a 2 shadow does not butt
+ * into the edge.
  */
 
 type TaskGroupProps = {
@@ -78,12 +77,12 @@ export function TaskGroup({ group, done, open, onToggle, children }: TaskGroupPr
         />
       </div>
 
-      {/* Воздух вокруг строк живёт на самих строках, а не на теле карточки.
-          Паддинг тела давал его только двум крайним строкам: у первой над
-          текстом оказывалось 12, а под ним 4, у последней зеркально. Каждая
-          строка сама отбивается от того, что над и под ней, — от рамки
-          карточки, от разделителя, от соседа, — и зазор везде получается
-          один. См. `TaskRow`. */}
+      {/* The air around the rows lives on the rows themselves, not on the card
+          body. Padding on the body gives it to the two outer rows only: the
+          first ends up with 12 above its text and 4 below, the last mirrors it.
+          Each row stands off from whatever is above and below it — the card
+          border, the divider, its neighbour — and the gap comes out the same
+          everywhere. See `TaskRow`. */}
       {open ? (
         <div className="flex flex-col border-t-[2px] border-soft-black">{children}</div>
       ) : null}

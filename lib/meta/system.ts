@@ -1,19 +1,19 @@
 /**
- * Что панель дизайн-системы показывает про компоненты. Цвета и типографику
- * она читает с живого `:root` и здесь не дублирует: Tailwind оставляет в
- * собранном CSS только те токены, которые экран действительно использует,
- * так что список на странице и есть список применённого. Захардкоженная копия
- * такого свойства не имеет и разошлась бы с кодом на первой же правке.
+ * What the design system panel shows about components. Colours and type it reads
+ * off the live `:root` and does not duplicate here: Tailwind leaves only the
+ * tokens the screen actually uses in the built CSS, so the list on the page is
+ * the list of what is applied. A hard-coded copy would not have that property
+ * and would drift from the code on the first edit.
  */
 
 export type ComponentUse = {
-  /** Что это на экране, словами пользователя. */
+  /** What it is on the screen, in a user's words. */
   element: string;
-  /** Имя компонента в файле `LO Design System (FSH Update)`. */
+  /** The component's name in `LO Design System (FSH Update)`. */
   component: string;
-  /** Страница файла. */
+  /** The page of the file. */
   page: string;
-  /** Заметное расхождение с компонентом, если оно есть. */
+  /** A notable departure from the component, where there is one. */
   note?: string;
 };
 

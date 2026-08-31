@@ -1,14 +1,15 @@
 import { cn } from "@/lib/cn";
 
 /**
- * Полоса прогресса. Дорожка 90×8, полная пилюля, обводка 2px считается внутрь,
- * так что на заливку остаётся 4px.
+ * A progress bar. The track is 90x8, a full pill, with a 2px border counted
+ * inward, which leaves 4px for the fill.
  *
- * Ключевая деталь: пока заливка частичная, скруглены только левые углы, правый
- * край — прямой срез. При ста процентах скругление становится полным.
- * Реализация, которая скругляет всегда или никогда, выглядит иначе.
+ * The detail that matters: while the fill is partial, only the left corners are
+ * rounded and the right edge is a straight cut. At a hundred per cent the
+ * rounding becomes full. An implementation that rounds always or never looks
+ * different.
  *
- * Цветовая пара повторяет PositionIcon: в процессе chartreuse, завершено
+ * The colour pair repeats PositionIcon: chartreuse in progress, complete
  * turquoise.
  */
 

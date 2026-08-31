@@ -3,32 +3,33 @@
 import { cn } from "@/lib/cn";
 
 /**
- * `Tabs` со страницы Navigation, снят через Figma REST.
+ * `Tabs` from the Navigation page, read through the Figma REST API.
  *
- * Внешний фрейм `Stage Top`: 452×52, паддинг 6 со всех сторон, радиус 100,
- * заливка soft-white, обводка **3px** soft-black внутрь.
+ * The outer `Stage Top` frame: 452x52, 6 of padding on all sides, radius 100,
+ * soft-white fill, a **3px** soft-black inside border.
  *
- * Кнопки внутри равной ширины и делят фрейм поровну: при двух элементах по
- * 220, при трёх по 146.67, высота 40. Выбранная залита chartreuse, имеет
- * собственную обводку 2px и паддинг 0/24. Невыбранная не имеет ни заливки,
- * ни обводки — только лейбл с паддингом 0/16.
+ * The buttons inside are of equal width and divide the frame evenly: 220 each
+ * with two items, 146.67 with three, height 40. The selected one is filled
+ * chartreuse, has a 2px border of its own and 0/24 padding. An unselected one
+ * has neither fill nor border — only a label with 0/16 padding.
  *
- * Лейбл: `Body type/All Caps/Caption 1 (all caps)` — Inter 800, 14/20,
- * трекинг -0.25, капсом. Это токен `caption-large` с весом, назначенным
- * на месте.
+ * The label: `Body type/All Caps/Caption 1 (all caps)` — Inter 800, 14/20,
+ * tracking -0.25, upper case. That is the `caption-large` token with the weight
+ * assigned at the point of use.
  *
- * Свойства компонента: Number of items (2 / 3) и Selected item
- * (Left / Middle / Right). Выключенных вкладок в компоненте нет — состояние
- * для Weekly и Full Plan добавлено сверх него.
+ * Component properties: Number of items (2 / 3) and Selected item (Left /
+ * Middle / Right). The component has no disabled tab; that state is added over
+ * it for Weekly and Full Plan.
  *
- * Кнопки делят фрейм, как в компоненте, но не строго поровну. Ширина ряда
- * задаётся на месте использования; сам компонент нарисован на 452.
+ * The buttons divide the frame as in the component, though not exactly evenly.
+ * The row's width is set at the point of use; the component itself is drawn at
+ * 452.
  *
- * Замер на колонке 600: 204.7 / 188.7 / 188.7 при трети в 196. «DAY TIMELINE»
- * с паддингом 24 по бокам требует по min-content больше трети, и flexbox
- * не ужимает элемент ниже его min-content — остальные две делят остаток.
- * Переносов нет. Ужать до точных третей можно только через min-w-0, то есть
- * вернув перенос лейбла внутри пилюли.
+ * Measured on a 600 column: 204.7 / 188.7 / 188.7 against a third of 196. "DAY
+ * TIMELINE" with 24 of side padding needs more than a third by min-content, and
+ * flexbox will not shrink an item below its min-content — the other two share
+ * what is left. Nothing wraps. Forcing exact thirds is only possible through
+ * min-w-0, which brings the label wrapping inside the pill back.
  */
 
 type TabItem = {

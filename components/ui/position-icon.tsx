@@ -2,18 +2,18 @@ import { Check } from "lucide-react";
 import { cn } from "@/lib/cn";
 
 /**
- * Кружок позиции. Номер шага слева от строки задачи.
+ * The position circle. The step number to the left of a task row.
  *
- * Прогрессия структурная, а не только цветовая: не начато — пустой кружок в
- * обводке, в процессе — заливка chartreuse при сохранённой обводке, завершено
- * — сплошной бирюзовый диск без обводки с галочкой вместо цифры. Обводка
- * исчезает только на последнем шаге.
+ * The progression is structural, not only chromatic: not started is an empty
+ * circle in a border, in progress is a chartreuse fill with the border kept,
+ * complete is a solid turquoise disc with no border and a tick instead of the
+ * digit. The border disappears only on the last step.
  *
- * Галочка внутри Complete повёрнута на 9.72° и залита background-alternate
- * (#e2f3f2), бледной мятой по бирюзовому, не белым.
+ * The tick inside Complete is rotated 9.72° and filled background-alternate
+ * (#e2f3f2), pale mint on turquoise rather than white.
  *
- * Лежит снаружи карточки строки как её сосед, поэтому не попадает под
- * opacity выполненной строки и остаётся в полную силу.
+ * It sits outside the row card as its neighbour, so it is not caught by the
+ * completed row's dimming and stays at full strength.
  */
 
 export type PositionState = "default" | "during" | "complete";
@@ -40,8 +40,8 @@ export function PositionIcon({
       className={cn(
         "inline-flex shrink-0 items-center justify-center rounded-full py-[6px]",
         small ? "size-[24px]" : "size-[30px]",
-        // Паддинги из макета применимы только к цифре: 10 + 12.93 + 10 не влезает
-        // в круг 24px, и галочка схлопывается. У Complete центрируем без них.
+        // The file's paddings apply to the digit only: 10 + 12.93 + 10 does not
+        // fit a 24px circle and the tick collapses. Complete centres without them.
         !complete && (small ? "px-[8px]" : "px-[10px]"),
         state === "default" && "border-[2px] border-soft-black bg-transparent",
         state === "during" && "border-[2px] border-soft-black bg-chartreuse",
@@ -57,10 +57,10 @@ export function PositionIcon({
 }
 
 /**
- * Галочка состояния Complete. В макете это заливка 12.93 × 9.70 под 9.72°
- * цветом background-alternate; спецификация отмечает, что на таком размере
- * stroked-иконка из lucide читается идентично, а правило системы — брать
- * иконки только из lucide-react.
+ * The tick of the Complete state. In the file this is a 12.93 x 9.70 fill at
+ * 9.72° in background-alternate; the specification notes that at this size a
+ * stroked lucide icon reads identically, and the system's rule is to take icons
+ * from lucide-react only.
  */
 function PositionCheck({ small }: { small: boolean }) {
   return (

@@ -6,22 +6,22 @@ import { cn } from "@/lib/cn";
 import { formatShort } from "@/lib/plan";
 
 /**
- * Пейджинг днями внизу списка. PRD: «**Day paging buttons** at the bottom
+ * Day paging at the bottom of the list. The PRD: "**Day paging buttons** at the bottom
  * ("Jul 16 →", and the previous date mirrored)».
  *
- * Кнопки, а не ссылки. Раньше здесь стояли `lh-link` — подчёркнутый
- * turquoise-hc, — и получалось, что одно и то же действие экран выражает
- * двумя языками: вверху, в строке дня, круглые `Icon Button`, внизу ссылки.
- * Плюс `lh-link` в системе значит переход, и после правки он на этом экране
- * везде значит только его: «My Saved Videos», «My History» и ссылка внутри
- * заметки — все ведут наружу.
+ * Buttons, not links. `lh-link` in this system means going somewhere, and on
+ * this screen it means only that: "My Saved Videos", "My History" and the link
+ * inside a note all lead out of the product. Paging by day is the same action
+ * the round `Icon Button`s in the day row perform, so it speaks the same
+ * language.
  *
- * Стрелка на своей стороне: слева ведущая, справа замыкающая, как PRD и
- * рисует. Паддинги под каждое положение приходят из компонента `Button`.
+ * The arrow sits on its own side: leading on the left, trailing on the right, as
+ * the PRD draws it. The paddings for each placement come from the `Button`
+ * component.
  *
- * Дубликатом верхнего пейджинга это не является: к концу списка тот уже
- * ушёл за экран, а дата на кнопке отвечает на вопрос, которого стрелки
- * не отвечают, — какой именно день будет следующим.
+ * This does not duplicate the paging at the top: by the end of the list that has
+ * scrolled off, and the date on the button answers a question the arrows do not
+ * — which day comes next.
  */
 
 type DayPagerProps = {

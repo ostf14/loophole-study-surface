@@ -7,12 +7,12 @@ import { useMeta } from "@/lib/meta/context";
 import { cn } from "@/lib/cn";
 
 /**
- * Выдвижная панель дизайн-системы: цвет, типографика, компоненты.
+ * The sliding design system panel: colour, type, components.
  *
- * Токены панель читает с живого `:root`, а не из списка в коде. Tailwind
- * оставляет в собранном CSS только те, которые экран действительно
- * использует, поэтому то, что панель показывает, и есть применённое.
- * Захардкоженная копия такого свойства не имеет.
+ * The panel reads its tokens off the live `:root` rather than from a list in the
+ * code. Tailwind leaves only the tokens the screen actually uses in the built
+ * CSS, so what the panel shows is what is applied. A hard-coded copy would not
+ * have that property.
  */
 
 type Tab = "color" | "type" | "components";
@@ -42,9 +42,9 @@ export function SystemPanel() {
       data-meta=""
       aria-label="Design system"
       className={cn(
-        /* Во всю высоту окна и выше пинов: мета-полоса уезжает при прокрутке,
-           и привязка к её низу оставляла бы над панелью щель. Номера, всплывающие
-           поверх открытой панели, читались бы мусором. */
+        /* Full window height and above the pins: the meta bar scrolls away, and
+           anchoring to its bottom would leave a gap above the panel. Numbers
+           floating over an open panel would read as noise. */
         "fixed inset-y-0 right-0 z-[70] flex w-[420px] max-w-full flex-col",
         "border-l-[2px] border-soft-black bg-soft-white",
       )}
@@ -95,13 +95,13 @@ export function SystemPanel() {
 }
 
 /**
- * Все токены с данным префиксом, дожившие до собранного CSS, — то есть ровно
- * те, что экран использует.
+ * Every token with the given prefix that reached the built CSS — that is,
+ * exactly the ones the screen uses.
  *
- * Читается один раз при первом рендере, а не эффектом: `:root` за время жизни
- * страницы не меняется, а setState в теле эффекта запускает лишний каскад
- * рендеров. Проверка на `document` нужна для рендера на сервере, куда панель
- * не попадает — она закрыта по умолчанию, — но обязана быть безопасной.
+ * Read once on the first render rather than in an effect: `:root` does not change
+ * over the life of the page, and a setState in an effect body starts an extra
+ * cascade of renders. The `document` guard is for server rendering, which the
+ * panel never reaches — it is closed by default — but it has to be safe anyway.
  */
 function readRootTokens(prefix: string): [string, string][] {
   if (typeof document === "undefined") return [];
@@ -121,7 +121,7 @@ function useRootTokens(prefix: string) {
   return tokens;
 }
 
-/** Полная разметка текстового токена: кегль, интерлиньяж, вес, трекинг. */
+/** The full markup of a text token: size, line height, weight, tracking. */
 function typeStyle(name: string): React.CSSProperties {
   return {
     fontSize: `var(--text-${name})`,
@@ -175,8 +175,8 @@ function TypeScale() {
               <span className="text-body-xs font-semibold text-pewter-hc">{name}</span>
               <span className="text-body-xs tabular-nums text-pewter-hc">{value}</span>
             </span>
-            {/* Разметка идёт переменными, а не классом `text-…`: класс из
-                шаблонной строки Tailwind не видит и не собирает. */}
+            {/* Styled through variables rather than a `text-…` class: Tailwind
+                does not see a class built from a template string. */}
             <span className="truncate text-soft-black" style={typeStyle(name)}>
               Alex&apos;s Plan
             </span>

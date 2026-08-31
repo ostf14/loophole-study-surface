@@ -1,16 +1,17 @@
 import { extendTailwindMerge } from "tailwind-merge";
 
 /**
- * Склейка классов с разрешением конфликтов.
+ * Class merging with conflict resolution.
  *
- * Без разрешения в атрибут попадали бы одновременно `h-12` из варианта кнопки
- * и `h-[38px]` с места использования, и выигрывал бы не последний в строке,
- * а тот, чьё правило стоит ниже в сгенерированном CSS.
+ * Without it the attribute would carry both `h-12` from a button variant and
+ * `h-[38px]` from the point of use, and the winner would not be the last one in
+ * the string but whichever rule sits lower in the generated CSS.
  *
- * Но у tailwind-merge нет наших имён, и `text-caption-medium` рядом с
- * `text-pewter-hc` он считал одной группой и выбрасывал первое. Текст молча
- * терял размер, интерлиньяж и трекинг и падал на дефолтные 16px без трекинга —
- * то есть ровно в то, чего в системе нет. Поэтому обе группы перечислены явно.
+ * But tailwind-merge does not know our names, and it treated
+ * `text-caption-medium` next to `text-pewter-hc` as one group and dropped the
+ * first. Text silently lost its size, line height and tracking and fell to a
+ * default 16px with no tracking — which is exactly what this system does not
+ * contain. Hence both groups are listed explicitly.
  */
 
 const twMerge = extendTailwindMerge({

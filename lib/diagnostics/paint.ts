@@ -1,27 +1,29 @@
 import type { AuditResult, Row } from "./types";
 
 /**
- * Сплошная проверка цвета и теней: каждый видимый элемент экрана против
- * палитры.
+ * A sweep of colour and shadow: every visible element on the screen against the
+ * palette.
  *
- * `figma.ts` сверяет конкретные значения со снятыми из файла, `typeScale.ts` —
- * весь текст против типографической шкалы. Этот отвечает на вопрос «нет ли на
- * экране краски мимо палитры»: сырой хекс, чужой серый, тень не из системы.
+ * `figma.ts` reconciles named values with what was read from the file,
+ * `type-scale.ts` checks all text against the type scale. This one answers "is
+ * there any paint on the screen from outside the palette": a raw hex, a foreign
+ * grey, a shadow not from the system.
  *
- * Что считается своим:
- *   — любой `--color-*` с `:root`, в том числе с альфой: сравнивается тройка
- *     RGB, поэтому `soft-black/70` проходит как soft-black;
- *   — полная прозрачность;
- *   — жёсткая тень системы, то есть равный сдвиг по обеим осям, нулевое
- *     размытие и цвет из палитры. Дробный сдвиг допустим: сегменты Prep Map
- *     масштабированы от компонента и тень у них считается от ширины.
+ * What counts as inside:
+ *   - any `--color-*` from `:root`, alpha included: the RGB triple is compared,
+ *     so `soft-black/70` passes as soft-black;
+ *   - full transparency;
+ *   - the system's hard shadow, that is an equal offset on both axes, zero blur
+ *     and a colour from the palette. A fractional offset is allowed: the Prep
+ *     Map segments are scaled from the component and their shadow is computed
+ *     from the width.
  *
- * Тени с размытием проходят только те, что перечислены в `--shadow-*`:
- * размытие в системе есть ровно в одном месте, в `Section Collapse` размера
- * Default, и появление второго — повод посмотреть, откуда оно взялось.
+ * Blurred shadows pass only where `--shadow-*` lists them: blur exists in
+ * exactly one place in this system, `Section Collapse` at size Default, and a
+ * second one appearing is a reason to look at where it came from.
  */
 
-/** Фигуры SVG: только у них заливка и обводка что-то значат. */
+/** SVG shapes: fill and stroke only mean something on these. */
 const SHAPES = new Set(["path", "circle", "ellipse", "rect", "line", "polygon", "polyline"]);
 
 const SHADOW_RE = /(rgba?\([^)]+\))\s+(-?[\d.]+)px\s+(-?[\d.]+)px\s+(-?[\d.]+)px\s+(-?[\d.]+)px/g;
@@ -34,7 +36,7 @@ function triple(v: string | null | undefined): Triple | null {
   return { key: `${m[1]},${m[2]},${m[3]}`, a: m[4] === undefined ? 1 : Number(m[4]) };
 }
 
-/** Палитра живого `:root`: «r,g,b» → имя токена. */
+/** The live `:root` palette: "r,g,b" to token name. */
 function readPalette(): Map<string, string> {
   const root = getComputedStyle(document.documentElement);
   const probe = document.createElement("span");
@@ -70,7 +72,7 @@ export function paint(): AuditResult {
   const known = (v: string | null | undefined) => {
     const t = triple(v);
     if (!t) return true; /* none, transparent, currentcolor */
-    if (t.a === 0) return true; /* полностью прозрачное — не краска */
+    if (t.a === 0) return true; /* fully transparent is not paint */
     return palette.has(t.key);
   };
 
@@ -81,10 +83,10 @@ export function paint(): AuditResult {
     return parts.every((m) => {
       const [, color, x, y, blur] = m;
       const t = triple(color);
-      if (t && t.a === 0) return true; /* пустой слой Tailwind */
+      if (t && t.a === 0) return true; /* Tailwind's empty layer */
       if (!known(color)) return false;
       if (Number(blur) === 0) return Math.abs(Number(x) - Number(y)) < 0.01;
-      return Number(blur) === 10 && Number(x) === 0 && Number(y) === 1; /* мягкая пара из lift-4 */
+      return Number(blur) === 10 && Number(x) === 0 && Number(y) === 1; /* the soft half of lift-4 */
     });
   };
 
@@ -92,7 +94,7 @@ export function paint(): AuditResult {
   let checked = 0;
 
   for (const n of document.querySelectorAll("body *")) {
-    /* Мета-слой — леса вокруг работы, а не работа. Проверки меряют экран. */
+    /* The meta layer is scaffolding around the work, not the work. The checks measure the screen. */
     if (n.closest("script,style,noscript,[data-meta]")) continue;
     const r = n.getBoundingClientRect();
     if (!r.width && !r.height) continue;
@@ -115,10 +117,10 @@ export function paint(): AuditResult {
       bad.push({ element: label(n), property: "shadow", value: s.boxShadow.slice(0, 70) });
     }
     /*
-     * SVG: заливка и обводка фигур. Только фигуры и только когда цвет задан
-     * явно: `fill` наследуется как обычное CSS-свойство и на любом div равен
-     * чёрному по умолчанию, а `currentColor` — это уже проверенный цвет
-     * текста, второй раз его смотреть нечего.
+     * SVG: the fill and stroke of shapes. Shapes only, and only where the
+     * colour is set explicitly: `fill` inherits like any CSS property and is
+     * black by default on any div, while `currentColor` is the text colour that
+     * has already been checked.
      */
     if (SHAPES.has(n.tagName)) {
       for (const [what, value] of [

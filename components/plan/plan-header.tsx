@@ -6,24 +6,25 @@ import { ResumeBanner } from "./resume-banner";
 import { PLAN, type Task } from "@/lib/plan-data";
 
 /**
- * Шапка плана. PRD рендерит её над всеми видами, поэтому она живёт выше
- * переключателя видов и не зависит от выбранного дня.
+ * The plan header. The PRD renders it above every view, so it lives above the
+ * view switcher and does not depend on the selected day.
  *
- * Держит ровно одну работу: сказать, что делать сейчас. Заголовок, Adjust Plan
- * и resume-баннер с единственным первичным действием экрана.
+ * It holds exactly one job: say what to do now. The title, Adjust Plan, and the
+ * resume banner with the screen's single primary action.
  *
- * Plan strip PRD кладёт сюда же, но он отсюда убран. Он не действие, а прибор:
- * отвечает на «где я в программе», а не на «что делать». Рядом с баннером два
- * блока спорили за первый взгляд, и шапка занимала 407px — 51% окна 1440×800,
- * то есть до первой задачи приходилось листать. Стрип переехал в колонку к
- * остальным приборам — Next Goal и, через рельс, Prep Map.
+ * The PRD puts the plan strip here too, but it is not here. It is not an action,
+ * it is an instrument: it answers "where am I in the programme", not "what do I
+ * do". Beside the banner the two competed for the first read, and the header
+ * came to 407px — 51% of a 1440x800 window, so the first task took a scroll. The
+ * strip moved into the column with the other instruments: Next Goal and, through
+ * the rail, the Prep Map.
  *
- * Функциональное требование PRD при этом цело: оно не «быть в шапке», а
- * рендериться над всеми видами. Стрип остаётся выше переключателя и
- * переключение вкладок переживает.
+ * The PRD's functional requirement holds: it is not "be in the header" but
+ * render above every view. The strip stays above the switcher and survives a tab
+ * change.
  *
- * Фон turquoise-lc с нижней рамкой 2px повторяет полосу шапки на текущей
- * странице My Plan.
+ * The turquoise-lc background with a 2px bottom border repeats the header band
+ * of the current My Plan page.
  */
 
 type PlanHeaderProps = {
@@ -34,11 +35,11 @@ type PlanHeaderProps = {
 };
 
 /*
- * Геометрия шапки снята с `Page header_V2`: заливка turquoise-lc, обводка
- * только снизу 2px, паддинги 48 сверху, 56 по бокам, 32 снизу, гэп 32.
+ * The header geometry is read from `Page header_V2`: turquoise-lc fill, a 2px
+ * border on the bottom only, padding 48 top, 56 at the sides, 32 bottom, gap 32.
  *
- * Заголовок там Inter 900 40/48 с трекингом -0.72 — это токен `display-xl`
- * с весом, назначенным на месте. Стояло display-m, то есть 32/38 весом 800.
+ * The title there is Inter 900 40/48 with -0.72 tracking — the `display-xl`
+ * token with the weight assigned at the point of use.
  */
 export function PlanHeader({ today, resume, onAdjustPlan, onStart }: PlanHeaderProps) {
   return (

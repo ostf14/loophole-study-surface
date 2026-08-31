@@ -1,23 +1,22 @@
 /*
- * Все три проверки одной командой: `npm run audit`.
+ * All three checks in one command: `npm run audit`.
  *
- * Проверки живут в бандле, в `lib/diagnostics/`, и экран сам выставляет их
- * на `window.__lo`. Значит самый короткий путь — открыть страницу и набрать
- * в консоли браузера `__lo.check()`; ставить ничего не нужно. Этот файл
- * делает то же самое без рук: поднимает headless-Chromium, открывает экран
- * и зовёт ту же функцию. Код возврата ненулевой, если хоть одна проверка не
- * сошлась, поэтому его можно повесить в CI.
+ * The checks live in the bundle, in `lib/diagnostics/`, and the screen puts them
+ * on `window.__lo` itself. So the shortest route is to open the page and type
+ * `__lo.check()` in the browser console; nothing needs installing. This file
+ * does the same thing hands-free: it starts headless Chromium, opens the screen
+ * and calls the same function. The exit code is non-zero if any check fails, so
+ * it can go in CI.
  *
- * Одна реализация на оба пути. Раньше проверки лежали здесь отдельными
- * скриптами и исполнялись в странице через `new Function`; после переезда в
- * бандл они типизированы, линтуются вместе с экраном и не могут разойтись с
- * тем, что видит рецензент.
+ * One implementation for both routes, typechecked and linted with the screen, so
+ * the terminal and the console cannot disagree.
  *
- * Браузер не входит в зависимости: `playwright-core` их не тянет. Нужен любой
- * установленный Chrome или Chromium; путь берётся из `CHROME_PATH`, иначе
- * пробуются обычные места, иначе — канал `chrome`, если он в системе есть.
+ * The browser is not a dependency: `playwright-core` does not pull one. Any
+ * installed Chrome or Chromium will do; the path comes from `CHROME_PATH`,
+ * otherwise the usual locations are tried, otherwise the `chrome` channel if the
+ * system has it.
  *
- * Адрес экрана — `AUDIT_URL`, по умолчанию http://localhost:3000.
+ * The screen's address is `AUDIT_URL`, http://localhost:3000 by default.
  */
 import { chromium } from "playwright-core";
 import { existsSync } from "node:fs";
@@ -42,8 +41,8 @@ function launchOptions() {
 
 const browser = await chromium.launch(launchOptions()).catch((err) => {
   console.error(
-    "Не удалось запустить браузер. Укажите путь к Chrome через CHROME_PATH,\n" +
-      "или откройте экран и наберите `__lo.check()` в консоли браузера.\n\n" +
+    "Could not start a browser. Point CHROME_PATH at a Chrome binary,\n" +
+      "or open the screen and type `__lo.check()` in the browser console.\n\n" +
       err.message,
   );
   process.exit(2);
@@ -54,7 +53,7 @@ const page = await browser.newPage({ viewport: { width: 1440, height: 1600 } });
 try {
   await page.goto(URL, { waitUntil: "networkidle", timeout: 20000 });
 } catch {
-  console.error(`Экран не отвечает на ${URL}. Запустите \`npm run dev\` или задайте AUDIT_URL.`);
+  console.error(`No answer from ${URL}. Run \`npm run dev\` or set AUDIT_URL.`);
   await browser.close();
   process.exit(2);
 }
@@ -65,7 +64,7 @@ const ready = await page
   .catch(() => false);
 
 if (!ready) {
-  console.error("`window.__lo` не появился: страница загрузилась, но клиентский слой не смонтировался.");
+  console.error("`window.__lo` never appeared: the page loaded but the client layer did not mount.");
   await browser.close();
   process.exit(2);
 }

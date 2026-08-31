@@ -103,7 +103,7 @@ Working rules in this repo:
   blur, and a signature hover where the element moves up-left while its shadow
   grows by the same amount (`lh-card-hover-xs|sm|md|lg`).
 - **Tilt as a motif.** The checkbox rotates on check and hover; the check inside
-  `PositionIcon` is fixed at 9.72°; mile markers on the plan strip sit at 8°.
+  `PositionIcon` is fixed at 9.72°.
 - Line heights come from the production CSS where Figma disagrees with it.
 - **Hard shadows are tokens.** `shadow-hard-1|2|3|4|6` and `shadow-lift-4` in the
   `@theme` block; the number is the offset, and it matches the distance the
@@ -307,7 +307,8 @@ code.
    Production won here. Which is the source of truth?
 4. **Two renders of `stat-point/time-range`.** The component is drawn one way on
    its own and another way inside the Stat point card. The in-card render was
-   used (unfilled track, Current on seafoam-lc). Which one is canonical?
+   used (sand track with a border, Current filled turquoise-hc). Which one is
+   canonical?
 5. **Rail width.** `--sidebar-width: 300px` is app navigation rather than a
    content rail, and `--max-width-component: 1080px` is a marketing page width at
    which the task row stretches and hollows out in the middle. This build uses

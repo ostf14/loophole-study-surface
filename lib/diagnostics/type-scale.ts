@@ -1,20 +1,21 @@
 import type { AuditResult, Row } from "./types";
 
 /**
- * Сплошная проверка типографики: каждый текстовый узел экрана против таблицы
- * токенов.
+ * A sweep of the typography: every text node on the screen against the token
+ * table.
  *
- * `figma.ts` проверяет конкретные значения и отвечает на вопрос «совпадает ли
- * снятое с отрисованным». Этот отвечает на другой: «нет ли на экране текста
- * мимо системы вообще». Первый ловит регрессии в известных местах, второй —
- * самодеятельность в неизвестных.
+ * `figma.ts` checks named values and answers "does what was read match what is
+ * rendered". This one answers a different question: "is there any text on the
+ * screen from outside the system at all". The first catches regressions in
+ * known places, the second catches improvisation in unknown ones.
  *
- * Токены читаются с `:root` живой страницы. Tailwind вырезает неиспользуемые,
- * но это не мешает: если бы класс-токен применялся, токен был бы в выхлопе.
- * Значит несовпадение означает произвольное значение, а не вырезанный токен.
+ * The tokens are read from the live page's `:root`. Tailwind strips the unused
+ * ones, but that does not matter: if a token class were applied, its token would
+ * be in the output. So a mismatch means an arbitrary value, not a stripped
+ * token.
  *
- * Сверяются кегль, интерлиньяж и трекинг. Вес не сверяется намеренно: в
- * системе он назначается на месте использования и в токене не зафиксирован.
+ * Size, line height and tracking are compared. Weight deliberately is not: in
+ * this system it is assigned at the point of use and not fixed in the token.
  */
 
 const SUFFIX = { "--line-height": "lh", "--font-weight": "w", "--letter-spacing": "ls" } as const;
@@ -29,7 +30,7 @@ const px = (v: string | undefined) => {
   return Number.parseFloat(s) || 0;
 };
 
-/** Текстовые токены живого `:root`, разложенные на кегль/интерлиньяж/трекинг. */
+/** The live `:root` text tokens, split into size, line height and tracking. */
 function readScale(): Token[] {
   const cs = getComputedStyle(document.documentElement);
   const raw: Record<string, string> = {};
@@ -63,10 +64,11 @@ export function typeScale(): AuditResult {
 
   const rows: Row[] = [];
   for (const n of document.querySelectorAll("body *")) {
-    /* Мета-слой — леса вокруг работы, а не работа. Проверки меряют экран. */
+    /* The meta layer is scaffolding around the work, not the work. The checks measure the screen. */
     if (n.closest("script,style,noscript,[data-meta]")) continue;
-    /* Неотрисованное на экране не стоит: узкая заглушка спрятана на широком
-       окне, и считать её текст сплошной проверкой экрана было бы неверно. */
+    /* What is not rendered is not on the screen: the narrow-window notice is
+       hidden on a wide one, and counting its text as part of a sweep of the
+       screen would be wrong. */
     const r = n.getBoundingClientRect();
     if (!r.width && !r.height) continue;
     const own = [...n.childNodes]
@@ -82,11 +84,11 @@ export function typeScale(): AuditResult {
     const hit = table.find((t) => near(t.size, size) && near(t.lh, lh) && near(t.ls, ls));
 
     /*
-     * Два законных исключения, оба подтверждены выгрузкой файла.
-     * `Misc type/Buttons/Button 1` — трекинг ровно ноль, `Button 2` — плюс
-     * половина процента. Правило «отрицательный трекинг везде» на кнопки и
-     * чипы не распространяется, и без этой оговорки проверка вечно светила бы
-     * красным на пяти узлах, приучая не смотреть на её вывод.
+     * Two legitimate exceptions, both confirmed by the file dump.
+     * `Misc type/Buttons/Button 1` has tracking of exactly zero, `Button 2` plus
+     * half a per cent. The "negative tracking everywhere" rule does not extend to
+     * buttons and chips, and without this the check would run red on five nodes
+     * forever, teaching everyone to stop reading its output.
      */
     const byMetrics = table.find((t) => near(t.size, size) && near(t.lh, lh));
     const exception = !hit && byMetrics && (near(ls, 0) || near(ls, size * 0.005));

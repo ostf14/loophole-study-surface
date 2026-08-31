@@ -1,21 +1,21 @@
 /**
- * Общий конверт всех проверок. Один и тот же объект возвращается в консоль
- * браузера, в `window.__lo` и в терминальный прогон `npm run audit` — считать
- * результат по-разному негде.
+ * The shared envelope of all three checks. The same object goes to the browser
+ * console, to `window.__lo` and to the terminal run of `npm run audit` — there
+ * is nowhere for the result to be counted differently.
  */
 
 export type Row = Record<string, string | number>;
 
 export type AuditResult = {
-  /** Ключ для `__lo`, он же имя в выводе терминала. */
+  /** The key on `__lo`, and the name in the terminal output. */
   id: string;
   title: string;
-  /** Что именно проверяется — одной строкой, для человека. */
+  /** What exactly is checked, in one line, for a person. */
   what: string;
   ok: boolean;
-  /** Итог словами: либо «всё сошлось», либо сколько и чего не сошлось. */
+  /** The verdict in words: either everything matched, or how much did not. */
   verdict: string;
-  /** Сколько всего проверено. */
+  /** How many things were checked in all. */
   total: number;
   failures: Row[];
   rows: Row[];

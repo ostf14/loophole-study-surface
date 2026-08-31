@@ -15,13 +15,12 @@ const eslintConfig = defineConfig([
   ]),
   {
     /*
-     * Обращение к `const` до его объявления — это ReferenceError в рантайме,
-     * а не стилистика: временная мёртвая зона. Синтаксическую проверку он
-     * проходит, поэтому ловится только правилом. Один раз уже уронил плагин
-     * Figma на ровном месте.
+     * Reaching a `const` before its declaration is a runtime ReferenceError, not
+     * a matter of style: the temporal dead zone. It passes the syntax check, so
+     * only a rule catches it.
      *
-     * `functions: false` — объявления функций поднимаются целиком и вызывать
-     * их выше объявления безопасно.
+     * `functions: false` — function declarations hoist whole, and calling them
+     * above their declaration is safe.
      */
     rules: {
       "no-use-before-define": ["error", { functions: false, variables: true, classes: true }],

@@ -5,14 +5,15 @@ import { useMeta } from "@/lib/meta/context";
 import { cn } from "@/lib/cn";
 
 /**
- * Мета-полоса над экраном. Несёт два переключателя: пины с решениями и панель
- * дизайн-системы.
+ * The meta bar above the screen. It carries two toggles: the decision pins and
+ * the design system panel.
  *
- * Полоса намеренно чёрная и намеренно не на токенах интерфейса: это рамка
- * вокруг продукта, а не его часть. Всё, что внутри неё, — про то, как экран
- * сделан; всё, что ниже, — сам экран. Спутать их нельзя.
+ * The bar is deliberately black and deliberately not on the interface tokens:
+ * it is a frame around the product, not part of it. Everything inside it is
+ * about how the screen was made; everything below it is the screen. The two
+ * cannot be confused.
  *
- * Оба переключателя выключены по умолчанию. Экран открывается продуктом.
+ * Both toggles are off by default. The screen opens as the product.
  */
 
 export function MetaBar() {
@@ -20,14 +21,14 @@ export function MetaBar() {
 
   return (
     <div
-      /* Не `banner`: banner на странице уже есть — шапка плана, — и второй
-         ломает навигацию по лендмаркам (axe: landmark-no-duplicate-banner).
-         Названный `region` рядом с ним законен. */
+      /* Not `banner`: the page already has one — the plan header — and a second
+         breaks landmark navigation (axe: landmark-no-duplicate-banner). A named
+         `region` alongside it is legitimate. */
       role="region"
       data-meta=""
       aria-label="How this screen was built"
-      /* Не липкая: полоса стоит перед экраном, а не поверх него. Липкой она
-         наезжала на мятную шапку при прокрутке и срезала ей верх. */
+      /* Not sticky: the bar stands before the screen, not over it. Sticky, it
+         rode onto the mint header on scroll and clipped its top. */
       className="relative z-50 w-full border-b-[2px] border-soft-black bg-soft-black"
     >
       <div className="mx-auto flex h-10 w-full max-w-[var(--study-surface-width)] items-center gap-3 px-5 lg:px-10">

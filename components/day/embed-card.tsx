@@ -6,12 +6,12 @@ import { Card } from "@/components/ui/card";
 import type { Embed } from "@/lib/plan-data";
 
 /**
- * Карточка воркаута или рутины внутри заметок. PRD: «Workout and Routine cards
+ * A workout or routine card inside the notes. The PRD: "Workout and Routine cards
  * embed inline inside notes and Workout Menu tasks, each with a bookmark
  * control that adds it to My Workouts or My Routines».
  *
- * Оба вида устроены одинаково и различаются только тем, в какой список рельса
- * уходит букмарк, поэтому это один компонент, а не два.
+ * Both kinds are built the same and differ only in which rail shelf the bookmark
+ * lands on, so this is one component rather than two.
  */
 
 type EmbedCardProps = {
@@ -25,9 +25,9 @@ export function EmbedCard({ embed, bookmarked, onToggle }: EmbedCardProps) {
   return (
     <Card className="flex items-center gap-4 px-4 py-3">
       <span className="flex min-w-0 flex-col">
-        {/* Без truncate: карточка живёт в текстовой колонке под заголовком
-            задачи, а она у́же полной ширины группы. Обрезать название рутины
-            дороже, чем добавить строку. */}
+        {/* No truncate: the card lives in the text column under the task title,
+            and that column is narrower than the group's full width. Cutting a
+            routine's name off costs more than adding a line. */}
         <span className="text-body-s">{name}</span>
         <span className="text-body-xs text-pewter-hc">{meta}</span>
       </span>

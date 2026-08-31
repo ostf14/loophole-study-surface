@@ -1,16 +1,16 @@
 /**
- * Каталог решений — «прогулочная версия» разбора проекта.
+ * The catalog of decisions — the walking tour of the project.
  *
- * Порядок массива = номер пина. Заметка №4 остаётся четвёртой всегда: если
- * рецензент сошлётся на «пин 4» в письме, ссылка должна разрешаться и через
- * месяц. Поэтому дописывать в конец, не вставлять в середину и не менять
- * порядок.
+ * Array order is the pin number. Note 4 stays note 4 forever: if a reviewer
+ * cites "pin 4" in an email, the reference should still resolve a month later.
+ * So append at the end, never insert in the middle and never reorder.
  *
- * `id` — точная строка, которая стоит атрибутом `data-note` на якоре внутри
- * экрана. Каталог здесь источник правды, разметка следует за ним.
+ * `id` is the exact string that stands as the `data-note` attribute on an anchor
+ * inside the screen. The catalog is the source of truth here and the markup
+ * follows it.
  *
- * Текст полный: ссылок наружу нет намеренно. Экран разворачивается по одному
- * адресу и объясняет себя сам — репозиторий для этого открывать не нужно.
+ * The text is complete: there are deliberately no links out. The screen deploys
+ * to one address and explains itself.
  */
 
 export type DesignNote = {
@@ -42,7 +42,7 @@ export const DESIGN_NOTES: DesignNote[] = [
     id: "date-row",
     title: "Date and progress are a pair",
     body:
-      "The PRD pairs them outright — “a date pill … paired with a progress donut”. They sit flush against each other and read as one thought: which day, and how much of it is done.\n\nHide completed is gone from this row. The component already dims a finished task outright: `Tandem_Plan_Item` in `State=Checked` is opacity 0.5 on the whole element, so what is done is already half as loud. And a day here holds four to eight tasks in two to four groups — at that size the control takes up room without removing any. A filter earns its place where scanning the list is itself the work.",
+      "The PRD pairs them outright — “a date pill … paired with a progress donut”. They sit flush against each other and read as one thought: which day, and how much of it is done.\n\nHide completed is gone from this row. A finished task is already quieter than a live one — grey title, struck through, checkbox filled — and a day here holds four to eight tasks in two to four groups. At that size the control takes up room without removing any. A filter earns its place where scanning the list is itself the work.",
   },
   {
     id: "task-group",

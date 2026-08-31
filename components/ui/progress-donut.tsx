@@ -1,40 +1,40 @@
 import { cn } from "@/lib/cn";
 
 /**
- * Донат прогресса. Компонент `Progress` со страницы Progress, снят через
- * Figma REST вместе с позициями слоёв.
+ * The progress donut. The `Progress` component from the Progress page, read
+ * through the Figma REST API together with its layer positions.
  *
- * Устройство: круг 40×40, обводка 1.5px soft-black внутрь, и **позади него
- * чёрный эллипс того же размера со сдвигом +2/+2** — жёсткая тень, нарисованная
- * фигурой, а не эффектом. Тот же необрутализм, что у карточек, только
- * зашитый в геометрию: `clipsContent` у компонента выключен, тень выходит
- * за габарит.
+ * How it is made: a 40x40 circle with a 1.5px soft-black inside border, and
+ * **behind it a black ellipse of the same size offset by +2/+2** — a hard shadow
+ * drawn as a shape rather than as an effect. The same neo-brutalism the cards
+ * carry, only baked into the geometry: the component has `clipsContent` off and
+ * the shadow extends past the gauge.
  *
- * Доля показана сплошным сектором 28×28 со сдвигом +6/+6, то есть радиусом 14
- * от центра. Между сектором и обводкой остаётся шесть пикселей поля.
+ * The fraction is a solid 28x28 sector offset by +6/+6, that is radius 14 from
+ * the centre. Six pixels of field remain between the sector and the border.
  *
- * Пустое состояние залито turquoise-lc; белая заливка появляется только когда
- * есть заполнение. Completed кладёт поверх сплошной turquoise и галочку.
+ * The empty state is filled turquoise-lc; the white fill appears only once there
+ * is something filled. Completed lays a solid turquoise and a tick over it.
  *
- * В `Tandem_Plan_Item_Menu` этот же компонент стоит размером 22 — габарит
- * задаётся на месте использования.
+ * Inside `Tandem_Plan_Item_Menu` this same component sits at 22 — the gauge is
+ * set at the point of use.
  */
 
 type ProgressDonutProps = {
   done: number;
   total: number;
-  /** Диаметр круга без тени. Тень добавляет два пикселя справа и снизу. */
+  /** Circle diameter without the shadow. The shadow adds two pixels right and below. */
   size?: number;
   /**
-   * Подпись для читалки. По умолчанию доля считается задачами, но донат
-   * стоит и там, где единицы другие: в resume-баннере он показывает минуты
-   * одной задачи, и «13 of 25 tasks done» там было прямой неправдой.
+   * The label for a screen reader. By default the fraction counts tasks, but the
+   * donut also stands where the units are different: in the resume banner it
+   * shows minutes of one task, where "13 of 25 tasks done" would be a plain lie.
    */
   label?: string;
   className?: string;
 };
 
-/** Сектор от двенадцати часов по часовой, радиус 14 в системе 40×40. */
+/** A sector from twelve o'clock clockwise, radius 14 in a 40x40 system. */
 function wedge(frac: number) {
   const c = 20;
   const r = 14;
@@ -58,7 +58,7 @@ export function ProgressDonut({ done, total, size = 40, label, className }: Prog
         role="img"
         aria-label={label ?? `${done} of ${total} tasks done`}
       >
-        {/* тень: тот же круг, сдвинутый на два пикселя вниз-вправо */}
+        {/* The shadow: the same circle, offset two pixels down-right. */}
         <circle cx="22" cy="22" r="20" fill="var(--color-soft-black)" />
 
         <circle

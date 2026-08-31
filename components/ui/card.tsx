@@ -2,12 +2,12 @@ import type { ComponentPropsWithoutRef, ElementType } from "react";
 import { cn } from "@/lib/cn";
 
 /**
- * Оболочка карточки: радиус 12px (radius-xl), обводка 2px soft-black, фон
- * soft-white. Одинакова у строки задачи, заголовка группы и карточек рельса.
+ * The card shell: radius 12px (radius-xl), a 2px soft-black border, a soft-white
+ * background. The same on a task row, a group header and the rail cards.
  *
- * hover задаёт размер фирменного жеста. В строке задачи система использует sm
- * (2px), у крупных карточек встречается md и lg. none — для статичных блоков,
- * по которым не кликают.
+ * `hover` sets the size of the house gesture. On a task row the system uses sm
+ * (2px); larger cards use md and lg. `none` is for static blocks that are not
+ * clicked.
  */
 
 type CardProps<T extends ElementType> = {

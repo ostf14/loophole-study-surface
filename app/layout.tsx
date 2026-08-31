@@ -18,16 +18,16 @@ export const metadata: Metadata = {
 };
 
 /**
- * Мета-слой обёрнут вокруг экрана, а не встроен в него: полоса сверху, пины
- * поверх и панель справа живут в layout, а сам экран о них не знает и ничего
- * им не отдаёт, кроме атрибутов `data-note` на якорях.
+ * The meta layer wraps the screen rather than being built into it: the bar on
+ * top, the pins over it and the panel on the right all live in the layout, and
+ * the screen itself knows nothing about them and gives them nothing but
+ * `data-note` attributes on its anchors.
  *
- * Оба переключателя выключены по умолчанию, так что по умолчанию это просто
- * экран.
+ * Both toggles are off by default, so by default this is just a screen.
  *
- * `Diagnostics` не рендерит ничего: он ставит `window.__lo` и один раз пишет
- * в консоль, что с ним делать. Проверки нужны рецензенту, у которого есть
- * только адрес страницы.
+ * `Diagnostics` renders nothing: it puts `window.__lo` on the page and writes
+ * once to the console what to do with it. The checks are for a reviewer holding
+ * only the page's address.
  */
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (

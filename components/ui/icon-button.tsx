@@ -2,24 +2,24 @@ import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
 /**
- * `Icon Button` со страницы Buttons.
+ * `Icon Button` from the Buttons page.
  *
- * Собственных размеров у компонента два: Default 38×38 с иконкой 24 и обводкой
- * 2px, Large 80×80 с иконкой 40 и обводкой 3px. Всё остальное, что встречается
- * в файле, — ужатые инстансы того же компонента: 32 в `Label_Submenu_Item`,
- * 24 в `Tandem_Plan_Item`. Они здесь и названы ужатыми, а не отдельными
- * размерами системы.
+ * The component has two sizes of its own: Default 38x38 with a 24 icon and a 2px
+ * border, Large 80x80 with a 40 icon and a 3px border. Everything else in the
+ * file is a shrunk instance of the same component: 32 in `Label_Submenu_Item`,
+ * 24 in `Tandem_Plan_Item`. They are named as shrunk instances here rather than
+ * as separate sizes of the system.
  *
- * Состояния сняты по смещению вложенного слоя IconButtonFrame относительно
- * компонента: в покое тени нет вовсе, Hover уводит кнопку на −2/−2 и кладёт
- * жёсткую тень 2/2, Active — на −1/−1 с тенью 1/1. То есть нажатие не гасит
- * жест, а укорачивает его вдвое.
+ * The states are read from the offset of the nested IconButtonFrame layer
+ * against the component: at rest there is no shadow at all, Hover moves the
+ * button to -2/-2 and lays a hard 2/2 shadow, Active to -1/-1 with a 1/1 shadow.
+ * So a press does not kill the gesture, it halves it.
  */
 
 type IconButtonProps = ComponentPropsWithoutRef<"button"> & {
   icon: ReactNode;
   label: string;
-  /** `default` — собственный размер компонента; остальные — ужатые инстансы. */
+  /** `default` is the component's own size; the rest are shrunk instances. */
   size?: "default" | "sm" | "xs";
 };
 

@@ -4,23 +4,23 @@ import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/cn";
 
 /**
- * `Section Collapse` со страницы Buttons, снят через Figma REST.
+ * `Section Collapse` from the Buttons page, read through the Figma REST API.
  *
- * Свойства компонента: Direction (Expanded / Collapsed), State (Default /
- * Hover), Size (Default / Small). Восемь вариантов, и различаются они так:
+ * Component properties: Direction (Expanded / Collapsed), State (Default /
+ * Hover), Size (Default / Small). Eight variants, differing like this:
  *
- *   Size=Small   — 46×32, паддинг 5/12, обводка 2px, иконка 22×22
- *   Size=Default — 62×44, паддинг 10/20, обводка 3px, иконка 28×28
- *   State=Hover  — заливка turquoise-lc вместо белой, геометрия та же
- *   Expanded     — жёсткая тень: 2/2 у Small, 4/4 плюс мягкая 0/1 blur10
- *                  чёрным на 6% у Default
- *   Collapsed    — тени нет
+ *   Size=Small   — 46x32, padding 5/12, 2px border, 22x22 icon
+ *   Size=Default — 62x44, padding 10/20, 3px border, 28x28 icon
+ *   State=Hover  — turquoise-lc fill instead of white, same geometry
+ *   Expanded     — hard shadow: 2/2 on Small, 4/4 plus a soft 0/1 blur10 black
+ *                  at 6% on Default
+ *   Collapsed    — no shadow
  *
- * То есть тенью система помечает раскрытость секции, а не наведение. Это
- * их собственный ответ на вопрос, чем показывать открытую группу.
+ * So the system marks a section's openness with a shadow, not hover. That is
+ * their own answer to the question of how to show an open group.
  *
- * Заливка здесь stark-white `#ffffff`, а не soft-white — в компоненте стоит
- * именно она.
+ * The fill here is stark-white `#ffffff` rather than soft-white — that is what
+ * the component carries.
  */
 
 type SectionCollapseProps = {

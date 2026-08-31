@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import type { TaskType } from "@/lib/plan-data";
 
-/** Иконка типа задачи. Только lucide, монохром, одна толщина. */
+/** The task type icon. lucide only, monochrome, one stroke weight. */
 const ICONS: Record<TaskType, typeof Play> = {
   video: Play,
   book: BookOpen,
