@@ -1,6 +1,6 @@
 /**
- * Моковые данные плана. Домен настоящий: LSAT, методика Эллен Кэссиди.
- * Даты взяты из примеров самого PRD — Wednesday Jul 15, «Jul 16 →»,
+ * Mock plan data. The domain is real: the LSAT, Ellen Cassidy's method.
+ * The dates come from the PRD's own examples — Wednesday Jul 15, "Jul 16 ->",
  * «First PT · Sep 2».
  */
 
@@ -19,31 +19,31 @@ export type Task = {
   id: string;
   type: TaskType;
   title: string;
-  /** Время старта из study block студента */
+  /** Start time from the student's study block. */
   time: string;
   duration: string;
   done: boolean;
   launchable: boolean;
   optional?: boolean;
-  /** Задача начата, но не закончена — для resume-баннера */
+  /** Started but not finished — this is what the resume banner reads. */
   started?: boolean;
   remaining?: string;
-  /** Plan Notes: свободный богатый текст автора курса */
+  /** Plan Notes: free rich text written by the course author. */
   notes?: NoteBlock[];
-  /** Поля Prep Map Point Intro, рендерятся так же, как заметки */
+  /** Prep Map Point Intro fields; they render the same way notes do. */
   intro?: {
     overview: string;
     looksLike: string;
     goals: string;
     moveOn: string;
   };
-  /** Карточки воркаутов и рутин внутри заметок, у каждой своя букмарка */
+  /** Workout and routine cards inside a note, each with its own bookmark. */
   embeds?: Embed[];
 };
 
 /**
- * Встроенная карточка. Воркаут уходит букмаркой в My Workouts, рутина —
- * в My Routines; больше они ничем не отличаются.
+ * An embedded card. A workout bookmarks into My Workouts, a routine into My
+ * Routines; nothing else separates them.
  */
 export type Embed = {
   kind: "workout" | "routine";
@@ -63,7 +63,7 @@ export type Run =
 
 export type Group = {
   id: string;
-  /** Имя группы Timeline; у тьюторских блоков — название бизнеса репетитора */
+  /** Timeline group name; for tutor blocks it is the tutor's business name. */
   name: string;
   tasks: Task[];
 };
@@ -78,7 +78,7 @@ export type Day = {
 export type Phase = {
   id: string;
   name: string;
-  /** Имя в селекторе планов слева */
+  /** The name shown in the plan selector on the left. */
   planName: string;
   start: string;
   end: string;
@@ -101,13 +101,14 @@ export const PHASES: Phase[] = [
 ];
 
 /**
- * Вехи по PRD производны от расписания: система находит первую задачу нужного
- * типа, её дата и есть маркер, и при ребалансе плана маркер едет вместе с ней.
+ * In the PRD the milestones are derived from the schedule: the system finds the
+ * first task of the relevant type, its date is the marker, and rebalancing the
+ * plan moves the marker with it.
  *
- * Здесь они заданы явно, потому что расписание в этом прототипе есть только на
- * три дня июля, а вехи ложатся на весь диапазон с июня по октябрь. Выводить
- * не из чего. На реальных данных этот массив заменяется выборкой по типу
- * задачи, состав и порядок вех при этом не меняются.
+ * Here they are set explicitly, because the schedule in this prototype covers
+ * three days in July while the milestones span June to October — there is
+ * nothing to derive them from. On real data this array is replaced by a query on
+ * task type; the set and order of milestones do not change.
  */
 export const MILE_MARKERS: MileMarker[] = [
   { id: "translation", label: "Translation starts", date: "2026-07-06" },
@@ -125,7 +126,7 @@ export type Goal =
       section: "LR" | "RC";
       name: string;
       criterion: string;
-      /** Бинарные ворота: каждый вопрос либо чистый, либо нет */
+      /** A binary gate: every question is either clean or it is not. */
       kind: "gate";
       attempts: boolean[];
       needed: number;
@@ -135,8 +136,9 @@ export type Goal =
       name: string;
       criterion: string;
       /**
-       * Бегущее число против фиксированной цели. Три точки, которые требует
-       * stat-point/time-range: с чего начали, где сейчас, куда идём.
+       * A running number against a fixed goal. The three points
+       * stat-point/time-range asks for: where we started, where we are, where we
+       * are going.
        */
       kind: "clock";
       startSeconds: number;
@@ -145,16 +147,16 @@ export type Goal =
     };
 
 /**
- * Что лежит на полке рельса с самого начала.
+ * What sits on the rail's shelves from the start.
  *
- * Рутина текущей стадии — единственное состояние, в котором полка закладок
- * осмысленна: «run before every set» значит, что к ней возвращаются десятки
- * раз, и держать её в одном клике полезнее, чем каждый раз искать в заметках
- * очередной задачи. Пустая полка вместо этого объясняет механику словами и
- * не показывает ни одной причины ею пользоваться.
+ * The current stage's routine is the one state in which a bookmark shelf earns
+ * its place: "run before every set" means it is returned to dozens of times, and
+ * keeping it one click away beats digging it out of the notes of each next task.
+ * An empty shelf instead explains a mechanic in words and shows no reason to use
+ * it.
  *
- * Здесь это стартовые данные, но выглядит производным: стадия знает свою
- * рутину. Вопрос вынесен их команде в README.
+ * Here this is starting data, but it looks derived: a stage knows its own
+ * routine. The question is raised with their team in the README.
  */
 export const INITIAL_BOOKMARKS = ["r-translation"];
 
@@ -169,9 +171,9 @@ export const GOALS: Goal[] = [
   },
   {
     section: "RC",
-    /* Цель без порога в названии: 25:00 и так стоит в стате как Goal
-       и повторяется в критерии. Трижды одно и то же — и название
-       переносилось на две строки. */
+    /* A goal with no threshold in the name: 25:00 already stands in the stat as
+       Goal and repeats in the criterion. Three times over — and the name wrapped
+       onto two lines. */
     name: "Translation + CLIR",
     criterion: "Translate a full RC passage with CLIR in under 25:00",
     kind: "clock",
@@ -189,7 +191,7 @@ export type PrepStage = {
   metric: string;
   done: number;
   total: number;
-  /** Стадия ещё не началась — показываем дату старта вместо пустой шкалы */
+  /** The stage has not started — show its start date instead of an empty meter. */
   startsOn?: string;
 };
 
@@ -201,7 +203,7 @@ export const PREP_MAP: PrepStage[] = [
   { id: "perform", name: "Perform", metric: "Mindsets Nourished", done: 0, total: 7, startsOn: "2026-09-21" },
 ];
 
-/* ---------- Дни ---------- */
+/* ---------- Days ---------- */
 
 export const DAYS: Record<string, Day> = {
   "2026-07-14": {
@@ -392,10 +394,10 @@ export const DAYS: Record<string, Day> = {
 };
 
 /**
- * Дни списком, по возрастанию даты. `DAYS` — словарь для перехода по дате,
- * `ALL_DAYS` — обход. Раньше обходили ключи и на каждом шаге лезли обратно в
- * словарь: строгий индекс-доступ такой обход считает возможным промахом, и
- * считает справедливо — ключ приходит строкой, а строка бывает любой. У самого
- * дня дата лежит в поле `date`, так что ключ из обхода не нужен вовсе.
+ * The days as a list, by ascending date. `DAYS` is the lookup by date,
+ * `ALL_DAYS` is for iteration. Iterating the keys and reaching back into the
+ * dictionary on every step reads to a strict index type as a possible miss, and
+ * fairly so — a key arrives as a string, and a string can be anything. The day
+ * itself carries its date in a `date` field, so the key is not needed at all.
  */
 export const ALL_DAYS: Day[] = Object.values(DAYS).sort((a, b) => a.date.localeCompare(b.date));

@@ -1,36 +1,36 @@
 import { cn } from "@/lib/cn";
 
 /**
- * Сегментный индикатор Prep Map по компоненту `Progress Bar/ticked items`
- * со страницы Progress.
+ * The Prep Map segmented meter, built to `Progress Bar/ticked items` from the
+ * Progress page.
  *
- * Числа компонента: `Base` 34×36, радиус 6, обводка 2.65 внутрь. Элемент
- * ряда 33.625 с гэпом **минус четыре**, то есть шаг 29.625 — сегменты
- * налезают друг на друга на 4.4, и соседние обводки сливаются в один
- * разделитель. Проверяется по ширине ряда: 7 × 29.625 + 34 = 241.4 при
- * заявленных 241×42.
+ * The component's numbers: `Base` 34x36, radius 6, 2.65 inside border. A row
+ * item is 33.625 at a gap of **minus four**, that is a step of 29.625 — the
+ * segments overlap by 4.4 and neighbouring borders merge into a single divider.
+ * It checks out against the row width: 7 x 29.625 + 34 = 241.4 against the
+ * stated 241x42.
  *
- * Шаг считается от ширины сегмента, а не от габарита с тенью: тень лежит
- * поверх соседа и в горизонтальный шаг не входит.
+ * The step is computed from the segment width, not from the gauge including the
+ * shadow: the shadow lies over the neighbour and does not enter the horizontal
+ * step.
  *
- * Состояния различаются заливкой и глубиной:
- *   Complete    — turquoise, тень 3/3
- *   In-Progress — seafoam, тень 3/3
- *   Current     — chartreuse, тень 3/3
- *   Default     — sand, тени нет, сегмент сдвинут на её место (+3/+3)
+ * The states differ by fill and by depth:
+ *   Complete    — turquoise, 3/3 shadow
+ *   In-Progress — seafoam, 3/3 shadow
+ *   Current     — chartreuse, 3/3 shadow
+ *   Default     — sand, no shadow, the segment moved into its place (+3/+3)
  *
- * То есть залитые сегменты приподняты, а пустые стоят плоско ровно там, где
- * у залитых лежит тень. Ряд поэтому не скачет по базовой линии.
+ * So filled segments are raised while empty ones sit flat exactly where a filled
+ * one's shadow lies. That is what keeps the row from jumping off its baseline.
  *
- * Внутри залитого сегмента ничего не нарисовано: заливка и есть сообщение.
- * Раньше здесь стояла белая галочка — её в `Progress Bar/ticked items` нет,
- * а наклонённая галочка в этой системе принадлежит отметке человеком
- * (`Checkbox` 8°, `Position_Icon` 9.72°). Ячейка Prep Map не отмечается,
- * она зарабатывается.
+ * Nothing is drawn inside a filled segment: the fill is the message. A white
+ * tick does not exist in `Progress Bar/ticked items`, and in this system a
+ * tilted tick belongs to something a person marks (`Checkbox` 8°,
+ * `Position_Icon` 9.72°). A Prep Map cell is not ticked, it is earned.
  *
- * На живом экране My Plan сегменты мельче тридцати четырёх: продукт масштабирует
- * их под ширину рельса. Здесь то же самое — пропорции компонента сохраняются,
- * габарит задаётся на месте использования.
+ * On the live My Plan screen the segments are smaller than thirty-four: the
+ * product scales them to the rail width. The same here — the component's
+ * proportions are kept and the gauge is set at the point of use.
  */
 
 export type SegmentState = "complete" | "in-progress" | "current" | "default";
@@ -39,20 +39,20 @@ type SegmentMeterProps = {
   done: number;
   total: number;
   /**
-   * Чем помечать следующий незакрытый сегмент. `in-progress` — заливка
-   * seafoam, `current` — chartreuse, `none` — ничем.
+   * How to mark the next unclosed segment. `in-progress` fills it seafoam,
+   * `current` chartreuse, `none` leaves it alone.
    *
-   * В компоненте есть оба состояния, но chartreuse на этом экране уже занят
-   * первичным действием и активной вкладкой. Третья роль сделала бы акцент
-   * бессмысленным, поэтому здесь стоит seafoam.
+   * The component has both states, but chartreuse on this screen is already
+   * spoken for by the primary action and the active tab. A third role would make
+   * the accent meaningless, so seafoam is used here.
    */
   next?: "in-progress" | "current" | "none";
-  /** Ширина сегмента. В компоненте 34, всё остальное считается от неё. */
+  /** Segment width. The component's own is 34 and everything else follows from it. */
   size?: number;
   className?: string;
 };
 
-/** Все производные размеры компонента как доли от ширины сегмента 34. */
+/** Every derived size of the component as a fraction of the 34 segment width. */
 const unit = (w: number) => ({
   w,
   h: (w * 36) / 34,
@@ -83,12 +83,12 @@ export function SegmentMeter({
   );
 
   /*
-   * Сдвиг плоского сегмента на место тени имеет смысл, только когда в ряду
-   * есть приподнятый: тогда ряд читается ступенькой. Ряд целиком из Default —
-   * стадия, которая ещё не началась, — в компоненте не предусмотрен, и сдвиг
-   * там ни от чего не отступает: вся шкала просто съезжает вниз-вправо на
-   * два с лишним пикселя. В рельсе пять таких шкал одна под другой, и три из
-   * них уезжали относительно двух верхних.
+   * Moving a flat segment into the shadow's place only makes sense when the row
+   * has a raised one: then the row reads as a step. A row entirely of Default —
+   * a stage that has not started — is not something the component allows for,
+   * and there the shift steps back from nothing: the whole meter simply slides
+   * down-right by a couple of pixels. The rail holds five such meters one under
+   * another, and three of them drifted against the two above.
    */
   const flatOffset = states.some((s) => s !== "default") ? u.lift : 0;
 
@@ -104,7 +104,7 @@ export function SegmentMeter({
             style={{
               width: u.w + u.lift,
               height: u.h + u.lift,
-              /* отрицательный gap в CSS недопустим, налезание задаётся отступом */
+              /* A negative gap is not valid CSS; the overlap is set as a margin. */
               marginLeft: i === 0 ? 0 : u.pitch - (u.w + u.lift),
             }}
           >

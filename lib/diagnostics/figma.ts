@@ -1,14 +1,15 @@
 import type { AuditResult, Row } from "./types";
 
 /**
- * Сверка экрана с дизайн-системой Loophole.
+ * Reconciling the screen with the Loophole design system.
  *
- * Все ожидаемые значения сняты из файла Figma `LO Design System (FSH Update)`
- * через REST API: absoluteBoundingBox, паддинги, гэпы, заливки, обводки,
- * эффекты с проверкой видимости и позиции слоёв относительно родителя.
+ * Every expected value was read out of the Figma file `LO Design System (FSH
+ * Update)` through the REST API: absoluteBoundingBox, paddings, gaps, fills,
+ * strokes, effects with their visibility checked, and layer positions relative
+ * to the parent.
  *
- * Смысл в том, чтобы «сделано по их дизайн-системе» было проверяемым
- * утверждением, а не ощущением.
+ * The point is to make "built to their design system" a checkable claim rather
+ * than a feeling.
  */
 
 const round2 = (v: number) => Math.round(v * 100) / 100;
@@ -21,7 +22,7 @@ const rgb = (v: string) => {
   return "#" + [1, 2, 3].map((i) => Number(m[i]).toString(16).padStart(2, "0")).join("");
 };
 
-/* letter-spacing: normal вычисляется в NaN, а в системе это ноль. */
+/* letter-spacing: normal computes to NaN, and in this system that means zero. */
 const tracking = (v: string) => (v === "normal" ? 0 : px(v));
 
 const text = (el: Element) => {
@@ -51,8 +52,8 @@ const box = (el: Element): Box => {
     radius: s.borderRadius.startsWith("1.6") ? "full" : px(s.borderTopLeftRadius),
     border: px(s.borderTopWidth),
     fill: rgb(s.backgroundColor),
-    /* Разделять по запятой нельзя: она есть внутри rgb(). Режем только
-       перед началом следующей тени. */
+    /* Splitting on a comma is not safe — rgb() contains one. Cut only before
+       the start of the next shadow. */
     shadow:
       s.boxShadow === "none"
         ? "none"
@@ -63,7 +64,7 @@ const box = (el: Element): Box => {
   };
 };
 
-/** Бросает, если элемента нет: строка проверки честно станет «NOT FOUND». */
+/** Throws when the element is missing, so the check row honestly reads NOT FOUND. */
 function must(el: Element | null | undefined): Element {
   if (!el) throw new Error("not found");
   return el;
@@ -72,8 +73,8 @@ function must(el: Element | null | undefined): Element {
 const find = {
   header: () => must(document.querySelector("header")),
   pageTitle: () => must(document.querySelector("header h1")),
-  /* Внутри `main`: у панели дизайн-системы свой tablist, и без этой
-     оговорки сверка ловила бы его. */
+  /* Scoped to `main`: the design system panel has a tablist of its own, and
+     without this the reconciliation would pick it up. */
   tabsShell: () => must(document.querySelector("main [role=tablist]")),
   tabSelected: () => must(document.querySelector("main [role=tablist] [aria-selected=true]")),
   datePill: () => must(document.querySelector("main [aria-haspopup=menu]")),
@@ -91,8 +92,8 @@ const find = {
         (s) => s.childElementCount === 0 && s.textContent !== null && s.textContent.length > 8,
       ),
     ),
-  /* Только листовой span: у обёрток textContent тоже содержит время,
-     а цвет у них унаследованный. Тот же приём, что и в taskTitle. */
+  /* Leaf spans only: a wrapper's textContent also contains the time, and its
+     colour is inherited. Same trick as taskTitle. */
   taskTime: () =>
     must(
       [...find.taskRow().querySelectorAll("span")].find(
@@ -122,7 +123,7 @@ const svgWidth = (el: Element) => Math.round(must(el.querySelector("svg")).getBo
 
 type Check = [source: string, property: string, actual: () => unknown, expected: unknown | (() => unknown)];
 
-/* Ожидаемое. Источник указан у каждой строки. */
+/* The expected values. Each row names its source. */
 const CHECKS: Check[] = [
   ["Page header_V2 · Headings", "padding", () => box(find.header()).pad, "48/56/32/56"],
   ["Page header_V2 · Headings", "background", () => box(find.header()).fill, "#e2f3f2"],
@@ -143,10 +144,10 @@ const CHECKS: Check[] = [
 
   ["Progress · Progress", "size incl. shadow", () => Math.round(find.donut().getBoundingClientRect().width), 42],
 
-  /* Стрелки пейджинга. Не `Page control`, хотя имя зовёт: тот встречается
-     только внутри `Carousels` и `.Page Horizontal Scroll`. Пейджер собран
-     компонентом `Pagination`, и там по краям стоит `Icon Button` размера
-     Default. В покое тени у него нет — она приходит на ховер. */
+  /* Paging arrows. Not `Page control`, whatever the name suggests: that one
+     appears only inside `Carousels` and `.Page Horizontal Scroll`. Their pager
+     is built with `Pagination`, and the arrows at its ends are `Icon Button` at
+     size Default. At rest it carries no shadow — the shadow arrives on hover. */
   ["Icon Button · Buttons", "size", () => `${box(find.pagerArrow()).w}×${box(find.pagerArrow()).h}`, "38×38"],
   ["Icon Button · Buttons", "border", () => box(find.pagerArrow()).border, 2],
   ["Icon Button · Buttons", "shadow at rest", () => box(find.pagerArrow()).shadow, "none"],
@@ -156,55 +157,56 @@ const CHECKS: Check[] = [
   ["Section Collapse · Buttons", "border", () => box(find.chevronOpen()).border, 2],
   ["Section Collapse · Buttons", "expanded shadow", () => box(find.chevronOpen()).shadow, "rgb(23, 23, 18) 2px 2px 0px 0px"],
 
-  /* Кнопка запуска — тот же `Icon Button`, ужатый инстанс 24 с иконкой 16,
-     как он стоит в самом `Tandem_Plan_Item`. */
+  /* The launch control is the same `Icon Button`, the instance shrunk to 24 with
+     a 16 icon, exactly as it sits inside `Tandem_Plan_Item`. */
   ["Icon Button · Tandem_Plan", "launch size", () => `${box(find.launch()).w}×${box(find.launch()).h}`, "24×24"],
   ["Icon Button · Tandem_Plan", "launch border", () => box(find.launch()).border, 2],
   ["Icon Button · Tandem_Plan", "launch icon", () => svgWidth(find.launch()), 16],
 
-  /* Нижний пейджинг — `Button / Default / Small`, и обе кнопки проверяют
-     разные положения иконки: у ведущей паддинг 12 слева и 16 справа,
-     у замыкающей зеркально. Иконка в системе всегда ближе к краю, чем
-     текст, — от этого кнопка и остаётся оптически симметричной. */
+  /* The bottom pager is `Button / Default / Small`, and the two buttons check
+     the two icon placements: the leading one has 12 of padding on the left and
+     16 on the right, the trailing one mirrors it. In this system the icon always
+     sits closer to the edge than the text, which is what keeps the button
+     optically symmetrical. */
   ["Button · Buttons", "day paging back, leading icon", () => `${box(find.dayPagerPrev()).h}·${box(find.dayPagerPrev()).pad}`, "38·0/16/0/12"],
   ["Button · Buttons", "day paging forward, trailing icon", () => `${box(find.dayPagerNext()).h}·${box(find.dayPagerNext()).pad}`, "38·0/12/0/16"],
 
   ["Tandem_Plan_Item · Tandem_Plan", "row height", () => box(find.taskRow()).h, 32],
   ["Tandem_Plan_Item · Tandem_Plan", "row padding", () => box(find.taskRow()).pad, "4/20/4/20"],
-  /* Два осознанных расхождения с компонентом, оба записаны здесь ожидаемым
-     значением, а не спрятаны.
+  /* Two deliberate departures from the component, both recorded here as the
+     expected value rather than hidden.
 
-     Заголовок в компоненте не увидеть: единственный видимый текстовый слой
-     строки — время, а заголовок выключен и лежит внутри свёрнутого
-     контейнера. Опорой взят `checkbox-list-item`, их же строка чеклиста:
-     первый уровень там Semi Bold, второй Medium. Строка задачи внутри
-     группы — первый уровень, отсюда w600 вместо w500. На пятисотом
-     заголовок оказывался легче лид-инов собственной заметки.
+     The title cannot be seen in the component: the only visible text layer of
+     the row is the time, while the title is switched off inside a collapsed
+     container. The basis is `checkbox-list-item`, their own checklist row, where
+     the first level is Semi Bold and the second Medium. A task row inside a
+     group is first level, hence w600 rather than w500.
 
-     Время в компоненте залито сырым `#aaaaaa`: во всём файле этот хекс
-     стоит на двух слоях и оба раза без переменной и без стиля. Это обрыв
-     привязки, а не решение, и стоил он 2.24:1 — мимо AA при любом кегле.
-     Взят `text-secondary` из их семантического слоя, то есть pewter-hc. */
+     The time in the component is filled with a raw `#aaaaaa`: across the whole
+     file that hex sits on two layers, unbound both times. That is a broken
+     binding, not a decision, and it cost 2.24:1 — short of AA at any size.
+     `text-secondary` from their semantic layer is used instead, that is
+     pewter-hc. */
   ["Tandem_Plan_Item · Tandem_Plan", "heading", () => text(find.taskTitle()), "14/20 w600 ls -0.25"],
   ["Tandem_Plan_Item · Tandem_Plan", "time colour", () => rgb(getComputedStyle(find.taskTime()).color), "#575752"],
 
-  /* Веха на стрипе — `button.tool-btn` из `Toolbar_Movable`: круг с полным
-     радиусом, заливка-пометка в кольце soft-black. Габарит 8, обводка из
-     свойства инстанса — `stroke weight/2`, то есть 1. */
+  /* The milestone on the strip is `button.tool-btn` from `Toolbar_Movable`: a
+     full-radius circle, a highlight fill inside a soft-black ring. The gauge is
+     8 and the ring comes from the instance property `stroke weight/2`, that is 1. */
   ["button.tool-btn · Toolbar_Movable", "milestone size", () => `${box(find.mileBead()).w}×${box(find.mileBead()).h}`, "8×8"],
   ["button.tool-btn · Toolbar_Movable", "milestone border", () => box(find.mileBead()).border, 1],
 
-  /* Сегменты в рельсе масштабированы: семь штук по 34 туда не влезают.
-     Пропорции компонента при этом сохраняются, поэтому ожидаемое
-     считается от отрисованной ширины. */
+  /* The rail segments are scaled: seven at 34 do not fit. The component's
+     proportions are kept, so the expected value is computed from the rendered
+     width. */
   ["Progress bar/Ticks · Progress", "radius", () => box(find.segment()).radius, () => round2((6 * box(find.segment()).w) / 34)],
   [
     "Progress bar/Ticks · Progress",
     "filled cell shadow",
     () => box(find.segment()).shadow,
     () => {
-      /* Округляем и ожидаемое, и отрисованное: браузер печатает тень
-         с полной точностью, а масштаб даёт дробь. */
+      /* Round both the expected and the rendered: the browser prints the shadow
+         at full precision and the scale produces a fraction. */
       const lift = (3 * box(find.segment()).w) / 34;
       return `rgb(23, 23, 18) ${lift}px ${lift}px 0px 0px`;
     },

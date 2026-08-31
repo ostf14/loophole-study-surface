@@ -9,23 +9,24 @@ import { PREP_MAP, type Embed } from "@/lib/plan-data";
 import { formatShort } from "@/lib/plan";
 
 /**
- * Левый рельс, перенесённый с текущей страницы: карточки Prep Map,
- * My Workouts, My Routines, Video Course Review.
+ * The left rail, carried over from the live page: Prep Map cards, My Workouts,
+ * My Routines, Video Course Review.
  *
- * Селектора планов здесь нет, хотя PRD его требует. Он дублировал стрип
- * целиком: те же пять планов, тот же порядок, тот же признак текущего —
- * только без пропорций, дат, вех и маркера сегодня. Собственных функций у
- * него было две, и обе отпали. Тихая строка «план можно поменять» — пересказ
- * словами кнопки Adjust Plan, которая стоит на том же экране. Переход «на
- * первый невыполненный день» не наблюдаем: четыре плана из пяти в будущем,
- * там ничего не выполнено, и он совпадает с первым днём; у текущего плана он
- * приводит на сегодня, то есть туда, где студент уже стоит. Ту же работу
- * лучше делает Continue в шапке — он доводит до самой задачи, а не до даты.
+ * The plan selector the PRD asks for is not here. It duplicated the strip
+ * entirely — the same five plans, the same order, the same marker on the current
+ * one, only without the proportions, the dates, the milestones or the today
+ * marker. It owned two functions of its own and both fall away. The quiet line
+ * "you can change your plan" restates the Adjust Plan button standing on the
+ * same screen. The jump to "the first incomplete day" is not observable: four of
+ * the five plans are in the future, nothing in them is done, so it coincides
+ * with the first day; on the current plan it lands on today, where the student
+ * already is. Continue in the header does that job better — it goes to the task
+ * itself, not to a date.
  *
- * Пустые состояния стадий показывают дату старта, подтянутую из фаз стрипа:
- * ноль в шкале читается как сломанный интерфейс, дата — как «ещё не время».
- * Сами сегменты при этом рисуются у всех пяти, как на живом экране My Plan,
- * поэтому карточки одной высоты и рельс читается лестницей.
+ * The empty state of a stage shows its start date, pulled from the strip's
+ * phases: a zero in the meter reads as a broken interface, a date reads as "not
+ * yet". The segments are drawn for all five, as on the live My Plan page, which
+ * also keeps the cards a single height so the rail reads as a ladder.
  */
 
 type LeftRailProps = {
@@ -49,22 +50,22 @@ export function LeftRail({ workouts, routines }: LeftRailProps) {
           empty="Bookmark routines from your plan to add them to My Routines."
         />
       </Section>
-      {/* Черта отделяет то, что ведёт наружу. Выше — инструменты этого плана:
-          Prep Map и полки закладок. Video Course Review — ссылки в другой
-          продукт и запертая за его покупкой фича, к плану отношения не имеет.
-          Без черты все три раздела читались одним потоком, как три
-          равноправных прибора.
+      {/* The rule separates what leads out of the product. Above it are this
+          plan's instruments: the Prep Map and the bookmark shelves. Video Course
+          Review is links into another product and a feature gated behind buying
+          it — nothing to do with the plan. Without the rule all three sections
+          read as one stream, as three instruments of equal standing.
 
-          Толщина 2px: линий тоньше в системе не существует, это её
-          единственный законный вес. Под чертой 32 — тот же отступ, что и над
-          ней даёт гэп рельса, так что черта стоит по центру разрыва. */}
+          Weight 2px: the system has no thinner line, that is its only legitimate
+          weight. 32 below the rule matches what the rail's gap gives above it,
+          so the rule sits in the middle of the break. */}
       <Section title="Video Course Review" className="border-t-[2px] border-soft-black pt-8">
         <ul className="flex flex-col gap-2 text-body-s">
-          {/* py-1 растит цель нажатия с 17 до 25 и удовлетворяет WCAG 2.5.8
-              (24×24). У строчного элемента вертикальный паддинг не двигает
-              строку — он только расширяет область попадания, так что ритм
-              списка остаётся прежним. Ссылка внутри заметки этого не требует:
-              там действует исключение для ссылок внутри текста. */}
+          {/* py-1 grows the tap target from 17 to 25 and satisfies WCAG 2.5.8
+              (24x24). On an inline element vertical padding does not move the
+              line — it only widens the hit area — so the rhythm of the list is
+              unchanged. The link inside a note needs none of this: the exception
+              for links within text applies there. */}
           <li>
             <a href="#" className="lh-link py-1 font-semibold">
               My Saved Videos
@@ -75,9 +76,9 @@ export function LeftRail({ workouts, routines }: LeftRailProps) {
               My History
             </a>
           </li>
-          {/* lh-link-lock — их штатный механизм гейтинга платных фич.
-              Ряд держится в одну строку: размытый текст в две читался
-              как артефакт рендера, а не как закрытая функция. */}
+          {/* lh-link-lock is the product's own mechanism for gating paid
+              features. The row is held to one line: blurred text over two lines
+              read as a render artefact rather than a locked feature. */}
           <li className="flex flex-col gap-1 text-pewter-hc">
             <span className="flex items-center gap-2">
               <Lock className="size-[14px] shrink-0" strokeWidth={2.5} />
@@ -91,7 +92,7 @@ export function LeftRail({ workouts, routines }: LeftRailProps) {
   );
 }
 
-/** Букмарки одного вида. Пустое состояние — дословная строка из PRD. */
+/** Bookmarks of one kind. The empty state is the PRD's own wording, verbatim. */
 function Bookmarked({ items, empty }: { items: Embed[]; empty: string }) {
   if (!items.length) return <Empty>{empty}</Empty>;
   return (
@@ -111,13 +112,12 @@ function PrepMap() {
     <Section
       title="Prep Map"
       /*
-       * Lookup — «the Lookup control» из PRD, то есть действие, а не переход.
-       * Раньше он был размечен `lh-link`: подчёркнутый turquoise-hc, то есть
-       * стилем ссылки. После этой правки `lh-link` на экране значит ровно
-       * одно — уход наружу: «My Saved Videos», «My History» и ссылка внутри
-       * заметки. Действие в рельсе несёт `Button` варианта ghost: у него нет
-       * ни рамки, ни заливки, ни движения — только смена фона на ховер, — и
-       * рядом с заголовком секции он не спорит с ним весом.
+       * Lookup is "the Lookup control" from the PRD, that is an action rather
+       * than a link out. `lh-link` on this screen therefore means exactly one
+       * thing — leaving — and it carries "My Saved Videos", "My History" and the
+       * link inside a note. An action in the rail is `Button` in its ghost
+       * variant: no border, no fill, no travel, only a background change on
+       * hover, so it does not compete with the section heading beside it.
        */
       action={
         <Button
@@ -132,10 +132,10 @@ function PrepMap() {
     >
       <div className="flex flex-col gap-3" data-note="prep-map">
         {PREP_MAP.map((stage) => (
-          /* Один порядок для всех пяти: заголовок, под ним строка состояния,
-             под ней сегменты. Раньше метрика стояла справа от заголовка и не
-             влезала в ширину рельса — переносилась на две строки, и высоты
-             карточек скакали от 74 до 103. */
+          /* One order for all five: heading, state line beneath it, segments
+             beneath that. With the metric to the right of the heading it did not
+             fit the rail width, wrapped to two lines, and card heights jumped
+             between 74 and 103. */
           <Card key={stage.id} hover="xs" className="flex flex-col gap-2 px-4 py-3">
             <span className={cn("text-body-small font-extrabold", stage.startsOn && "text-pewter-hc")}>
               {stage.name}
@@ -147,15 +147,15 @@ function PrepMap() {
                 : `${stage.done}/${stage.total} ${stage.metric}`}
             </span>
 
-            {/* Сегменты показываются у всех пяти стадий, как на живом экране
-                My Plan: там у незапущенных стоят семь пустых квадратов.
-                Строка с датой старта при этом остаётся — она объясняет ноль,
-                чтобы он не читался как сломанный интерфейс. */}
+            {/* Segments are shown on all five stages, as on the live My Plan
+                page, where an unstarted stage carries seven empty squares. The
+                start-date line stays with them: it explains the zero so it does
+                not read as a broken interface. */}
             <SegmentMeter
               done={stage.done}
               total={stage.total}
-              /* Метки следующего сегмента нет: seafoam рядом с sand не
-                 читается, а границу пройденного и так показывает заливка. */
+              /* No marker on the next segment: seafoam does not read against
+                 sand, and the fill already shows where progress ends. */
               next="none"
               size={26}
             />

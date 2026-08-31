@@ -2,38 +2,41 @@ import { Flag, Minus, Plus } from "lucide-react";
 import { cn } from "@/lib/cn";
 
 /**
- * stat-point/time-range — бегущее значение против фиксированной цели.
- * Снят с Figma, вариант Display=Default в том виде, в каком он стоит внутри
- * карточки Stat point: трек без заливки, Current на seafoam-lc.
+ * stat-point/time-range — a running value against a fixed goal. Read from
+ * Figma, variant Display=Default as it sits inside the Stat point card: a sand
+ * track with a border, Current filled turquoise-hc.
  *
- * Анатомия: строка меток 18, гэп 8, трек 24 с фиксированной высотой. Средняя
- * капсула 32 и выступает за трек на 4 сверху и снизу, трек её не обрезает.
+ * Anatomy: label row 18, gap 8, a track of fixed height 24. The middle capsule
+ * is 32 and overhangs the track by 4 top and bottom; the track does not clip it.
  *
- * Дельта: 6 слева, иконка 12, гэп 2, число, 8 справа — итого 54. Рамка 2px
- * только со стороны центра, скругление только с внешней. Разделители вокруг
- * Current рисуются рамками соседей: у самого Current ни рамки, ни скругления,
- * пока он зажат между дельтами. Оставшись один, он становится пилюлей.
+ * A delta: 6 on the left, a 12 icon, gap 2, the number, 8 on the right — 54 in
+ * all. A 2px border on the side facing the centre only, rounding on the outer
+ * side only. The dividers around Current are drawn by its neighbours' borders:
+ * Current itself has neither border nor rounding while it is held between two
+ * deltas. Left on its own it becomes a pill.
  *
- * Дети капсулы тянутся по её внутренней высоте через self-stretch, а не задают
- * свою: с фиксированной высотой 32 они вылезали бы за padding-box на 2px и
- * заливка Current закрашивала бы рамку капсулы сверху и снизу.
+ * The capsule's children stretch to its inner height with self-stretch rather
+ * than setting their own: at a fixed height of 32 they would overflow the
+ * padding box by 2px and the Current fill would paint over the capsule's border
+ * top and bottom.
  *
- * Дельты в макете заданы текстовыми свойствами, компонент их не считает.
- * Здесь так же: значения приходят готовыми строками, потому что формат
- * зависит от метрики — минуты, mm:ss, баллы.
+ * Deltas in the file are text properties; the component does not compute them.
+ * The same here: values arrive as ready strings, because the format depends on
+ * the metric — minutes, mm:ss, points.
  */
 
 type TimeRangeProps = {
   start: string;
   current: string;
   goal: string;
-  /** Разница до старта. Вместе с deltaToGoal включает вариант Default. */
+  /** Difference from the start. With deltaToGoal it turns on the Default variant. */
   deltaToStart?: string;
-  /** Разница до цели. Без пары дельт рендерится вариант No Deltas. */
+  /** Difference from the goal. Without both deltas the No Deltas variant renders. */
   deltaToGoal?: string;
   /**
-   * Текущее значение хуже стартового. Компонент нарисован с зашитым минусом,
-   * то есть предполагает движение к цели; при регрессии знак переворачивается.
+   * The current value is worse than the starting one. The component is drawn with
+   * a hard-coded minus, that is it assumes movement toward the goal; on a
+   * regression the sign flips.
    */
   regressed?: boolean;
   className?: string;
@@ -77,21 +80,21 @@ export function TimeRange({
   return (
     <div className={cn("flex w-full flex-col gap-2", className)}>
       {/*
-       * Подписи держатся краёв карточки, а не краёв текста внутри дорожки.
-       * Start встаёт вровень с тегом секции и с названием цели, Goal вместе
-       * с флажком — вровень с правым краем той же колонки. Компонент вставляет
-       * подписи на восемь внутрь, но там над дорожкой ничего нет; у нас над
-       * ней тег, под ней заголовок, и сдвинутая на одиннадцать строка делала
-       * левый край карточки рваным.
+       * The labels hold the card's edges, not the edges of the text inside the
+       * track. Start lines up with the section tag and the goal's name; Goal,
+       * with its flag, lines up with the right edge of the same column. The
+       * component insets the labels by eight, but nothing sits above the track
+       * there; here a tag sits above it and a heading below, and a row shifted by
+       * eleven left the card's left edge ragged.
        *
-       * Current при этом строго по центру, и это держится само: крайние
-       * элементы в обеих строках берут по равной доле остатка, средний идёт
-       * по содержимому — значит его центр равен центру контейнера, каким бы
-       * ни было содержимое и чему бы ни равнялся паддинг.
+       * Current stays exactly centred, and that holds by construction: the outer
+       * items in both rows take an equal share of the remainder while the middle
+       * one is sized by its content — so its centre equals the container's centre
+       * whatever the content is and whatever the padding comes to.
        *
-       * Раньше обе строки стояли на `justify-between` с разными паддингами
-       * и разной шириной элементов. Совпадение центров ничем не обеспечивалось:
-       * Current уезжал влево от своей капсулы на 6.5.
+       * With both rows on `justify-between` at different paddings and different
+       * item widths, nothing guaranteed the centres would agree: Current sat 6.5
+       * to the left of its own capsule.
        */}
       <div className="flex h-[18px] items-center">
         <span className="flex-1 text-caption-medium font-semibold text-pewter-hc">Start</span>
@@ -102,13 +105,13 @@ export function TimeRange({
         </span>
       </div>
 
-      {/* Трек: 290×24, радиус полный, обводка 2, заливка sand — как в
-          компоненте. Раньше был прозрачным. */}
+      {/* The track: 290x24, full radius, 2px border, filled sand — as in the
+          component. */}
       <div className="flex h-6 items-center rounded-full border-[2px] border-soft-black bg-sand px-px py-1">
-        {/* Start и Goal лежат прямо на треке: у `number-of-items` в компоненте
-            задан strokeWeight 2, но краски обводки нет и заливки нет — то есть
-            ни рамки, ни фона, только паддинг 4/8. Число без проверки того,
-            есть ли чем его отрисовать, ничего не значит. */}
+        {/* Start and Goal sit directly on the track: `number-of-items` in the
+            component carries strokeWeight 2, but there is no stroke paint and no
+            fill — so no border and no background, only 4/8 of padding. A number
+            means nothing without checking there is anything to draw with. */}
         <span className="flex h-6 flex-1 items-center px-2 text-caption-medium font-semibold text-soft-black">
           {start}
         </span>
@@ -117,9 +120,9 @@ export function TimeRange({
           {withDeltas ? (
             <Delta value={deltaToStart!} side="start" sign={regressed ? "plus" : "minus"} />
           ) : null}
-          {/* Current залит turquoise-hc, как в компоненте, а не мятой.
-              Текст на нём stark-white: 5.05:1, проходит AA, тогда как
-              soft-black дал бы 3.56:1 и провалил. */}
+          {/* Current is filled turquoise-hc as in the component. The text on it
+              is stark-white: 5.05:1, which passes AA, where soft-black would give
+              3.56:1 and fail. */}
           <span
             className={cn(
               "flex items-center self-stretch bg-turquoise-hc px-2 text-caption-medium font-extrabold text-stark-white",

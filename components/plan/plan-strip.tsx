@@ -6,41 +6,36 @@ import { MILE_MARKERS, PHASES, PLAN, type Phase } from "@/lib/plan-data";
 import { formatShort, phaseWidth, planFraction } from "@/lib/plan";
 
 /**
- * Plan strip. Готового компонента под него в системе нет, но есть язык, на
- * котором такие полосы у них нарисованы, — `Progress bar/long-bar` со страницы
- * Progress. Стрип собран на нём: дорожка радиусом 8 с заливкой sand, обводкой
- * 2.647 и жёсткой тенью, разделители 2×14 и заполнение со своей тенью 3/3.
+ * Plan strip. The system has no component for this, but it has the language
+ * such bars are drawn in: `Progress bar/long-bar` from the Progress page. The
+ * strip is built on it — a track of radius 8 filled sand, a 2.647 border and a
+ * hard shadow, 2px separators, and a fill.
  *
- * Единственное, чему компонент пришлось научить, — неравным делениям: у него
- * слоты одинаковой ширины, а PRD требует сегменты по диапазону дат («each
- * sized by its date range»), чтобы было видно, что Tandem марафон, а Perform
- * спринт. Разделители в компоненте позиционные, так что это одна пропорция.
+ * The one thing the component had to be taught is unequal divisions. Its slots
+ * are all the same width, while the PRD sizes each segment by its date range
+ * ("each sized by its date range") so that Tandem reads as the marathon and
+ * Perform as the sprint. Separators in the component are positional, so this
+ * comes down to a single proportion.
  *
- * Дорожка залита от начала плана до сегодня, и правый край заливки — это
- * и есть маркер сегодня: у заполнения своя обводка, так что край даёт ровно
- * ту вертикальную линию, которую до этого рисовала отдельная засечка.
- * Отдельной больше нет — две вещи на одном месте.
+ * The track is filled from the start of the plan to today, and the right edge
+ * of that fill is the today marker — no separate tick is needed.
  *
- * Заливка кодирует прошедшее календарное время, а не сделанную работу. Это
- * стоит держать в голове при передаче: `turquoise` тем же цветом залита
- * заработанная ячейка Prep Map, и на одном экране он теперь значит и
- * «заработано усилием», и «прошло само». Компонент заливает именно так,
- * поэтому взято как есть, но если их команда захочет развести смыслы —
- * менять надо цвет заливки, а не убирать её.
+ * The fill encodes elapsed calendar time, not work done. Worth knowing at
+ * handoff: `turquoise` is also the fill of an earned Prep Map cell, so on this
+ * screen the colour means both "earned by effort" and "went by on its own".
+ * That is what the component does, so it is taken as it stands; if the two
+ * meanings need separating, change the fill colour rather than drop the fill.
  *
- * Вехи — `button.tool-btn` из `Toolbar_Movable`: круг с полным радиусом,
- * заливка-пометка и обводка soft-black. Стоят прямо на дорожке. До этого были
- * засечки 2×9 над ней — я их и придумал, и в системе такой формы нет. Бусина
- * на линии заодно кодирует пройденность сама: та, что слева от края заливки,
- * лежит на бирюзовом, та, что справа, — на песочном.
+ * Milestones are `button.tool-btn` from `Toolbar_Movable`: a full-radius circle,
+ * a highlight fill inside a soft-black ring, sitting on the track itself.
  *
- * Границы фаз идут во всю высоту дорожки, встык к обводке. Засечка 2×14
- * посередине читалась меткой на дорожке — тем же, чем веха, — и они
- * сталкивались там, где веха приходится на конец фазы. Линия от края до края
- * читается границей, и бусина на ней садится как отметка на делении.
+ * Phase boundaries run the full height of the track, butting into its border.
+ * A 2×14 tick in the middle reads as a mark on the track — which is what a
+ * milestone is — and the two collide wherever a milestone falls at the end of a
+ * phase. A line from edge to edge reads as a boundary, and a milestone on it
+ * sits like a bead on a division.
  *
- * Высота дорожки 36 — собственная высота компонента. Была 28, и бусина 24
- * на неё не вставала.
+ * Track height 36 is the component's own.
  */
 
 type PlanStripProps = {
@@ -54,7 +49,7 @@ const STRIP_HEIGHT = 36;
 export function PlanStrip({ today, onJumpToPhase, className }: PlanStripProps) {
   const todayPct = planFraction(today);
 
-  /** Границы фаз в долях: накопленная ширина каждой, кроме последней. */
+  /** Phase boundaries as fractions: the running width of each but the last. */
   const boundaries: number[] = [];
   let acc = 0;
   for (const phase of PHASES.slice(0, -1)) {
@@ -64,10 +59,10 @@ export function PlanStrip({ today, onJumpToPhase, className }: PlanStripProps) {
 
   return (
     <div className={cn("flex flex-col", className)} data-note="plan-strip">
-      {/* Над дорожкой — события: Today и Test day, оба `tag` в soft-black.
-          Внутри дорожки, по концам, — границы оси: даты начала плана и
-          экзамена. Разделение по смыслу: сверху что происходит, внутри —
-          докуда тянется ось. Отдельной строки под дорожкой больше нет. */}
+      {/* Above the track, the events: Today and Test day, both `tag` in
+          soft-black. Inside the track, at its ends, the bounds of the axis: the
+          plan's start date and the exam date. The split is by meaning — what
+          happens goes above, how far the axis reaches goes inside. */}
       <div className="relative h-[20px]">
         <span
           className="absolute -translate-x-1/2 text-tag whitespace-nowrap text-soft-black"
@@ -84,21 +79,21 @@ export function PlanStrip({ today, onJumpToPhase, className }: PlanStripProps) {
 
       <div className="relative">
         <ProgressBarLong
-          /* Заливка до сегодня. Её правый край и есть маркер сегодня.
-             Без подъёма: у нас сплошной отрезок, а не ряд слотов. */
+          /* Filled to today; the right edge of the fill is the today marker.
+             Not raised: this is one continuous run, not a row of slots. */
           value={todayPct / 100}
           raised={false}
           separators={boundaries}
           height={STRIP_HEIGHT}
-          /* В компоненте разделители #d9d9d9 — фигмовский серый по умолчанию,
-             ни переменной, ни стиля за ним нет. sand-hc из той же семьи, что
-             и заливка дорожки, и читается на ней. */
+          /* The component's separators are #d9d9d9 — Figma's default grey, with
+             no variable and no style behind it. sand-hc belongs to the same
+             family as the track fill and reads against it. */
           separatorColor="var(--color-sand-hc)"
           separatorSpan="full"
           label={`Plan timeline, ${formatShort(PLAN.start)} to ${formatShort(PLAN.end)}. Today is ${Math.round(todayPct)}% through.`}
         />
 
-        {/* прозрачные кнопки поверх сегментов: клик ведёт на первый день фазы */}
+        {/* Transparent buttons over the segments: a click jumps to the phase's first day. */}
         <div className="absolute inset-x-0 top-0 flex" style={{ height: STRIP_HEIGHT }}>
           {PHASES.map((phase) => (
             <button
@@ -113,18 +108,18 @@ export function PlanStrip({ today, onJumpToPhase, className }: PlanStripProps) {
           ))}
         </div>
 
-        {/* Вехи бусинами на дорожке. Стоят выше прозрачных кнопок фаз,
-            иначе кнопка перехватывала бы наведение и подсказка не всплывала.
-            Клик по бусине ничего не делает намеренно: веха — отметка на оси,
-            а не место, куда можно уйти. */}
+        {/* Milestones as beads on the track, stacked above the phase buttons so
+            the button does not swallow the hover and hide the tooltip. A bead
+            deliberately does nothing on click: a milestone is a mark on the
+            axis, not somewhere to go. */}
         {MILE_MARKERS.map((m) => (
           <MileBead key={m.id} label={m.label} date={m.date} passed={m.date <= today} />
         ))}
 
-        {/* Граничные даты прямо на дорожке. soft-black читается и на заливке
-            (6.8:1), и на пустой части (15.9:1) — поэтому цвет один, и подпись
-            не ломается, если край заполнения проходит сквозь неё. Белый там
-            не годится: 2.64:1. */}
+        {/* The bounding dates sit on the track itself. soft-black reads on the
+            fill (6.8:1) and on the empty part (15.9:1), so one colour serves
+            both and the label survives the fill edge passing through it. White
+            would not: 2.64:1. */}
         <div
           className="pointer-events-none absolute inset-x-0 top-0 flex items-center justify-between px-[10px] text-tag-s text-soft-black"
           style={{ height: STRIP_HEIGHT }}
@@ -157,25 +152,27 @@ export function PlanStrip({ today, onJumpToPhase, className }: PlanStripProps) {
 }
 
 /**
- * Веха на дорожке. PRD требует их отдельно от сегментов: «small markers at the
- * dates the plan reaches its landmarks… hovering shows its name and date».
+ * A milestone on the track. The PRD asks for these separately from the
+ * segments: "small markers at the dates the plan reaches its landmarks…
+ * hovering shows its name and date".
  *
- * Форма — `button.tool-btn`: круг 8×8, радиус полный. Отмечает точку на оси,
- * поэтому и выглядит точкой, а не кнопкой.
+ * The shape is `button.tool-btn`: a full-radius 8×8 circle. It marks a point on
+ * the axis, so it looks like a point rather than a button.
  *
- * Устройство компонента — заливка-пометка в кольце soft-black, `strokeWeight`
- * 2 при габарите 24. Здесь габарит 8, и обводка взята из свойства инстанса —
- * `stroke weight/2`, то есть 1. Кольцо обязательно: белое на песочной дорожке
- * не видно вовсе, 1.13:1.
+ * The component is a highlight fill inside a soft-black ring, `strokeWeight` 2
+ * at a 24 gauge. Here the gauge is 8 and the ring comes from the instance
+ * property — `stroke weight/2`, that is 1. The ring is not optional: white on
+ * the sand track is invisible, 1.13:1.
  *
- * Заливкой бусина кодирует пройденность. Пройденная залита soft-black,
- * непройденная stark-white — то же различение, что у сегментов Prep Map, где
- * заработанная ячейка залита, а будущая пуста. turquoise-lc на пройденной
- * читался бы 2.29:1 против бирюзовой заливки, а белая на песочной — 1.13:1:
- * два бледных пятна, различимых только по фону, то есть ровно по тому
- * признаку, который они и должны были продублировать. soft-black даёт 6.94:1.
+ * The fill carries whether the milestone has passed: passed is soft-black,
+ * still ahead is stark-white — the same distinction the Prep Map segments make,
+ * where an earned cell is filled and a future one is empty. turquoise-lc on a
+ * passed bead would read 2.29:1 against the teal fill, and white on sand reads
+ * 1.13:1: two pale marks told apart only by their background, which is the very
+ * thing the fill was meant to reinforce. soft-black gives 6.94:1.
  *
- * От границ фаз точка отличается формой: те — линии во всю высоту дорожки.
+ * Shape separates a milestone from a phase boundary: those run the full height
+ * of the track.
  */
 function MileBead({ label, date, passed }: { label: string; date: string; passed: boolean }) {
   return (

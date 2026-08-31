@@ -11,53 +11,53 @@ import { TaskIcon } from "./task-icon";
 import { EmbedCard } from "./embed-card";
 
 /**
- * Строка задачи, собранная по `Tandem_Plan_Item`.
+ * A task row, built to `Tandem_Plan_Item`.
  *
- * Снято из Figma: строка 480 × 32, раскладка space-between, паддинг 4 сверху
- * и снизу, 20 слева и справа, рамка только снизу 2px. Ни карточки, ни заливки,
- * ни радиуса — карточка принадлежит группе, строки внутри неё разделены линией.
+ * Read out of Figma: the row is 480 x 32, laid out space-between, padding 4 top
+ * and bottom, 20 left and right, a 2px border on the bottom only. No card, no
+ * fill, no radius — the card belongs to the group, and the rows inside it are
+ * divided by a rule.
  *
- * Левый блок с гэпом 12: чекбокс, затем контент. Внутри контента гэп 20 до
- * времени, а между иконкой типа 16×16 и заголовком — гэп 8. Правый блок с
- * гэпом 20 держит слот тега и кнопку запуска.
+ * The left block has a gap of 12: checkbox, then content. Inside the content the
+ * gap to the time is 20, and between the 16x16 type icon and the title it is 8.
+ * The right block, gap 20, holds the tag slot and the launch button.
  *
- * Время в компоненте залито сырым `#aaaaaa`: ни переменной, ни стиля за ним
- * нет — во всём файле этот хекс стоит на двух слоях, здесь и в
- * `Label_Submenu_Item`, и оба раза несвязанным. Это обрыв привязки в их файле,
- * а не решение. Взят `text-secondary` из их же семантического слоя, то есть
- * pewter-hc: 7.02:1 против 2.24:1, которые не проходят AA даже для крупного
- * кегля.
+ * In the component the time is set in a raw `#aaaaaa` with no variable and no
+ * style behind it — across the whole file that hex sits on two layers, here and
+ * in `Label_Submenu_Item`, unbound both times. That is a broken binding in the
+ * source file, not a decision. `text-secondary` from their own semantic layer is
+ * used instead, which is pewter-hc: 7.02:1 against 2.24:1, and 2.24 fails AA
+ * even at large sizes.
  *
- * Заголовок: 14px, трекинг −1.8%, интерлиньяж 20 — взят из CSS, а не из Figma
- * (160% = 22.4): расхождение шкалы v2.0 задокументировано, прод важнее макета.
- * Вес 600, то есть токен `caption-large` = `Body type/Caption 1`, а не `body-s`
- * с его пятисотым. Опора — `checkbox-list-item`, их собственная строка чеклиста:
- * заголовок первого уровня там Semi Bold (`Body 1`), второго — Medium
- * (`Body 2`). Строка задачи внутри группы — первый уровень.
+ * Title: 14px, tracking -1.8%, line height 20 — taken from the CSS rather than
+ * from Figma (160% = 22.4), because the v2.0 scale disagrees with itself and
+ * production wins. Weight 600, which is the `caption-large` token
+ * (`Body type/Caption 1`), not `body-s` at 500. The basis is
+ * `checkbox-list-item`, their own checklist row: a first-level title there is
+ * Semi Bold (`Body 1`), a second-level one Medium (`Body 2`). A task row inside
+ * a group is first level. At 500 the title came out lighter than the lead-ins of
+ * its own note, which run at 600 — the caption outweighed what it captioned.
  *
- * На пятисотом заголовок оказывался легче, чем лид-ины его же заметки
- * (`LOOKS LIKE:` и соседи идут шестисотым): подпись весила больше того, что
- * подписывает. Теперь заголовок — самое тяжёлое почти чёрное в строке, а
- * заметка вся уходит в pewter-hc.
+ * Component properties: State (Default / Checked), Text, Show Time, Show
+ * optional, Subtext, Show Subtitle. There are two states, and the component
+ * carries no shadow and no intermediate state.
  *
- * Свойства компонента: State (Default / Checked), Text, Show Time,
- * Show optional, Subtext, Show Subtitle. Состояний два, и Checked приглушает
- * строку целиком — ни теней, ни промежуточного состояния в компоненте нет.
+ * Two things are added over the component, both on the PRD's instruction: the
+ * position number and the strike-through on a completed title. The number is
+ * plain text, as on the live My Plan page, rather than a PositionIcon circle.
  *
- * Две вещи добавлены сверх компонента, обе по требованию PRD: номер позиции
- * и зачёркивание выполненного заголовка. Номер сделан простым текстом, как на
- * текущей странице My Plan, а не кружком PositionIcon.
+ * A completed row is dimmed by colour, not by opacity. The component's
+ * `State=Checked` is opacity 0.5 on the whole element, which puts the title at
+ * 3.39:1 and the number and time at 2.28:1 — below AA, and opacity cannot fix
+ * it: pewter-hc only clears 4.5:1 from about alpha 0.83, where nothing looks
+ * dimmed any more. The system's other completed state, `List box` Completed,
+ * recolours instead. That is what is used here: pewter-hc at 7.02:1.
  *
- * Запуск — `Icon Button` ужатым инстансом до 24, ровно как он стоит в
- * `Tandem_Plan_Item`. Какое-то время здесь был голый глиф: я рассудил, что
- * пять обведённых кружков спорят с кружком шеврона группы. Спор был настоящий,
- * но снят он не там — шеврон 46×32 с жёсткой тенью, кнопка запуска 24 без
- * тени, весов у них разные порядки. А голый глиф взамен компонента — это уже
- * не решение, а вкус вместо системы.
- *
- * Глиф внутри оставлен стрелкой вверх-вправо: в компоненте там `Icon/arrow-right`,
- * но PRD называет её «a launch arrow (↗)» и рисует именно так. Компонент даёт
- * контейнер, PRD — направление; они не спорят.
+ * The launch control is `Icon Button` as the instance shrunk to 24, exactly as it
+ * sits inside `Tandem_Plan_Item`. The glyph stays an up-right arrow: the
+ * component carries `Icon/arrow-right`, but the PRD calls it "a launch arrow"
+ * and draws it pointing up-right. The component gives the container, the PRD
+ * gives the direction; they do not disagree.
  */
 
 type TaskRowProps = {
@@ -85,20 +85,19 @@ export function TaskRow({
     <div
       className={cn(
         /*
-         * Четыре сверху и снизу — воздух строки, не карточки. Вместе с
-         * паддингом самого компонента (4) это восемь от текста до всего, что
-         * снаружи: до рамки карточки, до разделителя, до соседней строки.
-         * Один зазор на все стыки.
+         * Four top and bottom: this is the row's air, not the card's. Together
+         * with the component's own padding (4) that is eight from the text to
+         * everything outside it — the card border, the divider, the next row.
+         * One gap at every joint.
          *
-         * На теле карточки тот же воздух не работает: он достаётся только
-         * первой и последней строке, и у них над текстом получается 12,
-         * а под ним 4.
+         * The same air on the card body does not work: only the first and last
+         * rows get it, which leaves 12 above their text and 4 below.
          */
         "flex flex-col border-b-[2px] border-soft-black py-1 last:border-b-0",
       )}
     >
       <div className="flex h-8 items-center justify-between px-5 py-1" data-note="task-row">
-        {/* левый блок: гэп 12 между чекбоксом и контентом, внутри контента 20 до времени */}
+        {/* Left block: gap 12 between checkbox and content, 20 to the time inside it. */}
         <span className="flex min-w-0 items-center gap-3">
           <Checkbox
             size="small"
@@ -108,7 +107,7 @@ export function TaskRow({
             aria-label={task.title}
           />
 
-          {/* гэп 8 между номером, иконкой типа и заголовком */}
+          {/* Gap 8 between the number, the type icon and the title. */}
           <span className="flex min-w-0 items-center gap-2">
             <span className="w-5 shrink-0 text-right text-body-xs tabular-nums text-pewter-hc">
               {n}.
@@ -131,9 +130,9 @@ export function TaskRow({
         <span className="flex shrink-0 items-center gap-5">
           {task.optional ? <Tag>(optional)</Tag> : null}
 
-          {/* Фиксированная ширина с выключкой вправо: в компоненте время
-              держится за конец заголовка, а заголовки у нас разной длины —
-              шесть значений расползались на 162px. Порядок PRD при этом цел:
+          {/* Fixed width, right-aligned: in the component the time hangs off
+              the end of the title, but real titles vary in length and six values
+              spread across 162px. The PRD's order is intact:
               «checkbox, type icon, title, start time, and a launch arrow». */}
           <span className="w-[var(--task-time-width)] shrink-0 text-right text-body-xs whitespace-nowrap tabular-nums text-pewter-hc">
             {task.time}
@@ -152,11 +151,11 @@ export function TaskRow({
         </span>
       </div>
 
-      {/* Заметка принадлежит своей строке, поэтому липнет к ней: сверху
-          отступа нет вовсе, и между заголовком задачи и первой строкой
-          заметки остаются только четыре пикселя нижнего паддинга строки.
-          Снизу — те же четыре, что у строки без заметки, чтобы объект
-          «строка с заметкой» отбивался от соседей ровно так же. */}
+      {/* A note belongs to its row, so it sits tight against it: no padding
+          above at all, leaving only the four pixels of the row's bottom padding
+          between the task title and the note's first line. Below it, the same
+          four a row without a note carries, so that "row with a note" stands off
+          from its neighbours in exactly the same way. */}
       {hasNotes ? (
         <div className="flex flex-col gap-3 pr-5 pb-1 pl-[var(--task-text-indent)]" data-note="plan-notes">
           <PlanNotes task={task} />

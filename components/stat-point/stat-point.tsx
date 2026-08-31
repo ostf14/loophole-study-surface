@@ -2,72 +2,75 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
 /**
- * Stat point — карточка, в которую садится любая стата семейства stat-point.
+ * Stat point — the card any stat of the stat-point family sits in.
  *
- * Свойства в Figma: Type (вид статы) и State (Default / Hover). Hover нарисован
- * тенью 6px 6px 0 0 без сдвига, потому что сдвиг в макете не выразить. В
- * продакшене эта пара живёт как `lh-card-hover-lg`: тень вырастает и элемент
- * уезжает вверх-влево на ту же величину.
+ * Properties in Figma: Type (which stat) and State (Default / Hover). Hover is
+ * drawn as a 6px 6px 0 0 shadow with no travel, because travel cannot be
+ * expressed in the file. In production the pair lives as `lh-card-hover-lg`: the
+ * shadow grows and the element moves up-left by the same amount.
  *
- * Рамка здесь 1.5px против 2px у Label и Section_Label — расхождение внутри
- * системы, воспроизведено как в макете и вынесено в вопросы к их команде.
+ * The border here is 1.5px against 2px on Label and Section_Label — a
+ * discrepancy inside the system, reproduced as drawn and raised as a question
+ * for their team.
  *
- * Внутри лежит скрытый слой Line 3: три бирюзовых росчерка от руки поверх
- * подписи. Декоративный акцент, в снятом варианте выключен.
+ * Inside sits a hidden layer, Line 3: three turquoise hand-drawn strokes over
+ * the caption. A decorative accent, switched off in the version that was read.
  *
- * Внутренний гэп между статой и подписью зависит от типа: 13 у Visual Gauge,
- * 6 у Compare. Задаётся на месте использования.
+ * The inner gap between the stat and the caption depends on the type: 13 on
+ * Visual Gauge, 6 on Compare. Set at the point of use.
  */
 
 type StatPointProps = {
   /**
-   * Метрика словами — слот Metric label. В компоненте это `Body type/Body 3`:
-   * Inter Medium 16/24, трекинг −1.8%, цвет `#575752`. Один в один токен
-   * `body-small` на pewter-hc, поэтому слот и размечен ими по умолчанию.
+   * The metric in words — the Metric label slot. In the component it is
+   * `Body type/Body 3`: Inter Medium 16/24, tracking -1.8%, colour `#575752`.
+   * That is the `body-small` token on pewter-hc exactly, which is how the slot
+   * is marked up by default.
    *
-   * В компоненте это одна строка; здесь принимает узлы, потому что PRD для
-   * Next Goal требует и название цели, и критерий — тогда разметка слота
-   * перекрывается на месте использования.
+   * The component gives one line; here it accepts nodes, because the PRD wants
+   * both the goal's name and its criterion for Next Goal — at which point the
+   * slot's markup is overridden at the point of use.
    */
   label: ReactNode;
-  /** Стата: time-range, trend, personal-best и остальные виды семейства. */
+  /** The stat: time-range, trend, personal-best and the family's other kinds. */
   children: ReactNode;
   /**
-   * Метка над статой. Слота под неё в компоненте нет — там только стата
-   * и подпись. Добавлено, чтобы метка секции стояла над показателем,
-   * а не в подписи под ним.
+   * A label above the stat. The component has no slot for one — it holds only
+   * the stat and the caption. Added so the section label stands above the figure
+   * rather than inside the caption below it.
    */
   eyebrow?: ReactNode;
   hover?: boolean;
   /**
-   * Гэп между статой и подписью: 6 у Compare, 13 у Visual Gauge.
+   * The gap between the stat and the caption: 6 on Compare, 13 on Visual Gauge.
    *
-   * Величины не декоративные. В компоненте карточка любого типа содержит
-   * фрейм ровно 100 в высоту, и внутри него подпись стоит на 72 у Compare
-   * и на 70.5 у Visual Gauge — то есть гэпы подобраны так, чтобы подпись
-   * села на одну высоту при статах разной высоты, 62 и 50.
+   * These are not decorative numbers. In the component a card of either type
+   * contains a frame exactly 100 tall, and inside it the caption sits at 72 on
+   * Compare and 70.5 on Visual Gauge — the gaps are chosen so the caption lands
+   * at one height across stats of different heights, 62 and 50.
    */
   gap?: number;
   /**
-   * Отступ статы от верха её фрейма: 4 у Compare, 7.5 у Visual Gauge.
+   * The stat's inset from the top of its frame: 4 on Compare, 7.5 on Visual
+   * Gauge.
    *
-   * Вторая половина той же компенсации. Разница высот статы 12, гэпы её
-   * гасят на 7, оставшиеся 5 гасит этот отступ — 3.5 разницы плюс округление.
-   * Я его сначала не перенёс и применял `gap` к обоим стыкам сразу: тег
-   * оказывался в 6 от статы в одной карточке и в 13 в другой, стата начиналась
-   * на 59 и 66, и две карточки рядом читались несобранными.
+   * The other half of the same compensation. The stats differ in height by 12,
+   * the gaps absorb 7 of it, and this inset absorbs the remaining 5 — 3.5 of
+   * difference plus rounding. Applying `gap` to both joints instead leaves the
+   * tag 6 from the stat on one card and 13 on the other, the stat starting at 59
+   * and at 66, and two cards side by side read as unaligned.
    *
-   * Заодно у Compare это ровно 4 — та же величина, которую дают `Objective`
-   * и `Onboarding list item` для стыка «метка → то, что она подписывает».
+   * On Compare this also comes to exactly 4 — the same value `Objective` and
+   * `Onboarding list item` use for the "label to the thing it labels" joint.
    *
-   * У Visual Gauge пара разложена иначе, чем в файле: 12.5 и 8 вместо 7.5
-   * и 13. Сумма та же, 20.5, поэтому подпись стоит там же, где стояла, —
-   * компонент фиксирует именно сумму, а деление внутри неё нужно только
-   * там, где над статой ничего нет. У нас над ней тег, и по строчным
-   * боксам зазор от него выходил одинаковым, а оптически нет: дробь 48/62
-   * несёт над глифами 13.6 пустого интерлиньяжа, подписи 12/18 — только 4.6.
-   * Замер по `actualBoundingBoxAscent`: было 28.8 у Compare против 24.2
-   * у Visual Gauge, стало 28.8 против 29.2.
+   * On Visual Gauge the pair is split differently from the file: 12.5 and 8
+   * instead of 7.5 and 13. The sum is the same, 20.5, so the caption lands where
+   * it did — the component fixes the sum, and how it divides matters only where
+   * nothing sits above the stat. Here a tag does, and by line boxes the gap from
+   * it came out equal while optically it did not: the 48/62 fraction carries 13.6
+   * of empty leading above its glyphs, the 12/18 caption only 4.6. Measured by
+   * `actualBoundingBoxAscent`: 28.8 on Compare against 24.2 on Visual Gauge
+   * before, 28.8 against 29.2 after.
    */
   inset?: number;
   className?: string;

@@ -7,41 +7,42 @@ import { useMeta } from "@/lib/meta/context";
 import { cn } from "@/lib/cn";
 
 /**
- * Пины с решениями. Каждый якорь в экране несёт `data-note="<id>"`; оверлей
- * находит их по этому атрибуту и ставит номерной кружок в правом верхнем углу
- * якоря.
+ * Decision pins. Every anchor in the screen carries `data-note="<id>"`; the
+ * overlay finds them by that attribute and puts a numbered circle at the
+ * anchor's top-right corner.
  *
- * Координаты — документа, не окна. Это принципиально: пин, посаженный в
- * координаты окна, приходится пересчитывать на каждый кадр прокрутки, и он
- * всегда отстаёт на кадр — страница едет композитором, а пин догоняет
- * джаваскриптом, отчего и пружинит. В координатах документа его везёт сам
- * браузер вместе с содержимым, и слушатель прокрутки не нужен вовсе.
+ * The coordinates are the document's, not the window's, and that matters: a pin
+ * placed in window coordinates has to be recomputed on every frame of a scroll,
+ * and it is always a frame behind — the page moves on the compositor while the
+ * pin chases it in JavaScript, which is what makes it spring. In document
+ * coordinates the browser carries it along with the content, and no scroll
+ * listener is needed at all.
  *
- * Пересчёт остаётся на том, что действительно двигает якоря: resize,
- * ResizeObserver на body и MutationObserver на него же — группы задач
- * раскрываются и сворачиваются. Все триггеры сходятся в один
- * requestAnimationFrame, так что пересчёт случается не чаще кадра.
+ * Recomputation stays on what actually moves the anchors: resize, a
+ * ResizeObserver on body and a MutationObserver on it too, since task groups
+ * expand and collapse. All triggers converge on a single requestAnimationFrame,
+ * so nothing recomputes more than once a frame.
  *
- * Якоря, которых нет в текущем состоянии экрана, просто не рисуются — номер
- * заметки при этом остаётся её собственным, как номер сноски в книге.
+ * Anchors absent from the current state of the screen simply are not drawn — a
+ * note keeps its own number regardless, like a footnote in a book.
  */
 
 type Anchor = {
   note: DesignNote;
   number: number;
-  /** Координаты документа: страница прокручивается, они не меняются. */
+  /** Document coordinates: the page scrolls, these do not change. */
   x: number;
   y: number;
-  /** Карточке не хватает места справа — раскрывать влево. */
+  /** Not enough room to the right — open the card leftward. */
   flipX: boolean;
-  /** Карточке не хватает места снизу — раскрывать вверх. */
+  /** Not enough room below — open the card upward. */
   flipY: boolean;
 };
 
-/** Один и тот же пустой массив, чтобы выключенный оверлей не рендерился заново. */
+/** One shared empty array, so a disabled overlay does not re-render. */
 const EMPTY: Anchor[] = [];
 
-/** Габарит карточки с запасом: ширина точная, высота по самой длинной заметке. */
+/** The card's gauge with headroom: the width is exact, the height fits the longest note. */
 const CARD_W = 320;
 const CARD_H = 360;
 
@@ -76,8 +77,8 @@ function useAnchors(enabled: boolean): Anchor[] {
           x,
           y,
           flipX: x > dw - (CARD_W + 20),
-          /* Раскрывать вверх, только если снизу места нет, а сверху есть:
-             иначе карточка вылезет за другой край и станет хуже. */
+          /* Open upward only when there is no room below and there is room
+             above; otherwise the card overflows the other edge and it gets worse. */
           flipY: y > dh - CARD_H && y > CARD_H,
         });
       });
@@ -107,8 +108,9 @@ function useAnchors(enabled: boolean): Anchor[] {
       });
     };
 
-    /* Первый расчёт тоже через кадр: синхронный setState в теле эффекта
-       запускает каскад рендеров, и правило линтера справедливо на это ругается. */
+    /* The first pass goes through a frame too: a synchronous setState in the body
+       of an effect starts a cascade of renders, and the lint rule is right to
+       object. */
     schedule();
     window.addEventListener("resize", schedule);
     const ro = new ResizeObserver(schedule);
@@ -125,8 +127,8 @@ function useAnchors(enabled: boolean): Anchor[] {
     };
   }, [enabled]);
 
-  /* Выключенный оверлей отдаёт пустой список, а не чистит состояние в эффекте:
-     то же самое, но без лишнего рендера. */
+  /* A disabled overlay returns an empty list rather than clearing state in an
+     effect: the same result, one render fewer. */
   return enabled ? anchors : EMPTY;
 }
 
@@ -135,8 +137,8 @@ export function NotesOverlay() {
   const anchors = useAnchors(notes);
   const [openId, setOpenId] = useState<string | null>(null);
 
-  /* Открытая заметка при выключенном оверлее просто не считается открытой —
-     чистить состояние эффектом незачем. */
+  /* An open note simply does not count as open while the overlay is off, so
+     there is nothing to clear with an effect. */
   const activeId = notes ? openId : null;
 
   useEffect(() => {
@@ -149,11 +151,11 @@ export function NotesOverlay() {
   if (!notes) return null;
 
   /*
-   * Ни портала, ни `fixed`. Контейнер — точка отсчёта в начале документа:
-   * `absolute` без позиционированного предка меряется от initial containing
-   * block, а тот привязан к началу холста и едет вместе с ним. Предков
-   * с transform или filter на пути к корню нет, так что перехватить эту
-   * привязку некому.
+   * No portal and no `fixed`. The container is an origin at the start of the
+   * document: `absolute` with no positioned ancestor resolves against the
+   * initial containing block, which is anchored to the canvas origin and travels
+   * with it. Nothing on the path to the root carries a transform or a filter, so
+   * there is nothing to intercept that anchoring.
    */
   return (
     <div data-meta="" className="pointer-events-none absolute top-0 left-0 z-[60]">
@@ -195,8 +197,8 @@ function Pin({
   return (
     <div
       ref={box}
-      /* Открытый пин поднимается над соседними: иначе их номера всплывают
-         поверх его карточки и читаются мусором на тексте. */
+      /* An open pin rises above its neighbours: otherwise their numbers float
+         over its card and read as noise on the text. */
       className={cn("pointer-events-auto absolute", open ? "z-20" : "z-10")}
       style={{ left: anchor.x, top: anchor.y, transform: "translate(-50%, -50%)" }}
     >
@@ -240,8 +242,8 @@ function Pin({
               <X aria-hidden className="size-[16px]" strokeWidth={2.5} />
             </button>
           </div>
-          {/* Абзацы в каталоге разделены пустой строкой. Один `<p>` склеил бы
-              их в полотно: в HTML перевод строки — это пробел. */}
+          {/* Paragraphs in the catalog are separated by a blank line. A single
+              `<p>` would run them together: in HTML a newline is a space. */}
           <div className="mt-2 flex flex-col gap-2">
             {anchor.note.body.split("\n\n").map((para) => (
               <p key={para.slice(0, 32)} className="text-body-s text-pewter-hc">

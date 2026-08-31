@@ -1,64 +1,64 @@
 import { cn } from "@/lib/cn";
 
 /**
- * `Progress bar/long-bar` со страницы Progress, снят через Figma REST.
+ * `Progress bar/long-bar` from the Progress page, read through the Figma REST API.
  *
- * Устройство из трёх слоёв:
+ * Three layers:
  *
- *   1. Дорожка — 241×36, радиус 8, заливка sand, обводка 2.647 внутрь
- *      и жёсткая тень 3.97/3.97. Это тот же вес, что у сегментов Prep Map:
- *      обводка 2.647 у них общая, компоненты одного семейства.
- *   2. Разделители — прямоугольники 2×14, радиус 48, разложены по ширине
- *      с равным шагом. Цвет в компоненте сырой `#d9d9d9`, ни переменной,
- *      ни стиля за ним нет; по умолчанию взят pewter, ближайший токен. По краям стоят ещё два нулевой
- *      прозрачности, они держат раскладку `space-between`. Есть второй режим,
- *      `separatorSpan="full"`: та же палочка во всю внутреннюю высоту дорожки
- *      и без скругления — тогда она читается границей, а не засечкой.
- *   3. Заполнение — растянутый `Progress bar/Ticks`: радиус 6, обводка 2.647,
- *      заливка turquoise поверх sand, собственная тень 3/3. Незаполненные
- *      слоты в макете лежат прозрачными заглушками, сквозь них видны
- *      разделители.
+ *   1. The track — 241x36, radius 8, filled sand, a 2.647 inside border and a
+ *      hard 3.97/3.97 shadow. That is the same weight the Prep Map segments
+ *      carry: the 2.647 border is shared, they are one family of components.
+ *   2. Separators — 2x14 rectangles, radius 48, spaced evenly across the width.
+ *      Their colour in the component is a raw `#d9d9d9` with no variable and no
+ *      style behind it; the default here is pewter, the nearest token. Two more
+ *      sit at the ends at zero opacity, holding the `space-between` layout.
+ *      There is a second mode, `separatorSpan="full"`: the same bar across the
+ *      full inner height of the track and without rounded ends, at which point
+ *      it reads as a boundary rather than a tick.
+ *   3. The fill — a stretched `Progress bar/Ticks`: radius 6, border 2.647,
+ *      turquoise over the sand, a 3/3 shadow of its own. Unfilled slots sit in
+ *      the file as transparent placeholders with the separators showing through.
  *
- * Счётчик — отдельный инстанс `Counter` 24×24: радиус полный, заливка
- * soft-white, обводка 2px, текст Inter 800 11/13.31 с трекингом -0.11.
- * Сидит внутри заполненной части, отступив от её правого края.
+ * The counter is a separate `Counter` instance, 24x24: full radius, soft-white
+ * fill, 2px border, Inter 800 11/13.31 with -0.11 tracking. It sits inside the
+ * filled part, inset from its right edge.
  *
- * Все производные размеры считаются от высоты дорожки: в компоненте она 36,
- * и от неё берутся радиусы, обводка, тени и габарит счётчика.
+ * Every derived size is computed from the track height: the component's own is
+ * 36, and the radii, border, shadows and counter gauge all follow from it.
  */
 
 type ProgressBarLongProps = {
-  /** Доля заполнения от нуля до единицы. */
+  /** Fill fraction, zero to one. */
   value: number;
-  /** Сколько слотов делят дорожку. В компоненте восемь, шаг равный. */
+  /** How many slots divide the track. The component has eight, evenly spaced. */
   slots?: number;
   /**
-   * Доли от нуля до единицы, где стоят разделители. Задаются вместо `slots`,
-   * когда деления неравные — например, фазы плана по диапазону дат.
+   * Fractions from zero to one marking where separators sit. Given instead of
+   * `slots` when the divisions are unequal — plan phases by date range, say.
    */
   separators?: number[];
-  /** Число в кружке у правого края заполнения. Без него кружка нет. */
+  /** The number in the circle at the right edge of the fill. Omit it and there is no circle. */
   counter?: number | string;
-  /** Высота дорожки. В компоненте 36, всё остальное считается от неё. */
+  /** Track height. The component's own is 36 and everything else follows from it. */
   height?: number;
   /**
-   * Поднимать ли заполнение тенью, как это делает компонент. Верно, когда
-   * заполнение идёт слотами; для сплошного отрезка выключается.
+   * Whether to raise the fill on a shadow the way the component does. True when
+   * the fill runs in slots; switched off for one continuous run.
    */
   raised?: boolean;
   /**
-   * Цвет разделителей. В компоненте стоит сырой `#d9d9d9` — во всём файле он
-   * ни разу не переменная и ни разу не стиль, это фигмовский серый по
-   * умолчанию, тот же класс, что `#aaaaaa` у времени задачи. По умолчанию
-   * взят ближайший к нему токен палитры, pewter. На дорожке ниже 36 он тонет
-   * в песочной заливке, поэтому задаётся на месте использования.
+   * Separator colour. The component carries a raw `#d9d9d9` — nowhere in the
+   * file is it a variable or a style, it is Figma's default grey, the same class
+   * of value as the `#aaaaaa` on the task time. The default here is the nearest
+   * token in the palette, pewter. On a track shorter than 36 it sinks into the
+   * sand fill, which is why it is set at the point of use.
    */
   separatorColor?: string;
   /**
-   * Насколько высок разделитель. `component` — 14 при высоте дорожки 36, как
-   * в файле. `full` — от обводки до обводки, встык, и без скругления концов:
-   * засечка посередине читается меткой на дорожке и сталкивается со всем, что
-   * на дорожке стоит, а линия во всю высоту читается границей.
+   * How tall a separator is. `component` is 14 at a track height of 36, as in
+   * the file. `full` runs from border to border, flush, with square ends: a tick
+   * in the middle reads as a mark on the track and collides with anything else
+   * standing on it, while a full-height line reads as a boundary.
    */
   separatorSpan?: "component" | "full";
   className?: string;
@@ -97,7 +97,7 @@ export function ProgressBarLong({
       role="img"
       aria-label={label ?? `${Math.round(pct)}% complete`}
     >
-      {/* дорожка */}
+      {/* Track */}
       <div
         className="absolute inset-x-0 top-0 bg-sand"
         style={{
@@ -108,7 +108,7 @@ export function ProgressBarLong({
         }}
       />
 
-      {/* разделители слотов */}
+      {/* Slot separators */}
       <div className="pointer-events-none absolute inset-x-0 top-0 flex items-center" style={{ height }}>
         {(separators ?? Array.from({ length: slots - 1 }, (_, i) => (i + 1) / slots)).map((at, i) => (
           <span
@@ -127,17 +127,17 @@ export function ProgressBarLong({
       </div>
 
       {/*
-        Заполнение. В компоненте это `Items completed` — ряд приподнятых
-        ячеек: у каждой своя обводка и своя тень 3/3, потому что заполненный
-        слот там объект, а не отрезок. Сплошная заливка приподнятой быть не
-        может: одна плашка с тенью на всю пройденную часть читается не
-        заполнением дорожки, а чужим элементом, положенным сверху.
+        The fill. In the component this is `Items completed` — a row of raised
+        cells, each with its own border and its own 3/3 shadow, because a filled
+        slot there is an object rather than a run. A continuous fill cannot be
+        raised: one plate with a shadow across the whole covered part reads not
+        as the track being filled but as a foreign element laid on top.
 
-        Поэтому `raised` включает подъём только там, где заполнение идёт
-        слотами. Сплошное садится внутрь дорожки: обводки нет вовсе — её роль
-        уже играет обводка самой дорожки, — а скругление левого края повторяет
-        внутренний радиус дорожки, правый край остаётся почти прямым, чтобы
-        было видно, что это край заполнения, а не край объекта.
+        So `raised` turns the lift on only where the fill runs in slots. A
+        continuous fill sits down inside the track: no border at all, since the
+        track's own border already plays that part, and the left corner repeats
+        the track's inner radius while the right edge stays nearly square, so it
+        reads as the edge of a fill rather than the edge of an object.
       */}
       {pct > 0 ? (
         <div

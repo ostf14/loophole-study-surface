@@ -7,43 +7,40 @@ import { formatShort } from "@/lib/plan";
 import type { Task } from "@/lib/plan-data";
 
 /**
- * Resume-баннер. Единственное первичное действие страницы: самая ранняя
- * незавершённая задача и запуск в один клик. PRD прячет баннер, когда всё до
- * сегодняшнего дня выполнено, поэтому отсутствие задачи означает отсутствие
- * блока.
+ * The resume banner. The page's single primary action: the earliest unfinished
+ * task and a one-click start. The PRD hides the banner once everything up to
+ * today is done, so no task means no block.
  *
- * Точного компонента под него в системе нет — элемент из PRD, а не из
- * существующего продукта. Геометрия взята у `Training Block` со страницы Bars,
- * снятого через Figma REST: радиус 24, паддинг 40 по вертикали и 24 по
- * горизонтали, обводка 2px, тени нет. Внутри ряд с гэпом 24: слева донат 32
- * и текстовый столбец с гэпом 8, справа кнопка 48 высотой с трейлинг-иконкой.
- * Заголовок `Display type/Title 2` — Inter 800, 24/34. Строка метаданных
- * с гэпом 16 из двух блоков.
+ * The system has no exact component for it — it is an element from the PRD
+ * rather than from the existing product. The geometry comes from `Training
+ * Block` on the Bars page, read through the Figma REST API: radius 24, padding
+ * 40 vertical and 24 horizontal, 2px border, no shadow. Inside, a row with a gap
+ * of 24: a 32 donut on the left with a text column at gap 8, a 48-tall button
+ * with a trailing icon on the right. The heading is `Display type/Title 2` —
+ * Inter 800, 24/34. The metadata row is two blocks at gap 16.
  *
- * Цвета намеренно не взяты: `Training Block` залит sangria-lc, а баннер стоит
- * внутри шапки на turquoise-lc, и розовая полоса там читалась бы как чужая.
+ * The colours are deliberately not taken: `Training Block` is filled sangria-lc,
+ * and the banner sits inside a header on turquoise-lc, where a pink band would
+ * read as foreign.
  *
- * Два отступления от геометрии, оба ради ритма страницы. Вертикальный паддинг
- * 24 вместо 40: `Training Block` — самостоятельный блок на контентной странице,
- * а наш баннер третий блок в постоянной шапке, и на сорока она занимала
- * шестьдесят два процента высоты окна.
+ * Two departures from the geometry, both for the rhythm of the page. Vertical
+ * padding is 24 rather than 40: `Training Block` is a standalone block on a
+ * content page, while this banner is the third block in a persistent header, and
+ * at 40 that header took sixty-two per cent of the window height.
  *
- * И роли текста переставлены. В `Training Block` двадцатичетвёртым кеглем
- * набрано имя блока, то есть содержание. У нас там стояло «Jump back in!» —
- * подпись, а сама задача шла мелко под ней. Теперь наоборот: подпись мелким
- * капсом, заголовок задачи крупно.
+ * And the roles of the text are swapped. In `Training Block` the 24 size is the
+ * block's name, that is its content. Here that size carries the task title,
+ * while "Jump back in!" — a caption — drops to small caps.
  *
- * В слоте слева — иконка типа задачи, та же, что в строках списка: баннер
- * отвечает на вопрос «что делать дальше», и первое, что нужно знать про
- * задачу, — какого она рода. Донат прогресса там стоял раньше и был хуже
- * дважды: у неначатой задачи ему нечего показывать, а у начатой то же самое
- * уже сказано словами — «12m left» справа от названия. Плюс он считал минуты
- * и подписывался читалке задачами.
+ * The slot on the left holds the task's type icon, the same one the list rows
+ * use: the banner answers "what do I do next", and the first thing to know about
+ * a task is what kind of thing it is. How much is left is already stated in
+ * words to the right of the title.
  *
- * Компонентами `Alert/Alert Bar` и `Action Bar` баннер не собран сознательно.
- * Первый — уведомление о проблеме с кнопкой отката и крестиком закрытия,
- * второй — футер потока с горячей клавишей. Обоим здесь не место: баннер
- * зовёт продолжить, а не сообщает, что что-то пошло не так.
+ * `Alert/Alert Bar` and `Action Bar` were deliberately not used. The first is a
+ * problem notice with an undo button and a close cross, the second a flow footer
+ * with a keyboard shortcut. Neither belongs here: the banner invites you to
+ * carry on, it does not report that something went wrong.
  */
 
 type ResumeBannerProps = {
@@ -62,32 +59,31 @@ export function ResumeBanner({ task, date, today, onStart }: ResumeBannerProps) 
       className="flex flex-wrap items-center gap-6 rounded-3xl border-[2px] border-soft-black bg-soft-white px-6 py-6"
     >
       {/*
-       * Сетка, а не два вложенных ряда. Слот прогресса стоит в первой колонке
-       * второго ряда, подпись и заголовок — во второй; выравнивание по верху
-       * ряда, как в `Training Block`, где Progress 32 и заголовок 24/34 стоят
-       * вровень (`counter: MIN`).
+       * A grid rather than two nested rows. The slot sits in the first column of
+       * the second row, the caption and heading in the second column; alignment
+       * is to the top of the row, as in `Training Block`, where Progress 32 and
+       * the 24/34 heading sit level (`counter: MIN`).
        *
-       * Раньше слот лежал в одном ряду с колонкой из двух строк и центрировался
-       * по ней целиком — то есть висел между «Jump back in!» и названием, не
-       * принадлежа ни тому, ни другому. А показывает он прогресс именно
-       * названной задачи.
+       * Laid out as one row, the slot centred against a two-line column as a
+       * whole — hanging between "Jump back in!" and the title, belonging to
+       * neither, while what it describes is the named task.
        */}
       <div className="grid min-w-0 flex-1 basis-[280px] grid-cols-[auto_1fr] items-start gap-x-4 gap-y-2">
         <span className="col-span-2 col-start-1 text-caption-medium uppercase text-pewter-hc">
           Jump back in!
         </span>
 
-        {/* Высота слота равна строке заголовка (34), чтобы иконка встала по её
-            середине; по горизонтали она прижата к левому краю колонки, и
-            подпись «Jump back in!» над ней начинается ровно оттуда же. */}
+        {/* The slot's height equals the heading line (34) so the icon lands on
+            its middle; horizontally it is flush with the column's left edge, and
+            the "Jump back in!" caption above it starts from exactly there. */}
         <span className="col-start-1 row-start-2 flex h-[34px] items-center">
           <TaskIcon type={task.type} className="size-[28px] shrink-0 text-soft-black" />
         </span>
 
-        {/* Пока строка помещается, длительность стоит справа от названия
-            на общей базовой линии; когда перестаёт — уходит под него.
-            Иначе `truncate` отдавал всю ширину неразрывной длительности
-            и съедал название целиком. */}
+        {/* While the line fits, the duration sits to the right of the title on a
+            shared baseline; when it stops fitting it drops below. Otherwise
+            `truncate` gave the whole width to an unbreakable duration and ate
+            the title. */}
         <span className="col-start-2 row-start-2 flex min-w-0 flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-3">
           <span className="truncate text-title-medium font-extrabold">{task.title}</span>
           <span className="shrink-0 text-body-s text-pewter-hc">

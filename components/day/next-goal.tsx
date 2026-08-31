@@ -5,50 +5,47 @@ import { Tag } from "@/components/ui/tag";
 import { GOALS, type Goal } from "@/lib/plan-data";
 
 /**
- * Next Goal. Обе цели собраны карточками `Stat point` со страницы Stats —
- * это их контейнер ровно под такое: стата сверху, подпись «что измеряем»
- * снизу.
+ * Next Goal. Both goals are built as `Stat point` cards from the Stats page —
+ * their container for exactly this: the stat on top, a caption saying what is
+ * being measured beneath it.
  *
- * Раньше здесь была каша: слева свободный ряд квадратиков, справа обведённый
- * `time-range` со своей шапкой, четыре разные отбивки по левому краю и вдвое
- * разный вес у двух строк. Причём `time-range` мы вынули как раз из `Stat
- * point` и поставили голым — компонент нарисован жить внутри карточки.
+ * The stat types come from the `Type` property of that same component:
  *
- * Типы статы взяты из свойства `Type` того же компонента:
+ *   RC — `Visual Gauge`, that is `stat-point/time-range`: a running number
+ *        against a fixed goal.
+ *   LR — `Compare`, a "done out of total" fraction. The criterion reads "get
+ *        every conditional question right", and how many conditional questions a
+ *        section holds is not known in advance — it floats. A fraction is the
+ *        honest form for that.
  *
- *   RC — `Visual Gauge`, то есть `stat-point/time-range`: бегущее число
- *        против фиксированной цели.
- *   LR — `Compare`, дробь «сделано из всего». Критерий звучит «get every
- *        conditional question right», а сколько условных вопросов в секции —
- *        заранее неизвестно, оно плавает. Значит честная форма именно дробь.
+ * `Heatmap` was deliberately not used for LR: it encodes magnitude, its shades
+ * are a scale of intensity, while the state here is binary — a question is
+ * either clean or blown. Two values out of a gradient would look alike and read
+ * wrongly.
  *
- * `Heatmap` для LR не взят сознательно: он кодирует величину, оттенки в нём
- * шкала интенсивности, а у нас состояние бинарное — вопрос либо чистый, либо
- * сорванный. Два значения из градиента выглядели бы похоже и читались бы
- * неверно.
+ * The card's caption is widened to three levels after `Onboarding list item` on
+ * the Lists page, where the same problem is solved the same way. There it is
+ * exactly three styles: label `All Caps/Caption 2` (12/18 Extra Bold, in the
+ * accent colour), name `Emphasis/Body 1` (20/30 Extra Bold, soft-black),
+ * explanation `Body 3` (16/24 **Medium**, pewter-hc). Here it is the same ladder
+ * one step down in size: tag, name at `body-small` 800, criterion at `body-s`
+ * 500.
  *
- * Подпись карточки расширена до трёх уровней по образцу `Onboarding list
- * item` со страницы Lists, где та же задача решена так же. Там это ровно
- * три стиля: метка `All Caps/Caption 2` (12/18 Extra Bold, акцентным цветом),
- * название `Emphasis/Body 1` (20/30 Extra Bold, soft-black), пояснение
- * `Body 3` (16/24 **Medium**, pewter-hc). Здесь та же лестница на шаг ниже
- * по кеглю: тег, название `body-small` восьмисотым, критерий `body-s`
- * пятисотым.
+ * The criterion is 500 specifically: at 600 it competed with the name, and in
+ * their own example the explanation is always Medium — weight falls from top to
+ * bottom there without exception.
  *
- * Критерий именно пятисотым: шестисотый спорил с названием, а в их образце
- * пояснение всегда Medium — вес там падает сверху вниз без исключений.
+ * The component has a single caption slot sized for a short line like "Metric
+ * being measured"; name and criterion at one size read as a four-line block of
+ * text.
  *
- * В компоненте слот подписи один и рассчитан на короткую строку вроде
- * «Metric being measured»; название и критерий одним кеглем читались полотном
- * из четырёх строк.
+ * The section label is the `tag` component from the Tags page in its Green
+ * variant. It is named for this job and holds exactly these values: LR, RC,
+ * TRANSLATION, ACCURACY, LEARN. It stands above the figure: `Stat point` has no
+ * slot for a label, so this is added over the component.
  *
- * Метка секции — компонент `tag` со страницы Tags в варианте Green. Он назван
- * под эту задачу и содержит ровно такие значения: LR, RC, TRANSLATION,
- * ACCURACY, LEARN. Стоит над показателем: слота под метку в `Stat point` нет,
- * добавлен сверх компонента.
- *
- * PRD ставит модуль наверх day timeline и требует по строке на секцию, когда
- * LR и RC стоят на разных ступенях.
+ * The PRD puts the module at the top of the day timeline and asks for a row per
+ * section when LR and RC are on different rungs.
  */
 
 const mmss = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
@@ -91,11 +88,11 @@ function Stat({ goal }: { goal: Goal }) {
   }
 
   /*
-   * Вариант No Deltas. Default требует около 280 на собственное содержимое,
-   * то есть карточку от 336; в колонке 600 на две карточки приходится по 292,
-   * и дельты сжимались бы — flex ужимает их молча, без переполнения, ломая
-   * снятую из файла геометрию. Три точки сообщают то же самое, а расстояние
-   * до цели читается из самих чисел.
+   * Variant No Deltas. Default needs about 280 for its own content, that is a
+   * card from 336 up; in a 600 column two cards get 292 each, and the deltas
+   * would compress — flex shrinks them silently, without overflow, breaking the
+   * geometry read from the file. Three points say the same thing, and the
+   * distance to the goal reads out of the numbers themselves.
    */
   return (
     <TimeRange

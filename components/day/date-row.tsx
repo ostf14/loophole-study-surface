@@ -12,49 +12,48 @@ import { ALL_DAYS } from "@/lib/plan-data";
 import { allTasks, formatLong } from "@/lib/plan";
 
 /**
- * Строка дня — две группы, а не пять объектов россыпью. Слева пара «какой
- * день и сколько в нём сделано»: пилюля даты и донат вплотную, гэп 12. Справа
- * управление: ‹ Today ›.
+ * The day row — two groups, not five objects scattered across a line. On the
+ * left, the pair "which day and how much of it is done": the date pill and the
+ * donut flush together at gap 12. On the right, the controls: back, Today,
+ * forward.
  *
- * Раньше пилюля и донат стояли на противоположных концах строки, а между ними
- * лежали три чужих контрола и 171 пиксель пустоты. PRD говорит буквально:
- * «a **date pill** … **paired with a progress donut**». Парой они не читались —
- * читались двумя концами. Теперь пара действительно пара, а четыре обведённых
- * объекта подряд распались на две группы по близости.
+ * The PRD pairs the first two outright: "a **date pill** … **paired with a
+ * progress donut**". At opposite ends of the row, with three unrelated controls
+ * and 171 pixels of space between them, they did not read as a pair.
  *
- * Пейджинг PRD описывает частью переключателя видов. Он здесь потому, что
- * меняет день, а не вид, и стоять должен вплотную к тому, что меняет.
+ * The PRD describes the paging as part of the view switcher. It is here because
+ * it changes the day, not the view, and belongs next to what it changes.
  *
- * Стрелки собраны на `Icon Button` 38×38, а не на `Page control`. Имя второго
- * обманывает: в файле он встречается только внутри `Carousels` и
- * `.Page Horizontal Scroll` — это стрелки карусели, потому и 44 с постоянной
- * тенью, чтобы читаться поверх картинки. Пейджер у них собран в компоненте
- * `Pagination`, и там ровно `Icon Button` 38 по краям и `Button` размера Small
- * между ними. Отсюда и ряд перестал быть рваным: было 44 / 38 / 44 вокруг
- * кнопки Today, стало 38 / 38 / 38.
+ * The arrows are built on `Icon Button` 38x38, not on `Page control`. That name
+ * misleads: in the file it appears only inside `Carousels` and `.Page Horizontal
+ * Scroll` — carousel arrows, which is why they are 44 with a permanent shadow,
+ * so they read over an image. Their pager is the `Pagination` component, and
+ * inside it are exactly `Icon Button` 38 at the ends and `Button` at size Small
+ * between them. That also evens out the row: 44 / 38 / 44 around the Today
+ * button becomes 38 / 38 / 38.
  *
- * Hide completed отсюда убран. Он не из PRD, его роль дублировало
- * авто-сворачивание выполненной группы, а стоял он ровно там, где по проду
- * стоит донат.
+ * Hide completed is gone from here. It is not in the PRD, its job was already
+ * done by completed groups folding themselves, and it stood exactly where
+ * production puts the donut.
  *
- * Дата — единственная идентичность дня. Номеров дней нет нигде, PRD запрещает
- * их прямо, и это главное отличие от текущей страницы с её «DAY 3».
+ * The date is the day's only identity. Day numbers appear nowhere; the PRD
+ * forbids them outright, and that is the main difference from the current page
+ * with its "DAY 3".
  *
- * Дропдаун построен на Tandem_Plan_Item_Menu: список дней, у каждого свой
- * донат, активный выделен фоном turquoise-lc и жирным начертанием.
+ * The dropdown is built on Tandem_Plan_Item_Menu: a list of days, each with its
+ * own donut, the active one marked by a turquoise-lc background and a heavier
+ * weight.
  *
- * Сама пилюля даты — компонент `Chips` со страницы Buttons. Шеврон садится
- * в его слот Counter, кружок 30×30 с обводкой 3px. Текст внутри фиксированной
- * ширины: пейджинг стоит вплотную за пилюлей, и на плавающей ширине вся
- * правая часть строки ездила при каждой смене дня. Раньше здесь стояла
- * primary-кнопка с переопределённой высотой — гибрид, которого в системе
- * не существует.
+ * The date pill itself is the `Chips` component from the Buttons page. The
+ * chevron sits in its Counter slot, a 30x30 circle with a 3px border. The text
+ * has a fixed width: the paging controls sit right beside the pill, and at a
+ * floating width the whole right-hand side of the row slid on every day change.
  *
- * Вариант Selected=False, то есть без заливки. В компоненте Selected означает
- * «этот фильтр включён», а дропдаун даты фильтром не является. Плюс сразу над
- * ним стоит активная вкладка, тоже залитая chartreuse: две жёлтые пилюли одна
- * под другой спорили за внимание. На их живом экране в этой зоне жёлтая
- * пилюля ровно одна.
+ * Variant Selected=False, that is unfilled. In the component Selected means
+ * "this filter is on", and a date dropdown is not a filter. There is also an
+ * active tab directly above it, likewise filled chartreuse: two yellow pills one
+ * under the other competed for attention. On their live screen this zone has
+ * exactly one yellow pill.
  */
 
 type DateRowProps = {
@@ -78,13 +77,13 @@ export function DateRow({
 }: DateRowProps) {
   return (
     <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-4" data-note="date-row">
-      {/* Пара: какой день и сколько в нём сделано. */}
+      {/* The pair: which day, and how much of it is done. */}
       <div className="flex items-center gap-3">
         <DayPicker date={date} done={done} onJumpToDate={onJumpToDate} />
         <ProgressDonut done={progress.done} total={progress.total} />
       </div>
 
-      {/* Управление: сменить день. */}
+      {/* The controls: change the day. */}
       <div className="flex items-center gap-3">
         <IconButton
           label="Previous day"
@@ -124,8 +123,8 @@ function DayPicker({
   const box = useRef<HTMLDivElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
 
-  /* Закрытие с клавиатуры возвращает фокус на пилюлю: иначе он оставался на
-     исчезнувшей кнопке и уезжал в начало документа. */
+  /* Closing from the keyboard returns focus to the pill: otherwise it stays on a
+     button that no longer exists and jumps to the top of the document. */
   const close = (focusTrigger: boolean) => {
     setOpen(false);
     if (focusTrigger) trigger.current?.focus();
@@ -167,9 +166,10 @@ function DayPicker({
         <span className="block w-[var(--date-pill-label)] text-left">{formatLong(date)}</span>
       </Chip>
 
-      {/* Меню, а не listbox: пункты здесь — кнопки, они выполняют действие,
-          а не выбираются. У роли `option` интерактивных потомков быть не
-          должно, а `menuitem` на кнопке — ровно её случай. */}
+      {/* A menu, not a listbox: the items here are buttons that perform an
+          action rather than options that get selected. The `option` role must
+          not contain interactive descendants, while `menuitem` on a button is
+          exactly its case. */}
       {open ? (
         <Card
           role="menu"

@@ -2,48 +2,32 @@ import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
 /**
- * Кнопка. Значения сняты из компонента `Button` и продакшн-CSS.
+ * Button. Values read from the `Button` component and the production CSS.
  *
- * В файле у компонента пять типов, два размера и три положения иконки:
+ * In the file the component has five types, two sizes and three icon placements:
  *
- *   Preferred    #eaf84f chartreuse, обводка soft-black
- *   Default      #fbfbfb soft-white, обводка soft-black
- *   Outlined     прозрачная, обводка soft-black
- *   Destructive  #fbfbfb, обводка #ff5a5a
- *   Clear        прозрачная, без обводки, радиус 0
+ *   Preferred    #eaf84f chartreuse, soft-black border
+ *   Default      #fbfbfb soft-white, soft-black border
+ *   Outlined     transparent, soft-black border
+ *   Destructive  #fbfbfb, #ff5a5a border
+ *   Clear        transparent, no border, radius 0
  *
- *   Size=Default  48 в высоту, обводка 3, кегль `Button 1`
- *   Size=Small    38 в высоту, обводка 2, кегль `Button 2`
+ *   Size=Default  48 tall, 3px border, `Button 1` type
+ *   Size=Small    38 tall, 2px border, `Button 2` type
  *
- * Наши `primary` и `secondary` — это `Preferred / Size=Default` и
- * `Default / Size=Small`. Остальные три типа на этом экране не нужны.
+ * Our `primary` and `secondary` are `Preferred / Size=Default` and
+ * `Default / Size=Small`. The other three types are not needed on this screen.
  *
- * `secondary` раньше была прозрачной, то есть `Outlined`. Оба типа законны,
- * но разница видна только на подкрашенном фоне — и там прод выбирает
- * заливку: на живом экране My Plan кнопка в мятной полосе шапки белая.
- * У нас сквозь Adjust Plan просвечивала мята.
+ * `secondary` is filled rather than `Outlined`. Both types are legitimate, but
+ * the difference only shows on a tinted background — and there production picks
+ * the fill: on the live My Plan screen the button in the mint header band is
+ * white. Transparent, the mint showed through Adjust Plan.
  *
- * `Icon placement` — третья ось компонента, и у неё своя пара паддингов:
- * иконка садится ближе к краю, чем текст, и кнопка остаётся оптически
- * симметричной. Полная таблица из файла:
+ * `Icon placement` is the component's third axis, and it carries its own pair of
+ * paddings: the icon sits closer to the edge than the text, which keeps the
+ * button optically symmetrical. The full table from the file:
  *
- *              нет иконки   ведущая      замыкающая
- *   Default    24/24 gap 8  18/22 gap 12  22/18 gap 12
- *   Small      24/24 gap 8  12/16 gap 8   16/12 gap 8
- *
- * Раньше `secondary` носила 16/12 всегда, то есть вариант с замыкающей
- * иконкой был зашит в тип. Кнопка без иконки — «Back to today» — получала
- * от этого сдвинутый влево текст. Теперь положение иконки задаётся слотом,
- * как в компоненте, и паддинги следуют за ним.
- *
- * Движение есть у primary и secondary: сдвиг на 3px вверх-влево с тенью той же
- * величины, при нажатии 1px. У ghost движения нет, только смена фона.
- *
- * Текст кнопок — стиль `Misc type/Buttons/Button 1`: Inter **900**, 14/20,
- * **трекинг ноль**, капсом. Это единственное место в системе, где трекинг не
- * отрицательный, — правило «минус везде» на кнопки не распространяется. Живой
- * theloophole.com подтверждает: там на кнопках `font-black` и размер задан
- * арбитрарно, без токена, то есть тоже без трекинга.
+ *              no icon      leading      trailing
  */
 
 const base = `
@@ -78,7 +62,7 @@ const variants = {
   },
 } as const;
 
-/** Паддинг и гэп по паре «размер × положение иконки», прямо из компонента. */
+/** Padding and gap per (size x icon placement) pair, straight from the component. */
 const spacing = {
   lg: {
     none: "px-6 gap-2",
@@ -94,7 +78,7 @@ const spacing = {
 
 type ButtonProps = ComponentPropsWithoutRef<"button"> & {
   variant?: keyof typeof variants;
-  /** Слот иконки. Ставит компонент в вариант Leading или Trailing. */
+  /** The icon slot. Puts the component into its Leading or Trailing variant. */
   icon?: ReactNode;
   iconSide?: "leading" | "trailing";
 };

@@ -34,8 +34,8 @@ import {
 
 export default function StudySurface() {
   const [date, setDate] = useState(TODAY);
-  /* Закладки разрешаются из самих данных плана, а не дублируются: так карточка
-     на полке и карточка в заметках не разъедутся при правке текста. */
+  /* Bookmarks resolve out of the plan data rather than being duplicated, so the
+     card on the shelf and the card in the notes cannot drift apart. */
   const [bookmarks, setBookmarks] = useState<Embed[]>(() =>
     ALL_DAYS.flatMap((d) => allTasks(d).flatMap((t) => t.embeds ?? [])).filter((e) =>
       INITIAL_BOOKMARKS.includes(e.id),
@@ -50,7 +50,7 @@ export default function StudySurface() {
     return s;
   });
 
-  /** Свёрнутые группы. PRD держит активную развёрнутой и сворачивает выполненные. */
+  /** Collapsed groups. The PRD keeps the active one open and folds the completed ones. */
   const [collapsed, setCollapsed] = useState<Set<string>>(() => {
     const s = new Set<string>();
     for (const d of ALL_DAYS) {
@@ -66,7 +66,7 @@ export default function StudySurface() {
   const progress = useMemo(() => (day ? dayProgress(day, done) : { done: 0, total: 0 }), [day, done]);
   const resume = useMemo(() => earliestIncomplete(TODAY, done), [done]);
 
-  /** Сквозная нумерация по дню: номер задачи не зависит от группы. */
+  /** Numbering runs across the whole day: a task's number does not depend on its group. */
   const numbers = useMemo(() => {
     const map = new Map<string, number>();
     if (!day) return map;
@@ -106,7 +106,7 @@ export default function StudySurface() {
     });
   };
 
-  /** Букмарка кладёт карточку целиком: вид решает, в какой список рельса она уйдёт. */
+  /** A bookmark files the whole card; its kind decides which rail shelf it lands on. */
   const toggleBookmark = (embed: Embed) => {
     setBookmarks((prev) =>
       prev.some((b) => b.id === embed.id)
@@ -118,11 +118,11 @@ export default function StudySurface() {
   const isBookmarked = (id: string) => bookmarks.some((b) => b.id === id);
 
   /*
-   * Клик по сегменту стрипа. PRD задаёт стрипу «that plan's first day», а
-   * селектору в рельсе «that plan's first incomplete day». Селектор убран,
-   * и стрипу досталась вторая цель: она полезнее. Первый день плана, куда
-   * студент уже заходил, — это архив; первый невыполненный — место, где он
-   * остановился.
+   * Clicking a strip segment. The PRD sends the strip to "that plan's first
+   * day" and the rail selector to "that plan's first incomplete day". The
+   * selector is gone, so the strip inherited the second target, which is the
+   * more useful one: the first day of a plan already worked through is an
+   * archive, while the first incomplete day is where the student stopped.
    */
   const jumpToPhase = (phase: Phase) => setDate(firstIncompleteDayOfPhase(phase, done));
 
@@ -136,14 +136,12 @@ export default function StudySurface() {
       />
 
       {/*
-        Экран десктопный: PRD описывает рабочее место за столом, и рельс с
-        Prep Map рассчитан на две колонки. Ниже 900 колонки не помещаются —
-        рельс 220, колонка дня от 320, гэп 40 и поля 80 дают 660 минимума, —
-        и до правки страница уезжала в горизонтальную прокрутку. Теперь
-        колонки складываются в одну, а рельс уходит под день: сначала то, что
-        делаешь сегодня, потом карта программы. Полноценной мобильной раскладки
-        здесь нет и по ТЗ не требуется — это защита от сломанного состояния,
-        а не второй макет.
+        The screen is a desktop one: the PRD describes a workstation at a desk,
+        and the rail with the Prep Map assumes two columns. Below 900 the columns
+        do not fit — rail 220, day column from 320, gap 40 and 80 of padding come
+        to a 660 minimum — so they fold into one and the rail moves below the
+        day: what you are doing today first, the map of the programme after. This
+        is a guard against a broken state, not a second layout.
       */}
       <div className="mx-auto flex w-full max-w-[var(--study-surface-width)] flex-1 flex-col gap-10 px-5 py-8 lg:flex-row lg:px-10">
         <LeftRail
@@ -152,33 +150,32 @@ export default function StudySurface() {
         />
 
         {/*
-          Вертикальный ритм. Своей шкалы отступов между блоками в системе нет —
-          есть базовая единица .25rem и употребление внутри компонентов, — так
-          что шкала здесь своя, и держится она на одном правиле: **расстояние
-          убывает с каждым уровнем вложенности**. Четыре ступени, 32 сверху,
-          шаг 8:
+          Vertical rhythm. The system has no scale for the space between blocks —
+          only the .25rem base unit and whatever the components do inside
+          themselves — so this scale is local, and it holds to one rule: the
+          distance shrinks with every level of nesting. Four steps, 32 at the
+          top, decreasing by 8:
 
-            32  между блоками экрана          стрип · цель · вид
-            24  от заголовка к его блоку      вкладки → день
-            16  от заголовка к телу           строка даты → список, и пейджер
-            12  между однородными соседями    карточки групп, карточки целей
+            32  between blocks of the screen       strip, goal, view
+            24  from a heading to the block below  view tabs to the day
+            16  from a heading to its body         date row to list, list to pager
+            12  between siblings of one kind       group cards, goal cards
 
-          Смысл правила в том, что отступ отвечает на вопрос «кому это
-          принадлежит». Пока вверх и вниз от вкладок стояли одинаковые 32,
-          переключатель одинаково относился и к модулю цели над ним, которым
-          не управляет, и ко дню под ним, которым управляет.
+          The point of the rule is that spacing answers "what belongs to what".
+          With the same 32 above and below the view tabs, the switcher related
+          equally to the goal module above it, which it does not govern, and to
+          the day below it, which it does.
 
-          Тот же порядок в рельсе: 32 между секциями, 16 от заголовка секции
-          к содержимому, 12 между карточками.
+          The rail runs the same ladder: 32 between sections, 16 from a section
+          heading to its contents, 12 between cards.
         */}
         <main className="order-first flex min-w-0 flex-1 flex-col gap-8 lg:order-none">
           {/*
-            Честная строка вместо заглушки. Совсем закрывать экран на узком
-            окне неправильно: смотреть его будут и с ноутбука в половину
-            экрана, и с телефона, и заглушка там оставит человека ни с чем.
-            А молчать тоже неправильно: рецензент, открывший экран узко,
-            должен знать, что одноколоночная раскладка — запасное поведение,
-            а не то, что проектировалось.
+            An honest line rather than a hard stop. Closing the screen outright on
+            a narrow window is wrong: people will open it on a half-width laptop
+            window and on a phone, and a stop leaves them with nothing. Saying
+            nothing is wrong too: a reviewer opening it narrow should know that
+            the single-column layout is fallback behaviour, not the design.
           */}
           <p className="flex items-center gap-2 text-body-xs text-pewter-hc lg:hidden">
             <Monitor aria-hidden className="size-[14px] shrink-0" strokeWidth={2.5} />
@@ -186,27 +183,26 @@ export default function StudySurface() {
           </p>
 
           {/*
-            Спуск по масштабу: где я в программе, что доказываю следующим,
-            какой вид, какой день, какие задачи. Стрип открывает колонку —
-            он самый крупный масштаб из всех и переехал сюда из шапки, где
-            спорил с баннером за первый взгляд.
+            A descent by scale: where I am in the programme, what I am proving
+            next, which view, which day, which tasks. The strip opens the column
+            as the largest scale of the five.
           */}
           <PlanStrip today={TODAY} onJumpToPhase={jumpToPhase} />
 
           {/*
-            Next Goal стоит выше переключателя видов, хотя PRD кладёт его
-            внутрь day timeline. Он не относится к планированию внутри дня:
-            не меняется ни от выбранного дня, ни от выбранного вида, — а
-            значит, не может стоять под тем же заголовком и в той же рамке,
-            что элементы дня.
+            Next Goal sits above the view switcher even though the PRD puts it
+            inside the day timeline. It is not part of planning within a day: it
+            changes with neither the selected day nor the selected view, so it
+            cannot stand under the same heading, or inside the same frame, as the
+            day's own elements.
           */}
           <NextGoal />
 
-          {/* вид: переключатель и то, чем он переключает */}
+          {/* The view: the switcher and what it switches. */}
           <div className="flex flex-col gap-6">
             <ViewTabs />
 
-            {/* день: шапка, тело, конец — одна группа */}
+            {/* The day: header, body, end — one group. */}
             <div className="flex flex-col gap-4">
               <DateRow
                 date={date}

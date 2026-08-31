@@ -1,19 +1,20 @@
 @import "tailwindcss";
 
-/* Markdown из сканирования исключён. Правило системы звучит «`text-caption-medium`,
-   никогда `text-xs`; `text-pewter-hc`, никогда `text-gray-500`» — и записано оно
-   в README и CLAUDE.md буквально этими строками. Сканер Tailwind принимал их за
-   кандидаты в классы и добавлял `--text-xs` и `--color-gray-500` в собранный CSS.
-   То есть запрет на дефолтные утилиты сам протаскивал их в сборку. */
+/* Markdown is excluded from the class scanner. The rule of this system reads
+   "`text-caption-medium`, never `text-xs`; `text-pewter-hc`, never
+   `text-gray-500`", and the documentation states it in exactly those words.
+   Tailwind's scanner read them as class candidates and shipped `--text-xs` and
+   `--color-gray-500` into the built CSS — the ban on default utilities was
+   smuggling them into the build. */
 @source not "../**/*.md";
 
-/* Дизайн-система Loophole Online.
-   Значения сняты с продакшн-сборки new.theloophole.com и из файла Figma
-   `LO Design System (FSH Update)`. Правило: семантические имена, никаких
-   дефолтных утилит Tailwind вместо токенов. */
+/* Loophole Online design system.
+   Values are taken from the production build of new.theloophole.com and from
+   the Figma file `LO Design System (FSH Update)`. The rule: semantic names,
+   never a default Tailwind utility in place of a token. */
 
 @theme {
-  /* бренд: base / hc (текст, рамки) / lc (фон) */
+  /* Brand: base / hc (text, borders) / lc (backgrounds) */
   --color-turquoise: #09b2a8;   --color-turquoise-hc: #0e7c75;   --color-turquoise-lc: #e2f3f2;
   --color-chartreuse: #eaf84f;  --color-chartreuse-hc: #8a9800;  --color-chartreuse-lc: #f5fac2;
   --color-seafoam: #d6eae3;     --color-seafoam-hc: #758a82;     --color-seafoam-lc: #eff6f3;
@@ -29,8 +30,9 @@
   --color-pewter: #c7c7c5;      --color-pewter-hc: #575752;      --color-pewter-lc: #747471;
   --color-scrim-lighter: #758a8233;
 
-  /* типографика интерфейса, шкала v2.0. Интерлиньяж из продакшн-CSS:
-     в Figma внутри v2.0 стоит множитель 1.6, в проде — 137.5%, прод важнее. */
+  /* Interface type, the v2.0 scale. Line heights come from the production CSS:
+     Figma sets a 1.6 multiplier inside v2.0, production sets 137.5%, and
+     production wins. */
   --text-body-xl: 1.25rem;  --text-body-xl--line-height: 1.75rem;  --text-body-xl--font-weight: 500; --text-body-xl--letter-spacing: -.0225rem;
   --text-body-l: 1.125rem;  --text-body-l--line-height: 1.5rem;    --text-body-l--font-weight: 500;  --text-body-l--letter-spacing: -.02025rem;
   --text-body-m: 1rem;      --text-body-m--line-height: 1.375rem;  --text-body-m--font-weight: 500;  --text-body-m--letter-spacing: -.018rem;
@@ -43,13 +45,13 @@
   --text-caption-large: .875rem;  --text-caption-large--line-height: 1.25rem;   --text-caption-large--font-weight: 600;  --text-caption-large--letter-spacing: -.01575rem;
   --text-caption-medium: .75rem;  --text-caption-medium--line-height: 1.125rem; --text-caption-medium--font-weight: 600; --text-caption-medium--letter-spacing: -.0135rem;
 
-  /* шкала v1: живёт в половине продукта параллельно с v2.0. Развёрнутые имена
-     против сокращённых — body-small это Body 3, 16/24, а не body-s, 14/20.
-     Подпись в карточке Stat point размечена именно ею. */
+  /* The v1 scale: it still runs through half the product alongside v2.0. Spelt
+     out names against abbreviated ones — body-small is Body 3, 16/24, not
+     body-s, 14/20. The Stat point caption is marked up in it. */
   --text-body-large: 1.25rem;  --text-body-large--line-height: 1.875rem; --text-body-large--font-weight: 600; --text-body-large--letter-spacing: -.0125rem;
   --text-body-medium: 1.125rem; --text-body-medium--line-height: 1.75rem; --text-body-medium--font-weight: 500; --text-body-medium--letter-spacing: -.01125rem;
   --text-body-small: 1rem;     --text-body-small--line-height: 1.5rem;   --text-body-small--font-weight: 500; --text-body-small--letter-spacing: -.018rem;
-  /* Display 3 из v1: этим кеглем набрана дробь в stat-point Compare */
+  /* Display 3 from v1: the size the fraction in stat-point Compare is set in. */
   --text-display-small: 3rem;  --text-display-small--line-height: 3.875rem; --text-display-small--font-weight: 700; --text-display-small--letter-spacing: -.042rem;
 
   --text-tag: .75rem;    --text-tag--line-height: 1rem;   --text-tag--font-weight: 800;   --text-tag--letter-spacing: -.0135rem;
@@ -63,16 +65,16 @@
   --radius-xs:.125rem; --radius-sm:.25rem; --radius-md:.375rem; --radius-lg:.5rem;
   --radius-xl:.75rem;  --radius-2xl:1rem;  --radius-3xl:1.5rem; --radius-4xl:2rem;
 
-  /* Жёсткая тень необрутализма: равный сдвиг по обеим осям, нулевое размытие,
-     всегда soft-black. Шаг совпадает с величиной, на которую элемент уезжает
-     вверх-влево на ховере, — тень и сдвиг в системе зеркальны, и число в имени
-     это число. Ступени взяты из компонентов: 1 у нажатия, 2 у `Icon Button`
-     и `Section Collapse` размера Small, 3 у кнопок, 4 у крупных карточек,
-     6 у `Stat point`.
+  /* The neo-brutalist hard shadow: equal offset on both axes, zero blur, always
+     soft-black. The step equals the distance the element travels up-left on
+     hover — shadow and travel mirror each other in this system, and the number
+     in the name is that distance. The steps come from components: 1 on press,
+     2 on `Icon Button` and `Section Collapse` at Small, 3 on buttons, 4 on
+     large cards, 6 on `Stat point`.
 
-     `lift-4` — пара из `Section Collapse` размера Default: там к жёсткой тени
-     добавлена мягкая, чёрным на шести процентах. Единственное место в системе,
-     где размытие вообще есть, потому и отдельным токеном. */
+     `lift-4` is the pair from `Section Collapse` at Default, where a soft shadow
+     is added to the hard one, black at six per cent. It is the only place in the
+     system with any blur at all, which is why it gets its own token. */
   --shadow-hard-1: 1px 1px 0 0 var(--color-soft-black);
   --shadow-hard-2: 2px 2px 0 0 var(--color-soft-black);
   --shadow-hard-3: 3px 3px 0 0 var(--color-soft-black);
@@ -80,9 +82,9 @@
   --shadow-hard-6: 6px 6px 0 0 var(--color-soft-black);
   --shadow-lift-4: 4px 4px 0 0 var(--color-soft-black), 0 1px 10px 0 rgb(0 0 0 / .06);
 
-  /* Движение системы: 150ms и одна кривая на всё. Заданы дефолтами Tailwind,
-     поэтому голое `transition` уже попадает в систему и в разметке не нужно
-     повторять ни длительность, ни кривую. */
+  /* The system's motion: 150ms and a single curve throughout. Set as Tailwind's
+     defaults, so a bare `transition` is already in the system and the markup
+     never has to repeat a duration or a curve. */
   --default-transition-duration: 150ms;
   --default-transition-timing-function: cubic-bezier(.4,0,.2,1);
   --ease-lh: cubic-bezier(.4,0,.2,1);
@@ -91,41 +93,42 @@
 }
 
 :root {
-  /* Собственные ширины этого экрана.
+  /* This screen's own widths.
 
-     --sidebar-width 300 в их системе — навигация приложения, а не контентный
-     рельс, и брать её под Prep Map неверно. На проде рельс 171, список задач
-     493, весь контентный блок 678. --max-width-component 1080 — ширина
-     маркетинговых страниц: на 1080 строка задачи растягивается и в ней зияет
-     пустая середина. Здесь блок уже, а рельс ближе к продовому. */
+     --sidebar-width 300 in the source system is app navigation, not a content
+     rail, so it is the wrong token for the Prep Map. In production the rail is
+     171, the task list 493, the whole content block 678. --max-width-component
+     1080 is a marketing page width: at 1080 the task row stretches and hollows
+     out in the middle. Here the block is narrower and the rail is closer to
+     production. */
   --study-rail-width: 220px;
   --study-surface-width: 940px;
 
-  /* Ширина текста в пилюле даты. Пилюля обязана быть постоянной: пейджинг
-     стоит вплотную за ней, и при плавающей ширине стрелки, Today и донат
-     ездили по строке при каждой смене дня.
+  /* Text width inside the date pill. The pill has to be a constant: the paging
+     controls sit right beside it, and a pill that resizes with its content
+     slides the arrows, Today and the donut along the row on every day change.
 
-     136 — самый широкий вариант формата «Wednesday, May 30» на кегле пилюли
-     (Inter 900, 12px, трекинг +0.06), замеренный через `measureText` по всем
-     семи дням недели, двенадцати месяцам и числам 1, 28, 30, 31; максимум
-     вышел 134.5, округлён вверх до целого шага в 8. */
+     136 is the widest "Wednesday, May 30" the format can produce at the pill's
+     type (Inter 900, 12px, tracking +0.06), measured with `measureText` across
+     all seven weekdays, twelve months and the days 1, 28, 30, 31; the maximum
+     came out at 134.5, rounded up to a whole step of 8. */
   --date-pill-label: 8.5rem;
 
-  /* Колонка времени в строке задачи. Порядок PRD — «checkbox, type icon,
-     title, start time, and a launch arrow» — сохранён: время стоит между
-     тегом «(optional)» и стрелкой запуска. Ширина при этом фиксированная
-     и выключка вправо: в компоненте время держится за конец заголовка, а
-     заголовки у нас разной длины, и шесть значений расползались на 162px.
-     58 — замеренные 55.28 у «10:00 AM» с запасом; переносить нечего, на
-     самом элементе стоит whitespace-nowrap.
+  /* The time column in a task row. The PRD's order — "checkbox, type icon,
+     title, start time, and a launch arrow" — is intact: the time sits between
+     the "(optional)" tag and the launch arrow. Its width is fixed and its text
+     is right-aligned: in the component the time hangs off the end of the title,
+     but real titles vary in length, and six values spread across 162px. 58 is
+     the measured 55.28 of "10:00 AM" with headroom; nothing wraps, the element
+     carries whitespace-nowrap.
 
-     --task-text-indent — левый край текстовой колонки. Встаёт по заголовку
-     задачи: паддинг строки 20 + чекбокс 20 + гэп 12 + номер 20 + гэп 8 +
-     иконка 16 + гэп 8 = 104. Заметка принадлежит заголовку, поэтому делит
-     с ним левый край и читается его продолжением. По номеру пробовали —
-     заметка встаёт вровень с соседней колонкой и вложенной не выглядит;
-     по иконке нельзя, там левого края текста нет вообще, вышел бы
-     произвольный отступ. */
+     --task-text-indent is the left edge of the text column. It lines up with
+     the task title: row padding 20 + checkbox 20 + gap 12 + number 20 + gap 8 +
+     icon 16 + gap 8 = 104. A note belongs to its title, so it shares that left
+     edge and reads as its continuation. Aligning to the number instead puts the
+     note level with the neighbouring column and it stops looking nested;
+     aligning to the icon is not possible, there is no text edge there at all
+     and the indent would be arbitrary. */
   --task-text-indent: 6.5rem;
 
   --sidebar-width: 300px;  --max-width-component: 1080px;
@@ -141,8 +144,8 @@ body {
   color: var(--color-soft-black);
 }
 
-/* Фирменное движение: элемент уезжает вверх-влево, тень вырастает под ним
-   на ту же величину. Тень и сдвиг всегда зеркальны. */
+/* The house hover: the element travels up-left while its shadow grows beneath
+   it by the same amount. Shadow and travel always mirror each other. */
 .lh-card-hover-lg,.lh-card-hover-md,.lh-card-hover-sm,.lh-card-hover-xs {
   transition: box-shadow var(--default-transition-duration) var(--ease-lh),
               translate  var(--default-transition-duration) var(--ease-lh);
@@ -152,18 +155,18 @@ body {
 .lh-card-hover-sm:hover,.lh-card-hover-sm:active{box-shadow:var(--shadow-hard-2);translate:-2px -2px}
 .lh-card-hover-xs:hover,.lh-card-hover-xs:active{box-shadow:var(--shadow-hard-1);translate:-1px -1px}
 
-/* Подчёркивание стоит всегда, ховер только меняет цвет — снято с живого
-   theloophole.com. Раньше здесь было наоборот. */
+/* The underline is always on and hover only changes the colour — taken from
+   the live theloophole.com. */
 .lh-link{color:var(--color-turquoise-hc);cursor:pointer;text-decoration:underline;transition:color .2s}
 .lh-link:hover{color:var(--color-turquoise)}
 .lh-link:active{color:var(--color-turquoise);opacity:.7}
 .lh-link:disabled,.lh-link[disabled]{cursor:not-allowed;opacity:.5}
 
-/* Фокус-кольцо системы. Висит на каждой живой кнопке и инпуте. */
+/* The system focus ring. Sits on every live button and input. */
 .lh-outline{outline:none}
 .lh-outline:focus-visible{outline:3px dotted var(--color-pewter-hc);outline-offset:2px}
 
-/* Штатный механизм гейтинга платных фич */
+/* The product's own mechanism for gating paid features. */
 .lh-link-lock{pointer-events:none;user-select:none;filter:blur(5px)}
 .lh-link-lock *{pointer-events:none!important}
 
